@@ -1,13 +1,24 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "../pages/Home";
-import Dashboard from "../pages/Dashboard";
+import { Routes, Route } from "react-router-dom";
+import Home from "../pages/authenticated/Home";
+import Dashboard from "../pages/authenticated/Dashboard";
+import Login from "../pages/unauthenticated/login";
+import RequireAuth from "../pages/unauthenticated/RequiredAuth";
+import MainLayout from "../layouts/MainLayout";
 
 const RouteSystem = () => {
   return (
     <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+      {/* public routes */}
+      <Route path="/login" element={<Login />} />
+
+      {/* protected routes */}
+      <Route element={<RequireAuth />}>
+        <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };
