@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from './button';
 import { AlignJustify } from 'lucide-react';
-import useTitle from '../hooks/useTitle';
+import useTitle from '../services/hooks/useTitle';
 
 
 const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {

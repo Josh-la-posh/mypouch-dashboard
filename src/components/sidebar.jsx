@@ -1,7 +1,7 @@
 import { House, LayoutDashboard } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useTitle from '../hooks/useTitle';
+import useTitle from '../services/hooks/useTitle';
 
 const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
     const { appTitle } = useTitle();

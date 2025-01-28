@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Navigation from "../components/navigation";
 import Sidebar from "../components/sidebar";
 import Header from "../components/header";
-import { TitleProvider } from "../context/TitleProvider";
+import { TitleProvider } from "../services/context/TitleProvider";
 
 const MainLayout = () => {
     const [openSidebar, setOpenSidebar] = useState(false);
