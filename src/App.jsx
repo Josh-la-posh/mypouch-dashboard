@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import RouteSystem from "./routes"
-import { AuthProvider } from "./context/AuthProvider"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import RouteSystem from "./routes";
+import { AuthProvider } from "./services/context/AuthProvider";
 
 const App = () => {
   return (

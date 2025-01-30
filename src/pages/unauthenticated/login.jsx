@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import InputField from "../../components/input";
-import Button from "../../components/Button";
-import useAuth from "../../hooks/useAuth";
+import Button from "../../components/button";
+import useAuth from "../../services/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
