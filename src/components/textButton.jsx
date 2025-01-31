@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Button = ({ children, onClick, variant = "primary" }) => {
-    const baseClass = "w-full px-4 py-2 rounded-sm font-[700] text-xl";
+const TextButton = ({ children, onClick, variant = "primary" }) => {
+    const baseClass = "font-[700] text-md";
     const variantClass =
       variant === "primary"
-        ? "bg-primary-light hover:bg-primary-dark text-primary hover:text-white"
+        ? "text-primary hover:text-white"
         : "bg-green-500 hover:bg-gray-600";
   
     return (
@@ -15,10 +15,10 @@ const Button = ({ children, onClick, variant = "primary" }) => {
     );
   };
   
-  Button.propTypes = {
+  TextButton.propTypes = {
     children: PropTypes.node.isRequired,
     onClick: PropTypes.func,
     variant: PropTypes.oneOf(["primary", "secondary"]),
   };
 
-export default Button;
+export default TextButton;

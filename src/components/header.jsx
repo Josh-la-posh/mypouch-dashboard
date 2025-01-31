@@ -26,11 +26,11 @@ const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
   }
 
   return (
-    <header className="h-12 flex items-center">
+    <header className="h-12 flex items-center text-black dark:text-white">
       <div className={`flex items-center justify-center gap-4 ${sidebarWidth}`}>
-        <p>Logo</p>
+        <p className='text-primary font-[700]'>POUCH</p>
         <button className="" onClick={handleSidebar}>
-          <AlignJustify />
+          <AlignJustify size='16px' />
         </button>
         <div className='text-lg font-semibold ml-3'>{appTitle ?? ''}</div>
       </div>

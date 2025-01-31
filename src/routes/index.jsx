@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "../pages/authenticated/Home";
 import Dashboard from "../pages/authenticated/Dashboard";
 import Login from "../pages/unauthenticated/login";
 import RequireAuth from "../pages/unauthenticated/RequiredAuth";
@@ -15,8 +14,7 @@ const RouteSystem = () => {
       {/* protected routes */}
       <Route element={<RequireAuth />}>
         <Route path="/" element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
         </Route>
       </Route>
     </Routes>
