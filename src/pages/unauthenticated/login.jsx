@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import InputField from "../../components/input";
-import Button from "../../components/button";
+import InputField from "../../components/ui/input";
+import Button from "../../components/ui/button";
 import useAuth from "../../services/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import TextButton from "../../components/textButton";
-import Checkbox from "../../components/checkbox";
+import TextButton from "../../components/ui/textButton";
+import Checkbox from "../../components/ui/checkbox";
 
 const Login = () => {
   const { auth, setAuth } = useAuth();
@@ -31,7 +31,11 @@ const Login = () => {
     } else {
       alert("Please enter a valid name.");
     }
-  };
+  }
+
+  const handleForgotPassword = () => {
+
+  }
   
   useEffect(() => {
     setAuth({});
@@ -67,7 +71,7 @@ const Login = () => {
             checked={isChecked}
             onChange={() => setIsChecked(!isChecked)}
           />
-          <TextButton onClick={handleSubmit} variant="primary">
+          <TextButton onClick={handleForgotPassword} variant="primary">
             Forgot Password
           </TextButton>
         </div>

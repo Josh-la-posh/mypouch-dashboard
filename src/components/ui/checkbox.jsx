@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Checkbox = ({ label, checked, onChange, name, id }) => {
+const Checkbox = ({ label, checked, onChange, id }) => {
   return (
     <label htmlFor={id} className="flex items-center gap-2 cursor-pointer">
       <input

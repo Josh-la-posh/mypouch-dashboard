@@ -16,14 +16,14 @@ const Sidebar = ({handleSidebar, isOpen}) => {
         },
         {
             id: 2,
-            icon: <User size={isOpen ? '18' : '22'} />,
-            title: 'User',
+            icon: <Users size={isOpen ? '18' : '22'} />,
+            title: 'Users',
             url: '/user',
             openSidebar: false
         },
         {
             id: 3,
-            icon: <Users size={isOpen ? '18' : '22'} />,
+            icon: <User size={isOpen ? '18' : '22'} />,
             title: 'Admin',
             url: '/admin',
             openSidebar: false

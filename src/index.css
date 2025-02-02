@@ -8,6 +8,9 @@
   --color-background-dark: #1F2937;
   --color-lightText: #664C89;
   --color-darkText: #303030;
+  --color-greyText: #D9D9D9;
+  --color-danger: #F81717;
+  --color-color-green: #0FEB90;
 }
 
 body {

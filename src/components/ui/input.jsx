@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, textColor }) => {
+const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, textColor, inputClassName, labelClassName }) => {
   return (
     <div className="flex flex-col gap-2 mb-4">
       {label && (
-        <label className={`text-sm font-[600] ${textColor ? textColor : 'text-gray-700'}`} htmlFor={id}>
+        <label className={`text-sm font-[600] ${textColor ? textColor : 'text-gray-700 dark:text-white'} ${labelClassName}`} htmlFor={id}>
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
@@ -18,7 +18,7 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
         value={value}
         onChange={onChange}
         required
-        className={`border border-gray-300 rounded-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${textColor ? textColor : 'text-gray-700'} placeholder:${textColor ? textColor : 'text-gray-700'}`}
+        className={`border border-gray-300 rounded-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary ${textColor ? textColor : 'text-gray-700 dark:text-white'} placeholder:${textColor ? textColor : 'text-gray-700 dark:text-white'} ${inputClassName}`}
       />
     </div>
   );
