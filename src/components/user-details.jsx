@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { CustomTab } from "./ui/tabs";
 import UserProfile from "../pages/authenticated/UserProfile";
 import UserAccount from "../pages/authenticated/UserAccount";
+import UserTransactionHistory from "../pages/authenticated/UserTransctionHistory";
+import UserIdVerification from "../pages/authenticated/UserIdVerification";
+import UserActivityLog from "../pages/authenticated/UserActivityLog";
 
 const UserDetails = () => {
 
@@ -30,7 +33,11 @@ const UserDetails = () => {
           ? <UserProfile />
           : activeTab === 'account' 
           ? <UserAccount />
-          : null
+          : activeTab === 'latestTransaction' 
+          ? <UserTransactionHistory />
+          : activeTab === 'idVerification' 
+          ? <UserIdVerification />
+          : <UserActivityLog />
         }
       </CustomTab>
   </div>

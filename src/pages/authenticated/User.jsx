@@ -41,7 +41,6 @@ const User = () => {
         render: () => (
             <Link
                 to='/user/details'
-                className='p-2 rounded-sm border border-gray-200'
             >
                 <Eye size='22px' className="text-primary" />
             </Link>
