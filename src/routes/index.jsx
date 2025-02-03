@@ -9,6 +9,11 @@ import User from "../pages/authenticated/user";
 import Admin from "../pages/authenticated/Admin";
 import Messages from "../pages/authenticated/Messages";
 import UserDetails from "../components/user-details";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminPendingRequest from "../pages/authenticated/AdminPendingRequest";
+import AdminManagement from "../pages/authenticated/AdminManagement";
+import AdminAddAdmin from "../pages/authenticated/AdminAddAdmin";
+import AdminSetCurrencies from "../pages/authenticated/AdminSetCurrencies";
 
 const RouteSystem = () => {
   return (
@@ -23,6 +28,14 @@ const RouteSystem = () => {
           <Route path="/user">
             <Route path="" element={<User />} />
             <Route path="details" element={<UserDetails />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin">
+              <Route path='pending-request' element={<AdminPendingRequest />} />
+              <Route path='set-currencies' element={<AdminSetCurrencies />} />
+              <Route path='add-admin' element={<AdminAddAdmin />} />
+              <Route path='admin-management' element={<AdminManagement />} />
+            </Route>
           </Route>
           <Route path="/admin" element={<Admin />} />
           <Route path="/messages" element={<Messages />} />

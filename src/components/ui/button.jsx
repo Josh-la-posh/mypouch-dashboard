@@ -8,6 +8,8 @@ const Button = ({ children, onClick, variant = "primary", className }) => {
         ? "bg-primary-light hover:bg-primary-dark text-primary hover:text-white"
         : variant === "secondary"
         ? "bg-primary hover:bg-primary-dark text-white"
+        : variant === "danger"
+        ? "text-danger border border-danger hover:bg-danger hover:text-white"
         : "bg-green-500 hover:bg-gray-600";
   
     return (
