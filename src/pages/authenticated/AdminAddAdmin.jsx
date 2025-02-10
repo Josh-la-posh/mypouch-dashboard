@@ -1,13 +1,19 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import InputField from '../../components/ui/input'
 import Button from '../../components/ui/button';
+import useSettingsTitle from '../../services/hooks/useSettitngsTitle';
 
 function AdminAddAdmin() {
+  const { setSettingsTitle } = useSettingsTitle();
   const [formData, setFormData] = useState({
     adminRole: '',
     email: '',
     adminSecret: ''
   });
+    
+  useEffect(() => {
+    setSettingsTitle('Add Admin');
+  }, []);
 
   const handleChange = (e) => {
     const {name, value} = e.target;

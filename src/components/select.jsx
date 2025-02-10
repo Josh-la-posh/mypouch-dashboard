@@ -12,10 +12,10 @@ const SelectField = ({ label, options, value, onChange, placeholder = "Select an
         className={`px-3 py-2 focus:outline-none disabled:opacity-50 ${selectClassName}`}
       >
         <option value="" disabled>{placeholder}</option>
-            {options.map((option) => (
-            <option key={option} value={option}>
-                {option}
-          </option>
+          {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+        </option>
         ))}
       </select>
     </div>

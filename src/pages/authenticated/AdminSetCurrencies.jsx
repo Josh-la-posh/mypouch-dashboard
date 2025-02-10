@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TextButton from "../../components/ui/textButton"
 import Button from "../../components/ui/button"
 import SelectField from "../../components/select"
+import useSettingsTitle from "../../services/hooks/useSettitngsTitle"
 
 const INITIAL_PAIRS = [
   { from: "NGN", to: "USD", rate: "0.0056", id: 1 },
@@ -13,7 +14,12 @@ const INITIAL_PAIRS = [
 const CURRENCIES = ["NGN", "USD", "CAD", "GBP", "EUR", "JPY", "AUD"]
 
 function AdminSetCurrencies() {
+  const { setSettingsTitle } = useSettingsTitle();
   const [pairs, setPairs] = useState(INITIAL_PAIRS)
+    
+  useEffect(() => {
+    setSettingsTitle('Set Currencies');
+  }, []);
 
   const addPair = () => {
     setPairs([

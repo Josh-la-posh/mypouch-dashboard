@@ -1,4 +1,4 @@
-import { House, LayoutDashboard, Mail, Settings, User, Users } from 'lucide-react';
+import { LayoutDashboard, Mail, Settings, User, Users } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
@@ -25,7 +25,7 @@ const Sidebar = ({handleSidebar, isOpen}) => {
             id: 3,
             icon: <User size={isOpen ? '18' : '22'} />,
             title: 'Admin',
-            url: '/admin',
+            url: '/admin/pending-request',
             openSidebar: false
         },
         {
