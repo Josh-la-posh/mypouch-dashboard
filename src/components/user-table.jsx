@@ -14,12 +14,12 @@ import PropTypes from 'prop-types';
         setCurrentPage(1);
     };
 
-    const paginatedData = data.slice(
+    const paginatedData = data?.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
 
-    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const totalPages = Math.ceil(data?.length / rowsPerPage);
     
     return (
         <>
@@ -40,7 +40,7 @@ import PropTypes from 'prop-types';
                     </thead>
                     <tbody className="divide-y-4 divide-gray-300 border border-gray-300">
                     {
-                        paginatedData.length === 0 ? (
+                        paginatedData?.length === 0 ? (
                             <tr>
                                 <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                                     No data available

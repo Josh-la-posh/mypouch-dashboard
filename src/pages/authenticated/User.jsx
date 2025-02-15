@@ -20,7 +20,10 @@ const User = () => {
     },
     {
         header: 'Name',
-        accessor: 'name',
+        accessor: 'firstName',
+        render: (firstName) => (
+          <div>{firstName.charAt(0).toUpperCase() + firstName.slice(1)}</div>
+        ),
     },
     {
         header: 'Email',
@@ -28,11 +31,11 @@ const User = () => {
     },
     {
         header: 'Mobile',
-        accessor: 'mobile',
+        accessor: 'phoneNumber',
     },
     {
         header: 'Date',
-        accessor: 'joinedDate',
+        accessor: 'createdDate',
     },
     {
         header: 'Status',
@@ -74,15 +77,15 @@ const User = () => {
   const loadUsers = async () => {
     await userService.fetchUsers(dispatch);
   }
+
+  useEffect(() => {
+    console.log('The current user is: ', users);
+    setFilteredData(users);
+  }, [users]);
   
   useEffect(() => {
     loadUsers();
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log('The current user is: ', content);
-    setFilteredData(content);
-  }, [users]);
 
   const onRefresh = () => {
     loadUsers();
