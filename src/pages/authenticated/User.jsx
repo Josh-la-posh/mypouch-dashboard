@@ -10,6 +10,7 @@ import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
 import UserService from "../../services/api/userApi";
 import ErrorLayout from "../../components/ui/error_page";
 import Spinner from "../../components/ui/spinner";
+import { dateFormatter } from "../../utils/dateFormatter";
 
 const User = () => {
 
@@ -36,6 +37,11 @@ const User = () => {
     {
         header: 'Date',
         accessor: 'createdDate',
+        render: (value) => (
+          <span>
+            {dateFormatter(value)}
+          </span>
+        ),
     },
     {
         header: 'Status',
