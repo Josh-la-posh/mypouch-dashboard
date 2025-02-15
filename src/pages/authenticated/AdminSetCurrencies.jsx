@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import TextButton from "../../components/ui/textButton"
 import Button from "../../components/ui/button"
-import SelectField from "../../components/select"
+import SelectField from "../../components/ui/select"
 import useSettingsTitle from "../../services/hooks/useSettitngsTitle"
 
 const INITIAL_PAIRS = [

@@ -5,9 +5,9 @@ const useRefreshToken = () => {
     const { auth, setAuth } = useAuth();
 
     const refresh = async () => {
-        const refreshToken = auth.refreshToken;
-        const response = await axios.post('/api/auth/refresh',
-            JSON.stringify({refreshToken}),
+        const token = auth.token.refresh_token;
+        const response = await axios.post('/auth/token/refresh',
+            JSON.stringify({token}),
             {
                 headers: {
                     'Accept': '*/*',
@@ -17,9 +17,9 @@ const useRefreshToken = () => {
             }
         );
         setAuth(prev => {
-            return { ...prev, accessToken: response.data.responseData.accessToken }
+            return { ...prev, token: response.data }
         });
-        return response.data.responseData.accessToken;
+        return response.data.access_token;
     }
     return refresh;
 }

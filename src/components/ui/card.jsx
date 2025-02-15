@@ -14,7 +14,7 @@ const Card = ({
 }) => {
 
     return(
-        <div className={`rounded-md p-3 ${color ? color : 'bg-greyText'}`}>
+        <div className={`w-full rounded-md p-3 ${color ? color : 'bg-greyText'}`}>
             <div className="flex gap-2">
                 <div className={`mt-1 dark:text-white ${iconClassName}`}>
                     {icon}
