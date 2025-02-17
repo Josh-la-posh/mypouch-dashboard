@@ -1,6 +1,6 @@
 function StatusBadge({ status }) {
-    const isActive = (status === "Active" || status === 'Successful' || status === 'Deposit');
-    const isInactive = (status === "Inactive" || status === 'Failed' || status === 'Withdrew');
+    const isActive = (status.toLowerCase() === "active" || status.toLowerCase() === 'successful' || status.toLowerCase() === 'deposit');
+    const isInactive = (status.toLowerCase() === "inactive" || status.toLowerCase() === 'failed' || status.toLowerCase() === 'withdrew');
     return (
       <span
         className={`

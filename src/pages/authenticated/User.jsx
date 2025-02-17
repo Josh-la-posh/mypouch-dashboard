@@ -11,6 +11,7 @@ import UserService from "../../services/api/userApi";
 import ErrorLayout from "../../components/ui/error_page";
 import Spinner from "../../components/ui/spinner";
 import { dateFormatter } from "../../utils/dateFormatter";
+import Button from "../../components/ui/button";
 
 const User = () => {
 
@@ -64,7 +65,7 @@ const User = () => {
   ];
 
   const TABS = [
-    { value: "total", label: "Total Users" },
+    { value: "", label: "Total Users" },
     { value: "active", label: "Active Users" },
     { value: "inactive", label: "Inactive Users" },
     { value: "blocked", label: "Blocked Users" },
@@ -74,30 +75,45 @@ const User = () => {
 
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, users} = useSelector((state) => state.user);
-  const [currentPage, setCurrentPage] = useState()
+  const {loading, error, users, currentPage, totalPages, pageSize, totalRecords} = useSelector((state) => state.user);
   const userService = new UserService(axiosPrivate);
+  const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
+  const [userTotalPages, setUserTotalPages] = useState(totalPages);
+  const [userPageSize, setUserPageSize] = useState(pageSize);
   const [filteredData, setFilteredData] = useState(users);
   const [search, setSearch] = useState('');
 
-  const loadUsers = async () => {
-    await userService.fetchUsers(dispatch);
+  const loadUsers = async (search, status, page, limit) => {
+    await userService.fetchUsers(search, status, page, limit, dispatch);
   }
 
   useEffect(() => {
-    console.log('The current user is: ', users);
     setFilteredData(users);
   }, [users]);
+
+  useEffect(() => {
+    setUserCurrentPage(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    setUserTotalPages(totalPages);
+  }, [totalPages]);
+
+  useEffect(() => {
+    setUserPageSize(pageSize);
+  }, [pageSize]);
   
   useEffect(() => {
-    loadUsers();
-  }, [dispatch]);
+    loadUsers('', activeTab, userCurrentPage, userPageSize);
+  }, [dispatch, userCurrentPage, userPageSize, activeTab]);
 
   const onRefresh = () => {
     loadUsers();
   };
 
-  if (loading) return <Spinner />
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  }
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
@@ -113,20 +129,36 @@ const User = () => {
         setActiveTab={setActiveTab}
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 md:max-w-[600px]">
+          <div className="flex items-center gap-4 md:max-w-[600px] my-4">
             <InputField
               placeholder='Search ID/Name/Mobile'
               id='search'
               value={search}
-              onChange={(e) => setSearch(e.trget.value)}
+              onChange={handleSearch}
             />
+            <div className="p-0 m-0">
+              <Button
+                onClick={() => loadUsers(search, activeTab, userCurrentPage, userPageSize)}
+                className='text-xs'
+              >
+                Search
+              </Button>
+            </div>
           </div>
-          <div className="text-sm text-gray-500">23,000 Records Found</div>
-          <UserTable
-            data={filteredData}
-            columns={columns}
-            rowsPerPageOptions={[10, 20, 50]}
-          />
+          <div className="text-sm text-gray-500">{totalRecords} Records Found</div>
+          {
+            loading 
+            ? <Spinner /> 
+            : <UserTable
+                data={filteredData}
+                columns={columns}
+                totalPages={userTotalPages}
+                currentPage={userCurrentPage}
+                setCurrentPage={setUserCurrentPage}
+                rowsPerPage={userPageSize}
+                setRowsPerPage={setUserPageSize}
+              />            
+          }
         </div>
       </CustomTab>
   </div>

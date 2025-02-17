@@ -6,10 +6,12 @@ class UserService {
         this.location = location;
     }
 
-    async fetchUsers(dispatch) {  
+    async fetchUsers(search, status, page, limit, dispatch) {
+      console.log('the result is ', search);
       try {
         dispatch(userStart());
-        const response = await axiosPrivate.get('/users/admin/users');
+        const response = await axiosPrivate.get(
+          `/users/admin/users?search=${search}&status=${status}&page=${page}&limit=${limit}`       );
         
         const data = response.data;
         console.log('user data: ', data);
