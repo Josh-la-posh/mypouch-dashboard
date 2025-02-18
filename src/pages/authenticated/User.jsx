@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, TabContent, TabsList, TabTrigger, CustomTab } from "../../components/ui/tabs";
+import { CustomTab } from "../../components/ui/tabs";
 import { Eye, Users } from "lucide-react";
 import InputField from "../../components/ui/input";
 import { UserTable } from "../../components/user-table";
@@ -53,10 +53,10 @@ const User = () => {
     },
     {
         header: '',
-        accessor: '',
-        render: () => (
+        accessor: 'id',
+        render: (id) => (
             <Link
-                to='/user/details'
+                to={`/user/details/${id}`}
             >
                 <Eye size='22px' className="text-primary" />
             </Link>
@@ -104,7 +104,9 @@ const User = () => {
   }, [pageSize]);
   
   useEffect(() => {
-    loadUsers('', activeTab, userCurrentPage, userPageSize);
+    if (users.length === 0) {
+      loadUsers('', activeTab, userCurrentPage, userPageSize);
+    }
   }, [dispatch, userCurrentPage, userPageSize, activeTab]);
 
   const onRefresh = () => {

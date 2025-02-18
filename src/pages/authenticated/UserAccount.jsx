@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "../../components/ui/card";
 import RecentActivity from "../../components/ui/recent-activity";
+import { useDispatch, useSelector } from "react-redux";
+import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
+import UserService from "../../services/api/userApi";
+import ErrorLayout from "../../components/ui/error_page";
+import Spinner from "../../components/ui/spinner";
 
-const UserAccount = () => {
+const UserAccount = ({id}) => {
+  const dispatch = useDispatch();
+  const axiosPrivate = useAxiosPrivate();
+  const userService = new UserService(axiosPrivate);
+  const {loading, error, userAccount} = useSelector((state) => state.user);
+  
+  const loadUserAccount = async () => {
+    await userService.fetchUserAccount(id, dispatch);
+  }
+    
+  useEffect(() => {
+      loadUserAccount();
+  }, [id, dispatch]);
+    
+  const onRefresh = () => {
+    loadUserDetails();
+  };
+
   const cardStat = [
     {
       id: 1,
@@ -27,8 +49,9 @@ const UserAccount = () => {
     },
   ];
 
-  const onRefresh = () => {
-  }
+  if (loading) return <Spinner />
+
+  if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
   return (
     <div className="grid grid-cols-5">

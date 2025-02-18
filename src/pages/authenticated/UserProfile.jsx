@@ -1,15 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../../components/ui/input";
 import Button from "../../components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
+import UserService from "../../services/api/userApi";
+import ErrorLayout from "../../components/ui/error_page";
 
-const UserProfile = () => {
+const UserProfile = ({id}) => {
+    const dispatch = useDispatch();
+    const axiosPrivate = useAxiosPrivate();
+    const userService = new UserService(axiosPrivate);
+    const {loading, updateLoading, error, userDetail} = useSelector((state) => state.user);
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        homeAddress: '',
-        mobileNumber: '',
-        country: ''
+        email: userDetail?.email ?? '',
+        country: userDetail?.country ?? '',
+        address: userDetail?.address ?? '',
+        state: userDetail?.state ?? '',
     });
+
+    const loadUserDetails = async () => {
+      await userService.fetchUserDetail(id, dispatch);
+    }
+      
+    useEffect(() => {
+        loadUserDetails();
+    }, [id, dispatch]);
+
+      useEffect(() => {
+        setFormData({
+            email: userDetail.email,
+            country: userDetail.country,
+            state: userDetail.state,
+            address: userDetail.address
+        });
+      }, [userDetail]);
+    
+      const onRefresh = () => {
+        loadUserDetails();
+      };
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -20,48 +48,22 @@ const UserProfile = () => {
         }));
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        await userService.updateUserDetail(id, formData, dispatch);
     }
+
+    if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
   return (
     <div className="space-y-6 ml-20 max-w-[450px]">
-        <form onSubmit={handleSubmit}>
-            <InputField
-                label='Full Name'
-                placeholder='Bankole Sunday Isaac'
-                id='fullName'
-                value={formData.fullName}
-                onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
-            />
+        <form onSubmit={handleSubmit} className="space-y-6">
             <InputField
                 label='Email Address'
                 type="email"
                 placeholder='my@pouch.com'
                 id='email'
-                value={formData.email}
-                onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
-            />
-            <InputField
-                label='Home Address'
-                placeholder='20, My Pouch close'
-                id='homeAddress'
-                value={formData.homeAddress}
-                onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
-            />
-            <InputField
-                label='Mobile Number'
-                type="tel"
-                placeholder='080********'
-                id='mobileNumber'
-                value={formData.mobileNumber}
+                value={loading ? '' : formData.email}
                 onChange={handleChange}
                 labelClassName='text-xs'
                 inputClassName='text-sm'
@@ -70,7 +72,25 @@ const UserProfile = () => {
                 label='Country'
                 placeholder='Nigeria'
                 id='country'
-                value={formData.country}
+                value={loading ? '' : formData.country}
+                onChange={handleChange}
+                labelClassName='text-xs'
+                inputClassName='text-sm'
+            />
+            <InputField
+                label='State'
+                placeholder='Lagos'
+                id='state'
+                value={loading ? '' : formData.state}
+                onChange={handleChange}
+                labelClassName='text-xs'
+                inputClassName='text-sm'
+            />
+            <InputField
+                label='Home Address'
+                placeholder='20, My Pouch close'
+                id='address'
+                value={loading ? '' : formData.address}
                 onChange={handleChange}
                 labelClassName='text-xs'
                 inputClassName='text-sm'
@@ -80,8 +100,9 @@ const UserProfile = () => {
                 <Button
                     variant="secondary"
                     className='text-xs font-light'
+                    disabled={updateLoading}
                 >
-                    Update
+                    {updateLoading ? 'Updating' : 'Update'}
                 </Button>
             </div>
         </form>

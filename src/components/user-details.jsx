@@ -5,6 +5,7 @@ import UserAccount from "../pages/authenticated/UserAccount";
 import UserTransactionHistory from "../pages/authenticated/UserTransctionHistory";
 import UserIdVerification from "../pages/authenticated/UserIdVerification";
 import UserActivityLog from "../pages/authenticated/UserActivityLog";
+import { useParams } from "react-router-dom";
 
 const UserDetails = () => {
 
@@ -17,6 +18,9 @@ const UserDetails = () => {
   ];
 
   const [activeTab, setActiveTab] = useState(TABS[0].value);
+  const {id} = useParams();
+
+  console.log('The selected id is: ', id);
 
   return (
     <div className="space-y-6">
@@ -30,14 +34,14 @@ const UserDetails = () => {
       >
         {
           activeTab === 'profile' 
-          ? <UserProfile />
+          ? <UserProfile id={id} />
           : activeTab === 'account' 
-          ? <UserAccount />
+          ? <UserAccount id={id} />
           : activeTab === 'latestTransaction' 
-          ? <UserTransactionHistory />
+          ? <UserTransactionHistory id={id} />
           : activeTab === 'idVerification' 
           ? <UserIdVerification />
-          : <UserActivityLog />
+          : <UserActivityLog id={id} />
         }
       </CustomTab>
   </div>

@@ -6,6 +6,7 @@ const SelectField = ({ label, options, value, onChange, placeholder = "Select an
     <div className={`flex flex-col gap-2 ${className} `}>
       {label && <label className={`text-sm font-medium text-gray-700 ${labelClassName}`}>{label}</label>}
       <select
+        id={options}
         value={value}
         onChange={onChange}
         disabled={disabled}

@@ -5,7 +5,7 @@ export const dateAndTimeFormatter = (dateString) => {
 
   // Format date and time separately
   const formattedDate = date.toLocaleDateString('en-US', {
-    year: 'numeric',
+    // year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
@@ -15,7 +15,7 @@ export const dateAndTimeFormatter = (dateString) => {
   });
 
   // Combine formatted date and time
-  return `${formattedDate} at ${formattedTime}`;
+  return `${formattedDate}, ${formattedTime}`;
 };
 
 export const timeFormatter = (dateString) => {

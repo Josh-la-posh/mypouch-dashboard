@@ -27,7 +27,7 @@ const RouteSystem = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/user">
             <Route path="" element={<User />} />
-            <Route path="details" element={<UserDetails />} />
+            <Route path="details/:id" element={<UserDetails />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="/admin">
