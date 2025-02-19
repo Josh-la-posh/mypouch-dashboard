@@ -11,6 +11,7 @@
   --color-greyText: #D9D9D9;
   --color-danger: #F81717;
   --color-color-green: #0FEB90;
+  --color-app-bg: #F1F8FF;
 }
 
 @layer utilities {
@@ -27,5 +28,4 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: rgba(12, 155, 155, 0.527);
   }

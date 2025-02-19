@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const SelectField = ({ label, options, value, onChange, placeholder = "Select an option", disabled = false, labelClassName, className, selectClassName }) => {
+const SelectField = ({ label, options, value, onChange, textColor, placeholder = "Select an option", disabled = false, labelClassName, className, selectClassName }) => {
   return (
     <div className={`flex flex-col gap-2 ${className} `}>
-      {label && <label className={`text-sm font-medium text-gray-700 ${labelClassName}`}>{label}</label>}
+      {label && <label className={`text-sm font-[600] ${textColor ? textColor : 'text-gray-700 dark:text-white'} ${labelClassName}`}>{label}</label>}
       <select
         id={options}
         value={value}

@@ -20,8 +20,8 @@ const Card = ({
                     {icon}
                 </div>
                 <div className="">
-                    <h1 className={`text-md font-[700] dark:text-white ${amountClassName}`}>{amount}</h1>
-                    <p className={`text-[10px] font-[600] text-primary ${nameClassName}`}>{name} Users</p>
+                    <h1 className={`text-md font-[700] dark:text-primary ${amountClassName}`}>{amount}</h1>
+                    <p className={`text-[10px] font-[600] text-primary ${nameClassName}`}>{name}</p>
                     {rate && 
                         (<div className={`text-[9px] text-danger flex gap-1 items-center ${rateClassName}`}>
                             <TrendingUp size='12px'/>

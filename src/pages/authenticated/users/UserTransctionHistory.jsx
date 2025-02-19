@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { UserTable } from "../../components/user-table";
-import StatusBadge from "../../components/ui/status-badge";
+import { UserTable } from "../../../components/user-table";
+import StatusBadge from "../../../components/ui/status-badge";
 import { Printer } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
-import UserService from "../../services/api/userApi";
-import ErrorLayout from "../../components/ui/error_page";
-import Spinner from "../../components/ui/spinner";
-import Button from "../../components/ui/button";
-import SelectField from "../../components/ui/select";
-import { dateFormatter } from "../../utils/dateFormatter";
+import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
+import UserService from "../../../services/api/userApi";
+import ErrorLayout from "../../../components/ui/error_page";
+import Spinner from "../../../components/ui/spinner";
+import Button from "../../../components/ui/button";
+import SelectField from "../../../components/ui/select";
+import { dateFormatter } from "../../../utils/dateFormatter";
 
 const UserTransactionHistory = ({id}) => {
   const columns = [

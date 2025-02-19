@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import InputField from "../../components/ui/input";
-import Button from "../../components/ui/button";
+import InputField from "../../../components/ui/input";
+import Button from "../../../components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
-import UserService from "../../services/api/userApi";
-import ErrorLayout from "../../components/ui/error_page";
+import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
+import UserService from "../../../services/api/userApi";
+import ErrorLayout from "../../../components/ui/error_page";
 
 const UserProfile = ({id}) => {
     const dispatch = useDispatch();
@@ -12,10 +12,10 @@ const UserProfile = ({id}) => {
     const userService = new UserService(axiosPrivate);
     const {loading, updateLoading, error, userDetail} = useSelector((state) => state.user);
     const [formData, setFormData] = useState({
-        email: userDetail?.email ?? '',
-        country: userDetail?.country ?? '',
-        address: userDetail?.address ?? '',
-        state: userDetail?.state ?? '',
+        email: userDetail?.email === null ? '' : userDetail?.email ?? '',
+        country: userDetail?.country === null ? '' : userDetail?.country ?? '',
+        address: userDetail?.address === null ? '' : userDetail?.address ?? '',
+        state: userDetail?.state === null ? '' : userDetail?.state ?? '',
     });
 
     const loadUserDetails = async () => {

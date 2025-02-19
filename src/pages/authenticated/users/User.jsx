@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { CustomTab } from "../../components/ui/tabs";
+import { CustomTab } from "../../../components/ui/tabs";
 import { Eye, Users } from "lucide-react";
-import InputField from "../../components/ui/input";
-import { UserTable } from "../../components/user-table";
-import StatusBadge from "../../components/ui/status-badge";
+import InputField from "../../../components/ui/input";
+import { UserTable } from "../../../components/user-table";
+import StatusBadge from "../../../components/ui/status-badge";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
-import UserService from "../../services/api/userApi";
-import ErrorLayout from "../../components/ui/error_page";
-import Spinner from "../../components/ui/spinner";
-import { dateFormatter } from "../../utils/dateFormatter";
-import Button from "../../components/ui/button";
+import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
+import UserService from "../../../services/api/userApi";
+import ErrorLayout from "../../../components/ui/error_page";
+import Spinner from "../../../components/ui/spinner";
+import { dateFormatter } from "../../../utils/dateFormatter";
+import Button from "../../../components/ui/button";
 
 const User = () => {
 
@@ -107,7 +107,11 @@ const User = () => {
     if (users.length === 0) {
       loadUsers('', activeTab, userCurrentPage, userPageSize);
     }
-  }, [dispatch, userCurrentPage, userPageSize, activeTab]);
+  }, [dispatch, userCurrentPage, userPageSize]);
+  
+  useEffect(() => {
+    loadUsers('', activeTab, userCurrentPage, userPageSize);
+  }, [activeTab]);
 
   const onRefresh = () => {
     loadUsers();

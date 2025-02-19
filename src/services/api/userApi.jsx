@@ -8,7 +8,6 @@ class UserService {
     }
 
     async fetchUsers(search, status, page, limit, dispatch) {
-      console.log('the result is ', search);
       try {
         dispatch(userStart());
         const response = await axiosPrivate.get(
@@ -53,7 +52,6 @@ class UserService {
         toast.success('User data updated successfully!!!');
         this.fetchUserDetail(id, dispatch);
       } catch (err) {
-        console.log('user data: ', err);
         if (!err.response) {
           dispatch(userDetailFailure('No Server Response'));
         } else {
@@ -86,7 +84,6 @@ class UserService {
         const response = await axiosPrivate.get(`/transaction/admin/${id}?date=${date}&status=${status}&page=${page}&limit=${limit}`);
         
         const data = response.data;
-        console.log('user data: ', data);
         dispatch(userTransactionSuccess(data));
         
       } catch (err) {
@@ -105,14 +102,13 @@ class UserService {
         const response = await axiosPrivate.get(`/admin/user-activities/${id}`);
         
         const data = response.data;
-        console.log('user data: ', data);
         dispatch(userActivitySuccess(data));
         
       } catch (err) {
         if (!err.response) {
           dispatch(userFailure('No Server Response'));
         } else {
-            dispatch(userFailure(err.response.data.message));
+          dispatch(userFailure(err.response.data.message));
         }
       }
     };

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const TextButton = ({ children, onClick, variant = "primary", className }) => {
+const TextButton = ({ children, onClick, variant = "primary", className, disabled=false }) => {
     const baseClass = "font-[700] text-md";
     const variantClass =
       variant === "primary"
@@ -11,7 +11,7 @@ const TextButton = ({ children, onClick, variant = "primary", className }) => {
         : "bg-green-500 hover:bg-gray-600";
   
     return (
-      <button className={`${baseClass} ${variantClass} ${className}`} onClick={onClick}>
+      <button className={`${baseClass} ${variantClass} ${className}`} onClick={onClick} disabled={disabled}>
         {children}
       </button>
     );
@@ -20,8 +20,9 @@ const TextButton = ({ children, onClick, variant = "primary", className }) => {
   TextButton.propTypes = {
     children: PropTypes.node.isRequired,
     onClick: PropTypes.func,
-    variant: PropTypes.oneOf(["primary", "secondary"]),
-    className: PropTypes.any
+    variant: PropTypes.oneOf(["primary", "secondary", "danger"]),
+    className: PropTypes.any,
+    disabled: PropTypes.bool
   };
 
 export default TextButton;

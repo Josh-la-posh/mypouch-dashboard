@@ -1,19 +1,26 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/authenticated/Dashboard";
 import Login from "../pages/unauthenticated/login";
 import RequireAuth from "../pages/unauthenticated/RequiredAuth";
 import MainLayout from "../layouts/MainLayout";
-import Settings from "../pages/authenticated/Settings";
-import User from "../pages/authenticated/user";
-import Admin from "../pages/authenticated/Admin";
-import Messages from "../pages/authenticated/Messages";
+import Settings from "../pages/authenticated/settings/Settings";
+import User from "../pages/authenticated/users/User";
+import Admin from "../pages/authenticated/admin/Admin";
+import Messages from "../pages/authenticated/messages/Messages";
 import UserDetails from "../components/user-details";
 import AdminLayout from "../layouts/AdminLayout";
-import AdminPendingRequest from "../pages/authenticated/AdminPendingRequest";
-import AdminManagement from "../pages/authenticated/AdminManagement";
-import AdminAddAdmin from "../pages/authenticated/AdminAddAdmin";
-import AdminSetCurrencies from "../pages/authenticated/AdminSetCurrencies";
+import AdminPendingRequest from "../pages/authenticated/admin/AdminPendingRequest";
+import AdminManagement from "../pages/authenticated/admin/AdminManagement";
+import AdminAddAdmin from "../pages/authenticated/admin/AdminAddAdmin";
+import AdminSetCurrencies from "../pages/authenticated/admin/AdminSetCurrencies";
+import Dashboard from "../pages/authenticated/dashboard/Dashboard";
+import AdminSupportiveForm from "../pages/authenticated/admin/AdminSupportiveForm";
+import AdminViewSetCurrencies from "../pages/authenticated/admin/AdminViewSetCurrencies";
+import AdminManagementLayout from "../layouts/AdminManagementLayout";
+import AdminChangePassword from "../pages/authenticated/admin/admin-management/ChangePassword";
+import CurrencyExchangeLimit from "../pages/authenticated/admin/admin-management/currency-exchange-limit";
+import RolesAndPermission from "../pages/authenticated/admin/admin-management/RolesAndPermission";
+import SuspiciousLoginActivities from "../pages/authenticated/admin/admin-management/SuspiciousLoginAcitivities";
 
 const RouteSystem = () => {
   return (
@@ -33,8 +40,16 @@ const RouteSystem = () => {
             <Route path="/admin">
               <Route path='pending-request' element={<AdminPendingRequest />} />
               <Route path='set-currencies' element={<AdminSetCurrencies />} />
+              <Route path='view-currencies' element={<AdminViewSetCurrencies />} />
               <Route path='add-admin' element={<AdminAddAdmin />} />
-              <Route path='admin-management' element={<AdminManagement />} />
+              <Route path='onboarding-form' element={<AdminSupportiveForm />} />
+              <Route path='admin-management' element={<AdminManagementLayout />}>
+                <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />
+                <Route path='admin-roles-and-permissions' element={<RolesAndPermission />} />
+                <Route path='change-password' element={<AdminChangePassword />} />
+                <Route path='currency-exchange-limit' element={<CurrencyExchangeLimit />} />
+
+              </Route>
             </Route>
           </Route>
           <Route path="/admin" element={<Admin />} />

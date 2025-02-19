@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Card from "../../components/ui/card";
+import Card from "../../../components/ui/card";
 import { Loader, TrendingUp } from "lucide-react";
-import RecentActivity from "../../components/ui/recent-activity";
+import RecentActivity from "../../../components/ui/recent-activity";
 import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "../../services/hooks/useAxiosPrivate";
-import DashboardService from "../../services/api/dashboardApi";
-import Spinner from "../../components/ui/spinner";
-import ErrorLayout from "../../components/ui/error_page";
-import useAuth from "../../services/hooks/useAuth";
+import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
+import DashboardService from "../../../services/api/dashboardApi";
+import Spinner from "../../../components/ui/spinner";
+import ErrorLayout from "../../../components/ui/error_page";
+import useAuth from "../../../services/hooks/useAuth";
 
 const Dashboard = () => {
   const {auth} = useAuth();
@@ -55,28 +55,28 @@ const Dashboard = () => {
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.active?.current}
-              name="Active"
+              name="Active Users"
               rate={data?.statuses?.active?.change}
               color="bg-[#0FEB90]"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.inactive?.current}
-              name="Inactive"
+              name="Inactive Users"
               rate={data?.statuses?.inactive?.change}
               color="bg-[#D0CDE1]/30"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.blocked?.current}
-              name="Blocked"
+              name="Blocked Users"
               rate={data?.statuses?.blocked?.change}
               color="bg-[#CABEC7]"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.blocked?.current}
-              name="Deleted"
+              name="Deleted Users"
               rate={data?.statuses?.deleted?.change}
               color="bg-[#CABEC7]"
             />

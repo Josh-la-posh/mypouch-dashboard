@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { CustomTab } from "./ui/tabs";
-import UserProfile from "../pages/authenticated/UserProfile";
-import UserAccount from "../pages/authenticated/UserAccount";
-import UserTransactionHistory from "../pages/authenticated/UserTransctionHistory";
-import UserIdVerification from "../pages/authenticated/UserIdVerification";
-import UserActivityLog from "../pages/authenticated/UserActivityLog";
+import UserProfile from "../pages/authenticated/users/UserProfile";
+import UserAccount from "../pages/authenticated/users/UserAccount";
+import UserTransactionHistory from "../pages/authenticated/users/UserTransctionHistory";
+import UserIdVerification from "../pages/authenticated/users/UserIdVerification";
+import UserActivityLog from "../pages/authenticated/users/UserActivityLog";
 import { useParams } from "react-router-dom";
 
 const UserDetails = () => {
