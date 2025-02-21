@@ -42,7 +42,7 @@ function AdminChangePassword() {
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
-      <p className='text-primary text-xl font-[600] '>Change Password</p>
+      <p className='text-primary dark:text-[#C2A6DD] text-xl font-[600] '>Change Password</p>
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <InputField

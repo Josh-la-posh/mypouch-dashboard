@@ -45,7 +45,7 @@ const Sidebar = ({handleSidebar, isOpen}) => {
     ];
 
     return (
-        <div className="bg-primary-dark text-white py-8 px-6 text-[12px] sm:text-[14px] lg:text-[16px]">
+        <div className="bg-primary-dark dark:bg-primary text-white py-8 px-6 text-[12px] sm:text-[14px] lg:text-[16px]">
             <nav className='my-2'>
                 {
                     sidebarItems.map((item) => (

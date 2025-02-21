@@ -48,7 +48,7 @@ const Dashboard = () => {
 
   return (
     <div className="">
-      <h1 className="text-md font-[500] dark:text-white">Welcom back {auth?.data?.firstName}</h1>
+      <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcom back {auth?.data?.firstName}</h1>
       <div className="mt-10 grid grid-cols-5">
         <div className=" col-span-3">
           <div className="flex justify-between gap-3">
@@ -90,12 +90,12 @@ const Dashboard = () => {
         <div className="col-span-2">
           <div className="h-32"></div>
           <div className="">
-            <p className="text-xs font-[600] text-center">The Most Traded Currency</p>
+            <p className="text-xs font-[600] text-center dark:text-[#C2A6DD]">The Most Traded Currency</p>
             <div className="mt-4 space-y-2 flex flex-col items-center">
               {
                 transactions.map((cur) => (
-                  <div key={cur.currency} className="flex items-center justify-between text-xs bg-black dark:bg-white px-3 py-1 rounded-sm w-[80%]">
-                    <p className="text-danger">{cur?.currency}</p>
+                  <div key={cur.currency} className="flex items-center justify-between text-xs bg-[#121212] dark:bg-white px-3 py-1 rounded-sm w-[80%]">
+                    <p className="text-white dark:text-primary-dark">{cur?.currency}</p>
                     <div className={`flex items-center gap-4 ${cur?.change.toString()[0] == '-' ? 'text-danger' : 'text-color-green'}`}>
                       <div className=""><TrendingUp size='15px' /></div>
                       <p>{cur.change}%</p>

@@ -53,7 +53,7 @@ function AdminAddAdmin() {
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
-      <p className='text-primary text-lg font-[600] text-center'>Add Admin</p>
+      <p className='text-primary text-lg font-[600]'>Add Admin</p>
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <SelectField
@@ -62,7 +62,7 @@ function AdminAddAdmin() {
             options={['Super Admin', 'Admin']}
             value={role}
             onChange={handleRoleChange}
-            selectClassName={'bg-primary/14 text-sm py-2'}
+            selectClassName={'bg-primary/14 text-primary text-sm border-transparent dark:border-gray-300 rounded-sm py-2'}
           />
           <InputField
             label='Email'

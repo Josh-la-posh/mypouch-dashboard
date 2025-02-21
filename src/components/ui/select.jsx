@@ -10,7 +10,7 @@ const SelectField = ({ label, options, value, onChange, textColor, placeholder =
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={`px-3 py-2 focus:outline-none disabled:opacity-50 ${selectClassName}`}
+        className={`px-3 py-2 focus:outline-none disabled:opacity-50 dark:bg-[#2C2C3E] dark:text-white border dark:border-gray-300 ${selectClassName}`}
       >
         <option value="" disabled>{placeholder}</option>
           {options.map((option) => (

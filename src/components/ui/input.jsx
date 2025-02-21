@@ -18,7 +18,7 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
         value={value}
         onChange={onChange}
         required
-        className={`border border-gray-300 rounded-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary ${textColor ? textColor : 'text-gray-700 dark:text-white'} placeholder:text-sm placeholder:${textColor ? textColor : 'text-gray-700 dark:text-white'} ${inputClassName}`}
+        className={`border border-gray-300 rounded-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary ${textColor ? textColor : 'text-gray-700'} dark:text-white placeholder:text-sm placeholder:${textColor ? textColor : 'text-gray-700 dark:text-white'} ${inputClassName}`}
       />
     </div>
   );

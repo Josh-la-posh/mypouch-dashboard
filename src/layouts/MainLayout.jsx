@@ -14,7 +14,7 @@ const MainLayout = () => {
 
     return (
         <TitleProvider>
-            <div className="h-screen overflow-hidden scrollbar-none bg-app-bg">
+            <div className="h-screen overflow-hidden scrollbar-none bg-app-bg dark:bg-[#20263D]">
                 <Header
                     className="border-b border-gray-200" 
                     setOpenSidebar={setOpenSidebar} 
@@ -24,7 +24,7 @@ const MainLayout = () => {
                     <div className={`${sidebarWidth} transition-all duration-300 flex justify-center items-center`}>
                         <Sidebar handleSidebar={handleSidebar} isOpen={openSidebar} />
                     </div>
-                    <div className='w-full h-full bg-white dark:bg-black transition-all duration-300 overflow-y-scroll scrollbar-none rounded-lg p-4'>
+                    <div className='w-full h-full bg-white dark:bg-[#2C2C3E] transition-all duration-300 overflow-y-scroll scrollbar-none rounded-lg p-4'>
                         <main className='w-full h-[90%] overflow-y-scroll scrollbar-none'>
                             <Outlet />
                         </main>

@@ -31,12 +31,12 @@ const onRefresh = () => {
 return (
   <div className='w-full'>
     <div className="grid grid-cols-2 gap-6">
-      <div className="col-span-1 space-y-4">
+      <div className="col-span-1 space-y-4 dark:text-[#D1D5DB]">
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -49,8 +49,8 @@ return (
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -63,8 +63,8 @@ return (
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -77,8 +77,8 @@ return (
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -91,8 +91,8 @@ return (
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -105,8 +105,8 @@ return (
         <div className="border py-4 px-8 space-y-1">
             <p className="font-[600]">There is a suspicious attempt on this account</p>
             <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
                     <p>10:00AM</p>
                 </div>
                 <TextButton
@@ -116,22 +116,9 @@ return (
                 </TextButton>
             </div>
         </div>
-        <div className="border py-4 px-8 space-y-1">
-            <p className="font-[600]">There is a suspicious attempt on this account</p>
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
-                    <p>10:00AM</p>
-                </div>
-                <TextButton
-                    className='px-3 py-1 border rounded-sm'
-                >
-                    View
-                </TextButton>
-            </div>
-        </div>
+        
       </div>
-      <div className="text-primary space-y-6 px-10">
+      <div className="text-primary dark:text-[#D1D5DB] space-y-6 px-10 pt-10">
         <User size='32px' className=""/>
 
         <div className="">

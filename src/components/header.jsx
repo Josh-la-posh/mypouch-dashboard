@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlignJustify, ArrowRightFromLine, Mail, Bell } from 'lucide-react';
+import { AlignJustify, Mail, Bell, LogOut } from 'lucide-react';
 import useTitle from '../services/hooks/useTitle';
 import { useTheme } from '../services/context/ThemeProvider';
-import { dateAndTimeFormatter } from '../utils/dateFormatter';
 
 const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
   const sidebarWidth = openSidebar ? "md:w-72 w-48" : "md:w-48 w-20";
@@ -56,15 +55,14 @@ const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <h1 className='text-sm font-[500]'>Welcome Morgan k.</h1>
           <button 
             onClick={toggleTheme} 
-            className="p-2 bg-primary-light dark:bg-primary-dark text-white rounded-md transition-all"
+            className="p-2 bg-primary dark:bg-primary-dark text-white rounded-md transition-all"
           >
             {theme === "light" ? "🌙 Dark" : "☀️ Light"}
           </button>
-          <button onClick={handleLogout} className='flex items-center gap-2 text-xs'>
-            <ArrowRightFromLine size='12px'/>
+          <button onClick={handleLogout} className='flex items-center gap-2 text-sm'>
+            <LogOut size='14px'/>
             Logout
           </button>
         </div>

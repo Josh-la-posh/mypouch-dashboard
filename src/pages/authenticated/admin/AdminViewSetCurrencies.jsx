@@ -46,9 +46,9 @@ function AdminViewSetCurrencies() {
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />;
 
   return (
-    <div className="w-full p-5 rounded-sm shadow-sm space-y-8">
+    <div className="w-full px-5 rounded-sm shadow-sm space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-primary text-xl font-[600]">Default Currency List</h2>
+        <h2 className="text-primary dark:text-[#C2A6DD] text-xl font-[600]">Default Currency List</h2>
         <Link
             to='/admin/set-currencies'
             className="bg-primary text-sm font-[600] py-3 px-6 text-white rounded-sm"
@@ -74,7 +74,7 @@ function AdminViewSetCurrencies() {
                     <div className="">
                         <TextButton
                             variant="danger"
-                            className='bg-primary/46 px-6 py-3 rounded-sm'
+                            className='bg-primary/46 px-6 py-3 rounded-sm cursor-pointer'
                             onClick={(e) => handleDelete(e, cur?.id)}
                             disabled={deleteLoading}
                         >

@@ -54,7 +54,7 @@ function CurrencyExchangeLimit() {
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
-      <p className='text-primary text-xl font-[600] '>Currency Exchange Limit</p>
+      <p className='text-primary dark:text-[#C2A6DD] text-xl font-[600] '>Currency Exchange Limit</p>
       
       <p className='text-primary text-sm font-[600] border-b border-b-primary/20 pb-3'>Setting a limit for currency exchange</p>
       <div className="">

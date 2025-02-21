@@ -38,7 +38,7 @@ const AdminManagementSidebar = () => {
                 <Link 
                     key={item.id} 
                     to={item.url} 
-                    className={`block py-4 px-2 text-sm font-[600] border border-primary-dark rounded-sm ${settingsTitle === item.name ? 'text-white bg-primary-dark transition duration-300 ' : 'bg-white text-primary-dark'}`}>
+                    className={`block py-4 px-2 text-sm font-[600] border border-primary-dark dark:border-primary rounded-sm ${settingsTitle === item.name ? 'text-white bg-primary-dark dark:bg-primary transition duration-300 ' : 'bg-white text-primary-dark'}`}>
                     <div>{item.name}</div>
                 </Link>
             ))}

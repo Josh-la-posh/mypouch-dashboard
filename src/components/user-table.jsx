@@ -51,8 +51,8 @@ import PropTypes from 'prop-types';
     return (
         <>
             <div className="overflow-x-auto">
-                <table className="divide-y-6 divide-white min-w-full border-collapse rounded-lg">
-                    <thead className="bg-gray-300">
+                <table className="divide-y-6 divide-white dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
+                    <thead className="bg-gray-300 dark:bg-[#20263D]">
                         <tr>
                             <th className="px-4 py-3 text-left text-[9px] md:text-xs font-medium text-gray-500 tracking-wider">S.No</th>
                             {columns.map((column, colIndex) => (
@@ -65,7 +65,7 @@ import PropTypes from 'prop-types';
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y-4 divide-gray-300 border border-gray-300">
+                    <tbody className="divide-y-4 divide-gray-300 dark:divider-[#20263D] border border-gray-300 dark:border-[#20263D]">
                     {
                         data?.length === 0 ? (
                             <tr>
@@ -115,7 +115,7 @@ import PropTypes from 'prop-types';
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ${currentPage === 1 ? 'text-gray-300' : 'hover:border-primary hover:text-black'}`}
+                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ${currentPage === 1 ? 'text-gray-300' : 'hover:border-primary hover:text-primary'}`}
                         >
                             &lt;
                         </button>
@@ -130,7 +130,7 @@ import PropTypes from 'prop-types';
                                     <button
                                         key={index}
                                         onClick={() => handlePageChange(page)}
-                                        className={`text-xs md:text-xs px-2 py-1 lg:px-3 lg:py-2 ml-2 rounded-[5px] ${currentPage === page ? 'border border-priColor text-black' : 'bg-white text-gray-600'} hover:bg-priColor hover:text-white`}
+                                        className={`cursor-pointer text-xs md:text-xs px-2 py-1 lg:px-3 lg:py-2 ml-2 rounded-[5px] ${currentPage === page ? 'border border-priColor text-black dark:text-white' : 'bg-white dark:bg-transparent text-gray-600'} hover:bg-priColor hover:text-primary`}
                                     >
                                         {page}
                                     </button>
@@ -140,7 +140,7 @@ import PropTypes from 'prop-types';
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ml-2 ${currentPage === totalPages ? 'text-gray-300' : 'hover:border-blue-700 hover:text-black'}`}
+                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ml-2 ${currentPage === totalPages ? 'text-gray-300' : 'hover:border-primary hover:text-primary'}`}
                         >
                             &gt;
                         </button>

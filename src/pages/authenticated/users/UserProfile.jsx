@@ -98,8 +98,8 @@ const UserProfile = ({id}) => {
 
             <div className="max-w-[170px] mt-10">
                 <Button
-                    variant="secondary"
-                    className='text-xs font-light'
+                    variant="primary"
+                    className='text-xs'
                     disabled={updateLoading}
                 >
                     {updateLoading ? 'Updating' : 'Update'}
