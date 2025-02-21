@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlignJustify, ArrowRightFromLine, Mail, Bell } from 'lucide-react';
 import useTitle from '../services/hooks/useTitle';
 import { useTheme } from '../services/context/ThemeProvider';
+import { dateAndTimeFormatter } from '../utils/dateFormatter';
 
 const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
   const sidebarWidth = openSidebar ? "md:w-72 w-48" : "md:w-48 w-20";
   const navigate = useNavigate();
   const { appTitle } = useTitle();
   const { theme, toggleTheme } = useTheme();
-  const todayDate = '20/12/2024';
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -35,7 +44,7 @@ const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
         <div className='text-lg font-semibold ml-3'>{appTitle ?? ''}</div>
       </div>
       <div className="px-3 flex-grow flex justify-between items-center">
-        <div className="text-xs">{todayDate}</div>
+        <div className="text-xs">{currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}</div>
         <div className="flex gap-6 border-x border-[#664c89] px-12">
           <div className="relative">
             <Mail size='15px' />
