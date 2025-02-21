@@ -56,28 +56,28 @@ const Dashboard = () => {
               icon={<Loader size='22px' />}
               amount={data?.statuses?.active?.current}
               name="Active Users"
-              rate={data?.statuses?.active?.change}
+              rate={Number(data?.statuses?.active?.change).toFixed(2)}
               color="bg-[#0FEB90]"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.inactive?.current}
               name="Inactive Users"
-              rate={data?.statuses?.inactive?.change}
+              rate={Number(data?.statuses?.inactive?.change).toFixed(2)}
               color="bg-[#D0CDE1]/30"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.blocked?.current}
               name="Blocked Users"
-              rate={data?.statuses?.blocked?.change}
+              rate={Number(data?.statuses?.blocked?.change).toFixed(2)}
               color="bg-[#CABEC7]"
             />
             <Card
               icon={<Loader size='22px' />}
               amount={data?.statuses?.blocked?.current}
               name="Deleted Users"
-              rate={data?.statuses?.deleted?.change}
+              rate={Number(data?.statuses?.deleted?.change).toFixed(2)}
               color="bg-[#CABEC7]"
             />
           </div>

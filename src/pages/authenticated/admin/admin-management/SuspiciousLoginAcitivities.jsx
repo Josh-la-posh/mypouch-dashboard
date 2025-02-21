@@ -38,34 +38,34 @@ function SuspiciousLoginActivities() {
 
   return (
     <div className='w-full max-w-[400px] space-y-6'>
-        <div className="border py-4 px-8 space-y-3">
-            <p>There is a suspicious attempt on this account</p>
-            <div className="flex justify-between items-center">
-                <div className="flex gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
-                    <p>10:00AM</p>
-                </div>
-                <Link
-                    className='px-3 py-2 border rounded-sm'
-                >
-                    View
-                </Link>
-            </div>
-        </div>
-        <div className="border py-4 px-8 space-y-3">
-            <p>There is a suspicious attempt on this account</p>
-            <div className="flex justify-between items-center">
-                <div className="flex gap-3">
-                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
-                    <p>10:00AM</p>
-                </div>
-                <Link
-                    className='px-3 py-2 border rounded-sm'
-                >
-                    View
-                </Link>
-            </div>
-        </div>
+      <div className="border py-4 px-8 space-y-3">
+          <p>There is a suspicious attempt on this account</p>
+          <div className="flex justify-between items-center">
+              <div className="flex gap-3">
+                  <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                  <p>10:00AM</p>
+              </div>
+              <Link
+                  className='px-3 py-2 border rounded-sm'
+              >
+                  View
+              </Link>
+          </div>
+      </div>
+      <div className="border py-4 px-8 space-y-3">
+          <p>There is a suspicious attempt on this account</p>
+          <div className="flex justify-between items-center">
+              <div className="flex gap-3">
+                  <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                  <p>10:00AM</p>
+              </div>
+              <Link
+                  className='px-3 py-2 border rounded-sm'
+              >
+                  View
+              </Link>
+          </div>
+      </div>
     </div>
   )
 }

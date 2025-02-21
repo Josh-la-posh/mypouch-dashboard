@@ -11,12 +11,12 @@ function AdminChangePassword() {
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error} = useSelector((state) => state.admin);
+  const {loading} = useSelector((state) => state.admin);
   const adminService = new AdminService(axiosPrivate);
+  const [pss, setPss] = useState('');
   const [formData, setFormData] = useState({
     currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    newPassword: ''
   });
     
   useEffect(() => {
@@ -34,11 +34,11 @@ function AdminChangePassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (pss !== formData.newPassword) return toast.error('Password do no match');
     await adminService.changePassword(formData, dispatch);
-    setFormData({});
+    setFormData({ currentPassword: "", newPassword: ""});
+    setPss('');
   }
-
-  if (error) toast.error(error);
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
@@ -66,18 +66,18 @@ function AdminChangePassword() {
           <InputField
             label='Confirm Password'
             textColor='text-primary'
-            id='confirmPassword'
+            id='pss'
             placeholder='Re-enter new password'
             inputClassName='bg-primary/14 text-sm py-2'
-            value={formData.confirmPassword}
-            onChange={handleChange}
+            value={pss}
+            onChange={(e) => setPss(e.target.value)}
           />
           <div className="flex gap-8">
             <Button
               variant='primary'
               disabled={loading}
             >
-              {loading ? 'Saving' : 'Done'}
+              {loading ? 'Updating' : 'Update'}
             </Button>
           </div>
         </form>

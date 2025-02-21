@@ -10,7 +10,6 @@ import Messages from "../pages/authenticated/messages/Messages";
 import UserDetails from "../components/user-details";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminPendingRequest from "../pages/authenticated/admin/AdminPendingRequest";
-import AdminManagement from "../pages/authenticated/admin/AdminManagement";
 import AdminAddAdmin from "../pages/authenticated/admin/AdminAddAdmin";
 import AdminSetCurrencies from "../pages/authenticated/admin/AdminSetCurrencies";
 import Dashboard from "../pages/authenticated/dashboard/Dashboard";
@@ -19,8 +18,8 @@ import AdminViewSetCurrencies from "../pages/authenticated/admin/AdminViewSetCur
 import AdminManagementLayout from "../layouts/AdminManagementLayout";
 import AdminChangePassword from "../pages/authenticated/admin/admin-management/ChangePassword";
 import CurrencyExchangeLimit from "../pages/authenticated/admin/admin-management/currency-exchange-limit";
-import RolesAndPermission from "../pages/authenticated/admin/admin-management/RolesAndPermission";
 import SuspiciousLoginActivities from "../pages/authenticated/admin/admin-management/SuspiciousLoginAcitivities";
+import AllAdminPage from "../pages/authenticated/admin/admin-management/AllAdmin";
 
 const RouteSystem = () => {
   return (
@@ -45,7 +44,7 @@ const RouteSystem = () => {
               <Route path='onboarding-form' element={<AdminSupportiveForm />} />
               <Route path='admin-management' element={<AdminManagementLayout />}>
                 <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />
-                <Route path='admin-roles-and-permissions' element={<RolesAndPermission />} />
+                <Route path='admins/all' element={<AllAdminPage />} />
                 <Route path='change-password' element={<AdminChangePassword />} />
                 <Route path='currency-exchange-limit' element={<CurrencyExchangeLimit />} />
 

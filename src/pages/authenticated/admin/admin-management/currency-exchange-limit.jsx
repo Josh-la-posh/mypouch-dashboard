@@ -11,20 +11,32 @@ function CurrencyExchangeLimit() {
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error} = useSelector((state) => state.admin);
+  const {loading, error, exchangeLimit} = useSelector((state) => state.admin);
   const adminService = new AdminService(axiosPrivate);
-  const [formData, setFormData] = useState({
-    maxPercentage: '',
-    minPercentage: ''
-  });
+  const [deviation, setDeviation] = useState(exchangeLimit);
+
+  const fetchDeviation = async () => {
+    await adminService.fetchCurrencyExchangelimit(dispatch);
+  }
     
   useEffect(() => {
     setSettingsTitle('Currency Exchange Limit');
   }, []);
 
+  useEffect(() => {
+    fetchDeviation();
+  }, [])
+
+  useEffect(() => {
+    setDeviation(exchangeLimit);
+  }, [exchangeLimit])
+
+  const onRefresh = () => {
+    fetchDeviation();
+  }
+
   const handleChange = (e) => {
     const {name, value} = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -33,8 +45,9 @@ function CurrencyExchangeLimit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = {"deviation": deviation}
     await adminService.setCurrencyExchangelimit(formData, dispatch);
-    setFormData({});
+    setDeviation('');
   }
 
   if (error) toast.error(error);
@@ -47,22 +60,13 @@ function CurrencyExchangeLimit() {
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <InputField
-            label='Maximum Percentage'
+            label='Set Percentage'
             textColor='text-primary'
-            id='maxPercentage'
+            id='deviation'
             placeholder='Enter your %'
             inputClassName='bg-primary/14 text-sm py-2'
-            value={formData.maxPercentage}
-            onChange={handleChange}
-          />
-          <InputField
-            label='Minimum Percentage'
-            textColor='text-primary'
-            id='minPercentage'
-            placeholder='Enter your %'
-            inputClassName='bg-primary/14 text-sm py-2'
-            value={formData.minPercentage}
-            onChange={handleChange}
+            value={String(deviation ?? "")}
+            onChange={(e) => setDeviation(e.target.value)}
           />
           <div className="flex gap-8">
             <Button

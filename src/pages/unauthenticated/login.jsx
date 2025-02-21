@@ -53,8 +53,6 @@ const Login = () => {
 
   }
 
-  if (error) toast(error, {type: 'error'});
-
   return (
     <div className="bg-primary-light h-screen flex justify-center items-center">
       <div className="bg-primary/[.7] p-8 w-md md:w-lg">

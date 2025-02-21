@@ -6,7 +6,8 @@ const initialState = {
   error: null,
   currencies: [],
   suspiciousActivities: [],
-  rolesAndPermissions: []
+  allAdmin: [],
+  exchangeLimit: {},
 };
 
 const adminSlice = createSlice({
@@ -15,6 +16,10 @@ const adminSlice = createSlice({
   reducers: {
     adminStart: (state) => {
       state.loading = true;
+      state.error = null;
+    },
+    adminSuccess: (state) => {
+      state.loading = false;
       state.error = null;
     },
     adminFailure: (state, action) => {
@@ -37,13 +42,17 @@ const adminSlice = createSlice({
       state.loading = false;
       state.suspiciousActivities = action.payload;
     },
-    rolesAndPermissionSuccess: (state, action) => {
+    allAdminSuccess: (state, action) => {
       state.loading = false;
-      state.suspiciousActivities = action.payload;
+      state.allAdmin = action.payload;
+    },
+    exchangeLimitSuccess: (state, action) => {
+      state.loading = false;
+      state.exchangeLimit = action.payload;
     },
   },
 });
 
-export const { adminStart, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, rolesAndPermissionSuccess } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess } = adminSlice.actions;
 
 export default adminSlice.reducer;

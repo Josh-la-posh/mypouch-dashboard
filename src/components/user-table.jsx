@@ -103,7 +103,7 @@ import PropTypes from 'prop-types';
                             onChange={handleRowsPerPageChange}
                             className="bg-white border border-gray-300 rounded-lg p-2 text-gray-700"
                         >
-                            {[5, 10, 20, 40].map((option) => (
+                            {[5, 10, 20].map((option) => (
                                 <option key={option} value={option}>
                                     {option}
                                 </option>

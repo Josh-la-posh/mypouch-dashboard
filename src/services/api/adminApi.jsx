@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { adminFailure, adminStart, changePasswordSuccess, currencySuccess, rolesAndPermissionSuccess, suspiciousActivitiesSuccess } from "../../redux/slices/adminSlice";
+import { adminFailure, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, currencySuccess, exchangeLimitSuccess, suspiciousActivitiesSuccess } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -14,6 +14,7 @@ class AdminService {
         await axiosPrivate.post('/admin/invite-admin',
             JSON.stringify(formData)
         );
+        dispatch(adminSuccess());
         toast.success('An email has been sent to the admin');
       } catch (err) {
         if (!err.response) {
@@ -31,7 +32,8 @@ class AdminService {
             JSON.stringify(formData)
         );
         const data = response.data;
-        dispatch(addAdminSuccess(data));
+        dispatch(adminSuccess());
+        toast.success('Admin data updated successfully');
       } catch (err) {
         if (!err.response) {
             dispatch(adminFailure('No Server Response'));
@@ -92,11 +94,36 @@ class AdminService {
     async changePassword(formData, dispatch) {
       try {
         dispatch(adminStart());
-        const response = await axiosPrivate.put('',
+        const response = await axiosPrivate.post(
+          '/admin/change-password',
+           JSON.stringify(formData),
+          );
+          toast.success('Password changed successfully');
+          dispatch(changePasswordSuccess())
+      } catch (err) {
+        if (!err.response) {
+          toast.error('No Server Response');
+          return dispatch(adminFailure('No Server Response'));
+        } else {
+          if (err.response.status === 400) {
+            console.log('The error is ', err.response);
+            dispatch(loginFailure(err.response.data.message));
+          } else {
+            dispatch(adminFailure(err.response.data.message));
+            toast.error(err.response.data.message);
+          }
+        }
+      }
+    };
+
+    async setCurrencyExchangelimit(formData, dispatch) {
+      try {
+        dispatch(adminStart());
+        const response = await axiosPrivate.post('/admin/mark-up',
           JSON.stringify(formData)
         );
-        dispatch(changePasswordSuccess())
-        toast.success('Password changed successfully');
+        toast.success('Exchange limit set successfully');
+        this.fetchCurrencyExchangelimit(dispatch);
       } catch (err) {
         if (!err.response) {
           dispatch(adminFailure('No Server Response'));
@@ -106,14 +133,11 @@ class AdminService {
       }
     };
 
-    async setCurrencyExchangelimit(formData, dispatch) {
+    async fetchCurrencyExchangelimit(dispatch) {
       try {
         dispatch(adminStart());
-        const response = await axiosPrivate.post('',
-          JSON.stringify(formData)
-        );
-        dispatch(changePasswordSuccess())
-        toast.success('Exchange limit set successfully');
+        const response = await axiosPrivate.get('/admin/mark-up');
+        dispatch(exchangeLimitSuccess(response.data?.deviation));
       } catch (err) {
         if (!err.response) {
           dispatch(adminFailure('No Server Response'));
@@ -138,12 +162,12 @@ class AdminService {
       }
     };
 
-    async fetchAdminRolesAndPermissions(dispatch) {
+    async fetchAllAdmin(dispatch) {
       try {
         dispatch(adminStart());
-        const response = await axiosPrivate.get('');
+        const response = await axiosPrivate.get('/admin/all-admins');
         const data = response.data;
-        dispatch(rolesAndPermissionSuccess(data));
+        dispatch(allAdminSuccess(data));
       } catch (err) {
         if (!err.response) {
           dispatch(adminFailure('No Server Response'));

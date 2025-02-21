@@ -104,9 +104,8 @@ const User = () => {
   }, [pageSize]);
   
   useEffect(() => {
-    if (users.length === 0) {
       loadUsers('', activeTab, userCurrentPage, userPageSize);
-    }
+      setSearch('');
   }, [dispatch, userCurrentPage, userPageSize]);
   
   useEffect(() => {

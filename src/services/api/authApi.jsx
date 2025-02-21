@@ -16,7 +16,6 @@ class AuthService {
         const response = await axios.post('/admin/signin',
           JSON.stringify(formData)
         );
-        
         const token = response.data;
         const access = token?.access_token;
         setAuth({token});
@@ -25,12 +24,14 @@ class AuthService {
 
       } catch (err) {
         if (!err.response) {
-            dispatch(loginFailure('No response from server'));
+          toast.error('No response from server');
+            dispatch(loginFailure());
         } else {
           if (err.response.status === 400) {
-            console.log('The error is ', err.response);
+            toast.error(err.response.data.message);
             dispatch(loginFailure(err.response.data.message));
           } else {
+            toast.error('Login failed');
             dispatch(loginFailure('Login failed'));
           }
         }
@@ -52,7 +53,6 @@ class AuthService {
         }));
         dispatch(loginSuccess(data));
         toast("Login successful", {type: 'success'});
-        
         const from = this.location.state?.from?.pathname || '/';
         navigate(from, {replace: true});
         

@@ -14,8 +14,7 @@ const AdminManagementSidebar = () => {
         {
             id: 2,
             name: 'Admin Roles and Permissions',
-            url: '/admin/admin-management/admin-roles-and-permissions'
-        },
+            url: '/admin/admin-management/admins/all'   },
         {
             id: 3,
             name: 'Admin Logins Logs',
