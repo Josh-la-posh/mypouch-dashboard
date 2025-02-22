@@ -14,7 +14,7 @@ const MainLayout = () => {
 
     return (
         <TitleProvider>
-            <div className="h-screen overflow-hidden scrollbar-none bg-app-bg dark:bg-[#20263D]">
+            <div className="h-[screen] overflow-hidden scrollbar-none bg-app-bg dark:bg-[#20263D]">
                 <Header
                     className="border-b border-gray-200" 
                     setOpenSidebar={setOpenSidebar} 

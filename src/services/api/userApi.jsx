@@ -102,6 +102,7 @@ class UserService {
         const response = await axiosPrivate.get(`/admin/user-activities/${id}`);
         
         const data = response.data;
+        console.log(data);
         dispatch(userActivitySuccess(data));
         
       } catch (err) {

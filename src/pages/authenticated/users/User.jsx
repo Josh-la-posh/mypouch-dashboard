@@ -82,6 +82,7 @@ const User = () => {
   const [userPageSize, setUserPageSize] = useState(pageSize);
   const [filteredData, setFilteredData] = useState(users);
   const [search, setSearch] = useState('');
+  const [newSearch, setNewSearch] = useState('');
 
   const loadUsers = async (search, status, page, limit) => {
     await userService.fetchUsers(search, status, page, limit, dispatch);
@@ -104,13 +105,9 @@ const User = () => {
   }, [pageSize]);
   
   useEffect(() => {
-      loadUsers('', activeTab, userCurrentPage, userPageSize);
+      loadUsers(newSearch, activeTab, userCurrentPage, userPageSize);
       setSearch('');
-  }, [dispatch, userCurrentPage, userPageSize]);
-  
-  useEffect(() => {
-    loadUsers('', activeTab, userCurrentPage, userPageSize);
-  }, [activeTab]);
+  }, [dispatch, newSearch, userCurrentPage, userPageSize, activeTab]);
 
   const onRefresh = () => {
     loadUsers();
@@ -118,6 +115,11 @@ const User = () => {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+  }
+
+  const handleNewSearch = () => {
+    setNewSearch(search);
+    // loadUsers(search, activeTab, userCurrentPage, userPageSize);
   }
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
@@ -143,7 +145,7 @@ const User = () => {
             />
             <div className="p-0 m-0">
               <Button
-                onClick={() => loadUsers(search, activeTab, userCurrentPage, userPageSize)}
+                onClick={handleNewSearch}
                 className='text-xs'
               >
                 Search
