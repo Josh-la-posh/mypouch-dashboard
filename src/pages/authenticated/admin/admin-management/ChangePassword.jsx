@@ -46,6 +46,7 @@ function AdminChangePassword() {
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <InputField
+            type='password'
             label='Current Password'
             textColor='text-primary'
             id='currentPassword'
@@ -55,6 +56,7 @@ function AdminChangePassword() {
             onChange={handleChange}
           />
           <InputField
+            type='password'
             label='New Password'
             textColor='text-primary'
             id='newPassword'
@@ -64,6 +66,7 @@ function AdminChangePassword() {
             onChange={handleChange}
           />
           <InputField
+            type='password'
             label='Confirm Password'
             textColor='text-primary'
             id='pss'
