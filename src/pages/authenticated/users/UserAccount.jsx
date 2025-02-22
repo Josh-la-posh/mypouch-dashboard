@@ -11,18 +11,24 @@ const UserAccount = ({id}) => {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
   const userService = new UserService(axiosPrivate);
-  const {loading, error, userAccount} = useSelector((state) => state.user);
+  const {loading, error, userAccount, userActivity} = useSelector((state) => state.user);
   
   const loadUserAccount = async () => {
     await userService.fetchUserAccount(id, dispatch);
   }
+  
+  const loadUserActivities = async () => {
+    await userService.fetchUserActivities(id, dispatch);
+  }
     
   useEffect(() => {
       loadUserAccount();
+      loadUserActivities();
   }, [id, dispatch]);
     
   const onRefresh = () => {
     loadUserDetails();
+    loadUserActivities();
   };
 
   const cardColors = ['bg-[#E2BBE9]/24', 'bg-[#F1F8FF]', 'bg-[#D0CDE1]/30'];
@@ -50,8 +56,10 @@ const UserAccount = ({id}) => {
       <div className="grid grid-cols-5">
           <div className=" col-span-3">
               <RecentActivity 
-                  data={[1, 2, 3, 4]}
-                  onRefresh={onRefresh}
+                  data={userActivity}
+                  loading={loading}
+                  error={error}
+                  onRefresh={loadUserActivities}
                   className='mt-10'
               />
           </div>

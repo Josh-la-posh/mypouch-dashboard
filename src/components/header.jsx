@@ -36,7 +36,7 @@ const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
   return (
     <header className="h-12 flex items-center text-black dark:text-white">
       <div className={`flex items-center justify-center gap-4 ${sidebarWidth}`}>
-        <p className='text-primary font-[700]'>POUCH</p>
+        <div className='w-12 h-12 text-primary font-[700]'><img src="/pouchLogo.svg" alt="Logo" /></div>
         <button className="" onClick={handleSidebar}>
           <AlignJustify size='16px' />
         </button>

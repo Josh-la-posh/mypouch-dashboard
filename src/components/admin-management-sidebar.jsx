@@ -14,12 +14,13 @@ const AdminManagementSidebar = () => {
         {
             id: 2,
             name: 'Admin Roles and Permissions',
-            url: '/admin/admin-management/admins/all'   },
-        {
-            id: 3,
-            name: 'Admin Logins Logs',
-            url: '/admin/admin-management/admin-logins-logs'
+            url: '/admin/admin-management/admins/all'
         },
+        // {
+        //     id: 3,
+        //     name: 'Admin Logins Logs',
+        //     url: '/admin/admin-management/admin-logins-logs'
+        // },
         {
             id: 4,
             name: 'Change Password',

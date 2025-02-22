@@ -13,7 +13,7 @@ const Dashboard = () => {
   const {auth} = useAuth();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, totalUsers, transactionStat} = useSelector((state) => state.dashboard);
+  const {loading, adminActivitiesLoading, error, adminActivitiesError, adminActivities, totalUsers, transactionStat} = useSelector((state) => state.dashboard);
   const dashboardService = new DashboardService(axiosPrivate);
   const [data, setData] = useState(totalUsers);
   const [transactions, setTransactions] = useState(transactionStat);
@@ -24,6 +24,10 @@ const Dashboard = () => {
 
   const loadTransactionStat = async () => {
     await dashboardService.fetchTransactionStat(dispatch);
+  }
+
+  const loadAdminActivities = async () => {
+    await dashboardService.fetchAdminActivities(dispatch);
   }
 
   useEffect(() => {
@@ -41,6 +45,10 @@ const Dashboard = () => {
   const onRefresh = () => {
     loadUsesrStat();
   };
+
+  const refreshAdminActivities = () => {
+    loadAdminActivities();
+  }
 
   if (loading) return <Spinner />
 
@@ -82,8 +90,10 @@ const Dashboard = () => {
             />
           </div>
           <RecentActivity
-            data={transactions}
-            onRefresh={loadTransactionStat}
+            data={adminActivities}
+            onRefresh={refreshAdminActivities}
+            loading={adminActivitiesLoading}
+            error={adminActivitiesError}
             className='mt-10'
           />
         </div>

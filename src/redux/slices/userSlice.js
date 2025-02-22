@@ -10,6 +10,7 @@ const initialState = {
   userAccount: [],
   userTransactions: [],
   userActivity: {},
+  userVerification: {},
   loading: false,
   updateLoading: false,
   error: null,
@@ -76,9 +77,13 @@ const userSlice = createSlice({
       state.loading = false;
       state.userActivity = action.payload;
     },
+    userVerificationSuccess: (state, action) => {
+      state.loading = false;
+      state.userVerification = action.payload;
+    },
   },
 });
 
-export const { userStart, userSuccess, userFailure, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess } = userSlice.actions;
+export const { userStart, userSuccess, userFailure, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess, userVerificationSuccess } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -73,7 +73,8 @@ function AdminSetCurrencies() {
                   value={pair.fromCurrency}
                   onChange={(e) => updatePair(pair.id, "fromCurrency", e.target.value)}
                   placeholder="Select"
-                  className='py-1 px-2 border-r border-r-gray-300 flex-1'
+                  className='py-1 px-2 flex-1'
+                  border='border-r border-r-gray-300'
                 />
                 <SelectField 
                   options={CURRENCIES}
@@ -81,7 +82,8 @@ function AdminSetCurrencies() {
                   value={pair.toCurrency}
                   onChange={(e) => updatePair(pair.id, "toCurrency", e.target.value)}
                   placeholder="Select"
-                  className='py-1 px-2 border-r border-r-gray-300 flex-1'
+                  className='py-1 px-2 flex-1'
+                  border='border-none'
                 />
               </div>
 

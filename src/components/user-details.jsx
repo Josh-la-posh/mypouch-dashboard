@@ -40,7 +40,7 @@ const UserDetails = () => {
           : activeTab === 'latestTransaction' 
           ? <UserTransactionHistory id={id} />
           : activeTab === 'idVerification' 
-          ? <UserIdVerification />
+          ? <UserIdVerification id={id} />
           : <UserActivityLog id={id} />
         }
       </CustomTab>

@@ -17,7 +17,7 @@ function AdminAddAdmin() {
   const [role, setRole] = useState('Admin');
   const [formData, setFormData] = useState({
     email: '',
-    role: role === 'Admin' ? 'ADMIN' : 'SUPER_ADMIN',
+    role: role === 'Admin' ? 'ADMIN' : 'SUPER-ADMIN',
   });
     
   useEffect(() => {

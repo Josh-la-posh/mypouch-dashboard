@@ -19,9 +19,7 @@ function AllAdminPage() {
   }
 
   useEffect(() => {
-    if (allAdmin.length === 0) {
-        loginActivities();
-    }
+    loginActivities();
   }, [dispatch]);
     
   useEffect(() => {

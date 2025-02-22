@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { userAccountSuccess, userActivitySuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart } from "../../redux/slices/userSlice";
+import { userAccountSuccess, userActivitySuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
 import { axiosPrivate } from "./axios";
 
 class UserService {
@@ -103,6 +103,23 @@ class UserService {
         
         const data = response.data;
         dispatch(userActivitySuccess(data));
+        
+      } catch (err) {
+        if (!err.response) {
+          dispatch(userFailure('No Server Response'));
+        } else {
+          dispatch(userFailure(err.response.data.message));
+        }
+      }
+    };
+
+    async fetchUserVerification(id, dispatch) {  
+      try {
+        dispatch(userStart());
+        const response = await axiosPrivate.get(`/users/verification/${id}`);
+        
+        const data = response.data;
+        dispatch(userVerificationSuccess(data));
         
       } catch (err) {
         if (!err.response) {

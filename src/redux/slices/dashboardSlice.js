@@ -3,8 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   totalUsers: {},
   transactionStat: [],
+  adminActivities: [],
   loading: false,
+  adminActivitiesLoading: false,
   error: null,
+  adminActivitiesError: null
 };
 
 const dashboardSlice = createSlice({
@@ -34,10 +37,22 @@ const dashboardSlice = createSlice({
     transactionStatFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    adminActivitiesStatStart: (state) => {
+      state.adminActivitiesLoading = true;
+      state.adminActivitiesError = null;
+    },
+    adminActivitiesStatSuccess: (state, action) => {
+      state.adminActivitiesLoading = false;
+      state.adminActivities = action.payload;
+    },
+    adminActivitiesStatFailure: (state, action) => {
+      state.adminActivitiesLoading = false;
+      state.adminActivitiesError = action.payload;
     }
   },
 });
 
-export const { statStart, statSuccess, statFailure, transactionStatStart, transactionStatSuccess, transactionStatFailure } = dashboardSlice.actions;
+export const { statStart, statSuccess, statFailure, transactionStatStart, transactionStatSuccess, transactionStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, adminActivitiesStatFailure } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

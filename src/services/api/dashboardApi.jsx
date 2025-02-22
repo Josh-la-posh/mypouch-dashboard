@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { statFailure, statStart, statSuccess, transactionStatFailure, transactionStatStart, transactionStatSuccess } from "../../redux/slices/dashboardSlice";
+import { adminActivitiesStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, statFailure, statStart, statSuccess, transactionStatFailure, transactionStatStart, transactionStatSuccess } from "../../redux/slices/dashboardSlice";
 
 class DashboardService {
     constructor(location, navigate) {
@@ -14,11 +14,11 @@ class DashboardService {
         const response = await axiosPrivate.get('/users/admin/users/stat');
         
         const data = response.data;
-        console.log('user data: ', data);
 
         dispatch(statSuccess(data));
 
         this.fetchTransactionStat(dispatch);
+        this.fetchAdminActivities(dispatch);
         
       } catch (err) {
         if (!err.response) {
@@ -36,7 +36,6 @@ class DashboardService {
         const response = await axiosPrivate.get('/transaction/admin/trans/stat');
         
         const data = response.data;
-        console.log('user data: ', data);
 
         dispatch(transactionStatSuccess(data));
         
@@ -45,6 +44,25 @@ class DashboardService {
           dispatch(transactionStatFailure('No Server Response'));
         } else {
             dispatch(transactionStatFailure(err.response.data.message));
+        }
+      }
+    };
+
+    async fetchAdminActivities(dispatch) {  
+      try {
+        dispatch(adminActivitiesStatStart());
+
+        const response = await axiosPrivate.get('/admin/acticities-admin');
+        
+        const data = response.data;
+
+        dispatch(adminActivitiesStatSuccess(data));
+        
+      } catch (err) {
+        if (!err.response) {
+          dispatch(adminActivitiesStatFailure('No Server Response'));
+        } else {
+            dispatch(adminActivitiesStatFailure(err.response.data.message));
         }
       }
     };
