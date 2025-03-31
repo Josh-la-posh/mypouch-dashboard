@@ -66,11 +66,11 @@ function AdminSetCurrencies() {
 
   return (
     <div className="w-full p-5 rounded-sm shadow-sm space-y-5">
-      <h2 className="text-primary text-lg lg:text-xl font-[600]">Set Default Exchange Currency</h2>
+      <h2 className="text-primary dark:text-white text-lg lg:text-xl font-[600]">Set Default Exchange Currency</h2>
       <div className="space-y-6">
         <div className="flex flex-col gap-5">
           {pairs.map((pair) => (
-            <div key={pair.id} className="grid grid-cols-10 gap-4 lg:gap-8 text-xs lg:text-sm text-primary font-[600]">
+            <div key={pair.id} className="grid grid-cols-10 gap-4 lg:gap-8 text-xs lg:text-sm text-primary dark:text-white font-[600]">
               <div className="col-span-6 lg:col-span-4 border border-gray-300 shadow-md rounded-sm flex">
                 <SelectField 
                   options={CURRENCIES}

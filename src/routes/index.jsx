@@ -48,7 +48,7 @@ const RouteSystem = () => {
               <Route path='currency/commission-rate' element={<TransactionFeeManagement />} />
               <Route path='add-admin' element={<AdminAddAdmin />} />
               <Route path='onboarding-form' element={<AdminSupportiveForm />} />
-              <Route path='admins/all' element={<AllAdminPage />} />
+              <Route path='all' element={<AllAdminPage />} />
               <Route path='pouch-wallet' element={<PouchWallet />} />
               <Route path='pouch-funding-success' element={<PouchFundingSuccess />} />
               {/* <Route path='admin-management' element={<AdminManagementLayout />}>

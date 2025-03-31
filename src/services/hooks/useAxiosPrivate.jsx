@@ -7,47 +7,55 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 
 const useAxiosPrivate = () => {
-    const refresh = useRefreshToken();
-    const { auth, setAuth } = useAuth();
-    const navigate = useNavigate();
-    const location  = useLocation();
-    const dispatch = useDispatch();
+  const refresh = useRefreshToken();
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        const requestIntercept = axiosPrivate.interceptors.request.use(
-            config => {
-                if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = `Bearer ${auth?.token?.access_token}`;
-                }
-                return config;
-            }, (error) => Promise.reject(error)
-        );
-
-        const responseIntercept = axiosPrivate.interceptors.response.use(
-            response => response,
-            async (error) => {
-                const prevRequest = error?.config;
-                if (error?.response?.status === 401 && !prevRequest?.sent) {
-                    prevRequest.sent = true;
-                    try {
-                        const newAccessToken = await refresh();
-                        prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                        return axiosPrivate(prevRequest);
-                    } catch(err) {
-                        dispatch(logout());
-                        navigate('/login', {state: {from: location}, replace: true});
-                    }
-
-                } else Promise.reject(error);
-            }
-        );
-        return () => {
-            axiosPrivate.interceptors.request.eject(requestIntercept);
-            axiosPrivate.interceptors.response.eject(responseIntercept);
+  useEffect(() => {
+    const requestIntercept = axiosPrivate.interceptors.request.use(
+      (config) => {
+        if (auth?.token?.access_token) {
+          config.headers['Authorization'] = `Bearer ${auth.token.access_token}`;
         }
-    }, [auth, refresh, navigate, setAuth]);
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
 
-    return axiosPrivate;
-}
+    const responseIntercept = axiosPrivate.interceptors.response.use(
+      (response) => response, // If the response is successful, just return it
+      async (error) => {
+        const prevRequest = error.config;
+        
+        // Handle the 401 error for token refresh
+        if (error.response?.status === 401 && !prevRequest?.sent) {
+          prevRequest.sent = true; // Mark that the request has been retried
+          try {
+            const newAccessToken = await refresh(); // Refresh token
+            prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`; // Set new token in headers
+            return axiosPrivate(prevRequest); // Retry the original request with the new token
+          } catch (err) {
+            dispatch(logout());
+            navigate('/login', { state: { from: location }, replace: true });
+            return Promise.reject(err); // Propagate the error if refreshing fails
+          }
+        }
+
+        // If the error is not a 401 or we already tried to resend, just reject it
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      // Cleanup interceptors when component unmounts
+      axiosPrivate.interceptors.request.eject(requestIntercept);
+      axiosPrivate.interceptors.response.eject(responseIntercept);
+    };
+  }, [auth, refresh, navigate, dispatch, location]);
+
+  return axiosPrivate;
+};
 
 export default useAxiosPrivate;

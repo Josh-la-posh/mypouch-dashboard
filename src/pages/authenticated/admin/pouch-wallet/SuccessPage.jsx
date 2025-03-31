@@ -4,7 +4,7 @@ import useTitle from "../../../../services/hooks/useTitle";
 import useAxiosPrivate from "../../../../services/hooks/useAxiosPrivate";
 import AdminService from "../../../../services/api/adminApi";
 import { useEffect } from "react";
-import { Cloud } from "lucide-react";
+import { CircleCheckBig, Cloud } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function PouchFundingSuccess() {
@@ -32,10 +32,9 @@ function PouchFundingSuccess() {
     }, [dispatch]);
 
     return (
-        <div className="w-full justify-center">
-            <Cloud></Cloud>
-
-            <p>Deposit Successful!</p>
+        <div className="w-full h-full flex flex-col items-center justify-center text-primary dark:text-white space-y-7">
+            <CircleCheckBig size='60px'/>
+            <p className="text-lg md:text-2xl">Deposit Successful!</p>
         </div>
     )
 

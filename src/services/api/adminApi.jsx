@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
+import { addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -14,13 +14,19 @@ class AdminService {
       await axiosPrivate.post('/admin/invite-admin',
           JSON.stringify(formData)
       );
-      dispatch(adminSuccess());
-      toast.success('An email has been sent to the admin');
+      dispatch(addAdminSuccess());
     } catch (err) {
+      console.log(err);
       if (!err.response) {
           dispatch(adminFailure('No Server Response'));
+      } 
+
+      if (err.response.status === 400) {
+        toast.error(err.response.data.message);
+        dispatch(adminFailure());
       } else {
-          dispatch(adminFailure(err.response.data.message));
+        toast.error(err.response.data.message);
+          dispatch(adminFailure());
       }
     }
   };

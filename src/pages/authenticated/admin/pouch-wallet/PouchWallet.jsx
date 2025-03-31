@@ -120,7 +120,7 @@ function PouchWallet() {
                     <div className="flex justify-center">
                         <div className="w-[150px]">
                             <Link
-                                to='/admin//pouch-funding-success'
+                                to='/admin/pouch-funding-success'
                             >Continue</Link>
                             <Button
                                 onClick={handleAddWallet}
