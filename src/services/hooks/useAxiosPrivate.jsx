@@ -3,12 +3,15 @@ import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
     const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
     const location  = useLocation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
@@ -31,6 +34,7 @@ const useAxiosPrivate = () => {
                         prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                         return axiosPrivate(prevRequest);
                     } catch(err) {
+                        dispatch(logout());
                         navigate('/login', {state: {from: location}, replace: true});
                     }
 

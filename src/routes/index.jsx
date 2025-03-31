@@ -1,25 +1,27 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/unauthenticated/login";
 import RequireAuth from "../pages/unauthenticated/RequiredAuth";
 import MainLayout from "../layouts/MainLayout";
-import Settings from "../pages/authenticated/settings/Settings";
 import User from "../pages/authenticated/users/User";
-import Admin from "../pages/authenticated/admin/Admin";
 import Messages from "../pages/authenticated/messages/Messages";
 import UserDetails from "../components/user-details";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminPendingRequest from "../pages/authenticated/admin/AdminPendingRequest";
-import AdminAddAdmin from "../pages/authenticated/admin/AdminAddAdmin";
-import AdminSetCurrencies from "../pages/authenticated/admin/AdminSetCurrencies";
+import AdminAddAdmin from "../pages/authenticated/admin/admin-management/AdminAddAdmin";
 import Dashboard from "../pages/authenticated/dashboard/Dashboard";
-import AdminSupportiveForm from "../pages/authenticated/admin/AdminSupportiveForm";
-import AdminViewSetCurrencies from "../pages/authenticated/admin/AdminViewSetCurrencies";
-import AdminManagementLayout from "../layouts/AdminManagementLayout";
-import AdminChangePassword from "../pages/authenticated/admin/admin-management/ChangePassword";
-import CurrencyExchangeLimit from "../pages/authenticated/admin/admin-management/currency-exchange-limit";
-import SuspiciousLoginActivities from "../pages/authenticated/admin/admin-management/SuspiciousLoginAcitivities";
+import CurrencyExchangeLimit from "../pages/authenticated/admin/currency-management/currency-exchange-limit";
 import AllAdminPage from "../pages/authenticated/admin/admin-management/AllAdmin";
+import SettingsLayout from "../layouts/SettingsLayout";
+import SecurityAndPermission from "../pages/authenticated/settings/Security&Permission";
+import ChangePassword from "../pages/authenticated/settings/ChangePassword";
+import TransactionFeeManagement from "../pages/authenticated/admin/currency-management/TransactionFeeManagement";
+import AdminSetCurrencies from "../pages/authenticated/admin/currency-management/AdminSetCurrencies";
+import AdminViewSetCurrencies from "../pages/authenticated/admin/currency-management/AdminViewSetCurrencies";
+import AdminCurrency from "../pages/authenticated/admin/currency-management/AdminCurrencies";
+import Transactions from "../pages/authenticated/transactions/Transactions";
+import PouchWallet from "../pages/authenticated/admin/pouch-wallet/PouchWallet";
+import AdminSupportiveForm from "../pages/authenticated/admin/admin-management/AdminSupportiveForm";
+import PouchFundingSuccess from "../pages/authenticated/admin/pouch-wallet/SuccessPage";
 
 const RouteSystem = () => {
   return (
@@ -35,25 +37,33 @@ const RouteSystem = () => {
             <Route path="" element={<User />} />
             <Route path="details/:id" element={<UserDetails />} />
           </Route>
+          <Route path="/transactions" element={<Transactions />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="/admin">
               <Route path='pending-request' element={<AdminPendingRequest />} />
-              <Route path='set-currencies' element={<AdminSetCurrencies />} />
-              <Route path='view-currencies' element={<AdminViewSetCurrencies />} />
+              <Route path='currency' element={<AdminCurrency />} />
+              <Route path='currency/set-currencies' element={<AdminSetCurrencies />} />
+              <Route path='currency/view-currencies' element={<AdminViewSetCurrencies />} />
+              <Route path='currency/exchange-limit' element={<CurrencyExchangeLimit />} />
+              <Route path='currency/commission-rate' element={<TransactionFeeManagement />} />
               <Route path='add-admin' element={<AdminAddAdmin />} />
               <Route path='onboarding-form' element={<AdminSupportiveForm />} />
-              <Route path='admin-management' element={<AdminManagementLayout />}>
+              <Route path='admins/all' element={<AllAdminPage />} />
+              <Route path='pouch-wallet' element={<PouchWallet />} />
+              <Route path='pouch-funding-success' element={<PouchFundingSuccess />} />
+              {/* <Route path='admin-management' element={<AdminManagementLayout />}>
                 <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />
-                <Route path='admins/all' element={<AllAdminPage />} />
-                <Route path='change-password' element={<AdminChangePassword />} />
-                <Route path='currency-exchange-limit' element={<CurrencyExchangeLimit />} />
-
-              </Route>
+                
+                </Route> */}
             </Route>
           </Route>
-          <Route path="/admin" element={<Admin />} />
           <Route path="/messages" element={<Messages />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings" element={<SettingsLayout />}>
+            <Route path="/settings">
+              <Route path='security-and-permission' element={<SecurityAndPermission />} />
+              <Route path='security-and-permission/change-password' element={<ChangePassword />} />
+            </Route>
+          </Route>
         </Route>
       </Route>
     </Routes>

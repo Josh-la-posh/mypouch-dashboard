@@ -30,17 +30,22 @@ function UserActivityLog({id}) {
     if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
   return (
-    <div className='mt-8 px-25 dark:text-white space-y-4'>
+    <div className='mt-3 dark:text-white space-y-4 border border-primary rounded-md py-5'>
+        <div className="grid grid-cols-3 text-sm border bg-primary dark:bg-transparent text-white dark-text-white mx-9">
+            <p className='text-center'>Activities</p>
+            <p className='text-center'>Date</p>
+            <p className='text-center'>IP Address</p>
+        </div>
         {
             userActivity.length > 0 &&
             userActivity.map((act) => (
-                <div key={act.id} className="flex justify-between">
-                    <div className="flex items-center gap-3">
+                <div key={act.id} className="grid grid-cols-3 text-sm ">
+                    <div className="flex justify-center gap-3">
                         <Vault size='18px' className='text-primary' />
-                        <p className='font-[500]'>{act.activityType[0].toUpperCase() + act.activityType.slice(1)}</p>
+                        <p className=''>{act.activityType[0].toUpperCase() + act.activityType.slice(1)}</p>
                     </div>
-                    <p className=''>{act.userAgent}</p>
-                    <p className='font-[600]'>{dateAndTimeFormatter(act.createdDate)}</p>
+                    <p className='text-center font-[500]'>{dateAndTimeFormatter(act.createdDate)}</p>
+                    <p className='text-center'>{act.ipAddress}</p>
                 </div>
             ))
         }

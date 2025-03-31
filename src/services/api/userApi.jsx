@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { userAccountSuccess, userActivitySuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
+import { userAccountSuccess, userActivitySuccess, userBankFailure, userBankStart, userBankSuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
 import { axiosPrivate } from "./axios";
 
 class UserService {
@@ -21,6 +21,23 @@ class UserService {
           dispatch(userFailure('No Server Response'));
         } else {
             dispatch(userFailure(err.response.data.message));
+        }
+      }
+    };
+
+    async fetchBankDetail(id, dispatch) {  
+      try {
+        dispatch(userBankStart());
+
+        const response = await axiosPrivate.get(`/wallet/admin/banks/${id}`);
+        const data = response.data;
+        console.log('The bank details are: ', data);
+        dispatch(userBankSuccess(data));
+      } catch (err) {
+        if (!err.response) {
+          dispatch(userBankFailure('No Server Response'));
+        } else {
+            dispatch(userBankFailure(err.response.data.message));
         }
       }
     };

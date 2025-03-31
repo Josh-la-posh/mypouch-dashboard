@@ -20,7 +20,7 @@ function CurrencyExchangeLimit() {
   }
     
   useEffect(() => {
-    setSettingsTitle('Currency Exchange Limit');
+    setSettingsTitle('Currency Management');
   }, []);
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import dashboardReducer from './slices/dashboardSlice';
 import userReducer from './slices/userSlice';
 import adminReducer from './slices/adminSlice';
+import transactionReducer from './slices/transactionSlice';
 import messageReducer from './slices/messageSlice';
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
         dashboard: dashboardReducer,
         user: userReducer,
         admin: adminReducer,
+        transaction: transactionReducer,
         message: messageReducer,
     }
 });

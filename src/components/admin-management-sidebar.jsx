@@ -26,11 +26,11 @@ const AdminManagementSidebar = () => {
             name: 'Change Password',
             url: '/admin/admin-management/change-password'
         },
-        {
-            id: 5,
-            name: 'Currency Exchange Limit',
-            url: '/admin/admin-management/currency-exchange-limit'
-        }
+        // {
+        //     id: 5,
+        //     name: 'Currency Exchange Limit',
+        //     url: '/admin/admin-management/currency-exchange-limit'
+        // }
     ]
 
     return (

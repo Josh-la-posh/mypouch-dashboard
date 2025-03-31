@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react'
-import InputField from '../../../../components/ui/input'
-import Button from '../../../../components/ui/button';
-import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
+import InputField from '../../../components/ui/input'
+import Button from '../../../components/ui/button';
+import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
-import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
-import AdminService from '../../../../services/api/adminApi';
+import useAxiosPrivate from '../../../services/hooks/useAxiosPrivate';
+import AdminService from '../../../services/api/adminApi';
 import { toast } from 'react-toastify';
+import useTitle from '../../../services/hooks/useTitle';
 
-function AdminChangePassword() {
+function ChangePassword() {
+  const {setAppTitle} = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
@@ -20,7 +22,11 @@ function AdminChangePassword() {
   });
     
   useEffect(() => {
-    setSettingsTitle('Change Password');
+      setAppTitle('Settings');
+  }, []);
+    
+  useEffect(() => {
+    setSettingsTitle('Security & Permission');
   }, []);
 
   const handleChange = (e) => {
@@ -89,4 +95,4 @@ function AdminChangePassword() {
   )
 }
 
-export default AdminChangePassword;
+export default ChangePassword;

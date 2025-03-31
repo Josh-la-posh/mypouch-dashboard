@@ -12,6 +12,7 @@ import ErrorLayout from "../../../components/ui/error_page";
 import Spinner from "../../../components/ui/spinner";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import Button from "../../../components/ui/button";
+import useTitle from "../../../services/hooks/useTitle";
 
 const User = () => {
 
@@ -72,21 +73,24 @@ const User = () => {
     { value: "deleted", label: "Deleted Users" },
   ];
   const [activeTab, setActiveTab] = useState(TABS[0].value);
-
+  const {setAppTitle} = useTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, users, currentPage, totalPages, pageSize, totalRecords} = useSelector((state) => state.user);
+  const {loading, error, users, currentPage, totalPages, totalRecords} = useSelector((state) => state.user);
   const userService = new UserService(axiosPrivate);
   const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
   const [userTotalPages, setUserTotalPages] = useState(totalPages);
-  const [userPageSize, setUserPageSize] = useState(pageSize);
+  const [userPageSize, setUserPageSize] = useState('10');
   const [filteredData, setFilteredData] = useState(users);
   const [search, setSearch] = useState('');
-  const [newSearch, setNewSearch] = useState('');
 
   const loadUsers = async (search, status, page, limit) => {
     await userService.fetchUsers(search, status, page, limit, dispatch);
   }
+
+  useEffect(() => {
+    setAppTitle('Users');
+  }, []);
 
   useEffect(() => {
     setFilteredData(users);
@@ -99,15 +103,10 @@ const User = () => {
   useEffect(() => {
     setUserTotalPages(totalPages);
   }, [totalPages]);
-
-  useEffect(() => {
-    setUserPageSize(pageSize);
-  }, [pageSize]);
   
   useEffect(() => {
-      loadUsers(newSearch, activeTab, userCurrentPage, userPageSize);
-      setSearch('');
-  }, [dispatch, newSearch, userCurrentPage, userPageSize, activeTab]);
+      loadUsers(search, activeTab, userCurrentPage, userPageSize);
+  }, [dispatch, userCurrentPage, userPageSize, activeTab]);
 
   const onRefresh = () => {
     loadUsers();
@@ -118,8 +117,7 @@ const User = () => {
   }
 
   const handleNewSearch = () => {
-    setNewSearch(search);
-    // loadUsers(search, activeTab, userCurrentPage, userPageSize);
+    loadUsers(search, activeTab, '1', '10');
   }
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />

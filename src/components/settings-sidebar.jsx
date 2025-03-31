@@ -1,39 +1,18 @@
-import { Banknote, DatabaseZap, Speaker, Wallet } from 'lucide-react';
+import { Banknote, DollarSign, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '../services/hooks/useSettitngsTitle';
 
-const AdminSidebar = () => {
+const SettingsSidebar = () => {
     const { settingsTitle } = useSettingsTitle();
 
     const sidebarItems = [
         {
             id: 1,
-            icon: <Speaker size={'17px'} />,
-            name: 'Pending Request',
-            abbr: 'Request',
-            url: '/admin/pending-request'
+            icon: <Lock size={'17px'} />,
+            name: 'Security & Permission',
+            abbr: 'Security',
+            url: '/settings/security-and-permission'
         },
-        {
-            id: 2,
-            icon: <Banknote size={'17px'} />,
-            name: 'Currency Management',
-            abbr: 'Currency',
-            url: '/admin/currency'
-        },
-        {
-            id: 3,
-            icon: <DatabaseZap size={'17px'} />,
-            name: 'Admin Management',
-            abbr: 'Admin',
-            url: '/admin/admins/all'
-        },
-        {
-            id: 4,
-            icon: <Wallet size={'17px'} />,
-            name: 'Pouch Wallet',
-            abbr: 'Wallet',
-            url: '/admin/pouch-wallet'
-        }
     ]
 
     return (
@@ -56,4 +35,4 @@ const AdminSidebar = () => {
     );
 };
 
-export default AdminSidebar;
+export default SettingsSidebar;

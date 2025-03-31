@@ -1,9 +1,15 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
+import useTitle from '../../../services/hooks/useTitle';
 
 function AdminPendingRequest() {
+  const {setAppTitle} = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
     
+  useEffect(() => {
+    setAppTitle('Admin');
+  }, []);
+
   useEffect(() => {
     setSettingsTitle('Pending Request');
   }, []);

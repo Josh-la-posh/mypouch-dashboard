@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import InputField from '../../../components/ui/input'
-import Button from '../../../components/ui/button';
-import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
-import SelectField from '../../../components/ui/select';
+import InputField from '../../../../components/ui/input'
+import Button from '../../../../components/ui/button';
+import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
-import useAxiosPrivate from '../../../services/hooks/useAxiosPrivate';
-import AdminService from '../../../services/api/adminApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
+import AdminService from '../../../../services/api/adminApi';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import SelectField from '../../../../components/ui/select';
 
 function AdminSupportiveForm() {
     const {id} = useParams();
@@ -45,8 +45,7 @@ function AdminSupportiveForm() {
     }
 
     const handleGenderChange = (e) => {
-        setGender
-        (e.target.value);
+        setGender(e.target.value);
         setFormData((prev) => ({
         ...prev,
         gender: e.target.value
@@ -79,7 +78,7 @@ function AdminSupportiveForm() {
                 textColor='text-primary'
                 id='lastName'
                 inputClassName='bg-primary/14 text-sm py-2'
-                value={formData.lasstName}
+                value={formData.lastName}
                 onChange={handleChange}
             />
             <InputField

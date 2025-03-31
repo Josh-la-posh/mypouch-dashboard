@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
   export function UserTable({ data, columns, drpp, totalPages, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage }) {
@@ -25,7 +24,7 @@ import PropTypes from 'prop-types';
     pages.push(1);
 
     // Show dots when skipping numbers
-    if (currentPage > delta + 2) {
+    if (currentPage > delta + 3) {
       pages.push("...");
     }
 
@@ -38,7 +37,7 @@ import PropTypes from 'prop-types';
       pages.push(i);
     }
 
-    if (currentPage < totalPages - (delta + 1)) {
+    if (currentPage < totalPages - (delta + 3)) {
       pages.push("...");
     }
 
@@ -69,16 +68,16 @@ import PropTypes from 'prop-types';
                     {
                         data?.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-gray-500 dark:text-white">
                                     No data available
                                 </td>
                             </tr>
                         ) : (
                             data.map((row, rowIndex) => (
-                                <tr key={rowIndex} className="hover:bg-gray-200">
-                                    <td className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500">{rowIndex + 1}</td>
+                                <tr key={rowIndex} className="hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    <td className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500 dark:text-white">{rowIndex + 1}</td>
                                     {columns.map((column, colIndex) => (
-                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500">
+                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500 dark:text-white">
                                             {column.render
                                                 ? column.render(row[column.accessor], row)
                                                 : typeof row[column.accessor] === 'string' && row[column.accessor].length > 17

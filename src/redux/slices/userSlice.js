@@ -9,6 +9,9 @@ const initialState = {
   userDetail: {},
   userAccount: [],
   userTransactions: [],
+  userBanks: [],
+  banksLoading: false,
+  bankError: null,
   userActivity: {},
   userVerification: {},
   loading: false,
@@ -57,6 +60,18 @@ const userSlice = createSlice({
       state.loading = false;
       state.userAccount = action.payload;
     },
+    userBankStart: (state) => {
+      state.banksLoading = true;
+      state.bankError = null;
+    },
+    userBankSuccess: (state, action) => {
+      state.banksLoading = false;
+      state.userBanks = action.payload;
+    },
+    userBankFailure: (state, action) => {
+      state.banksLoading = false;
+      state.bankError = action.payload;
+    },
     userTransactionStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -84,6 +99,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { userStart, userSuccess, userFailure, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess, userVerificationSuccess } = userSlice.actions;
+export const { userStart, userSuccess, userFailure, userBankStart, userBankFailure, userBankSuccess, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess, userVerificationSuccess } = userSlice.actions;
 
 export default userSlice.reducer;

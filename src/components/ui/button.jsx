@@ -5,7 +5,7 @@ const Button = ({ children, onClick, variant = "primary", className, disabled })
     const baseClass = "w-full px-4 py-2 rounded-xs font-[700] text-xl";
     const variantClass =
       variant === "primary"
-        ? "bg-primary-dark dark:bg-primary hover:bg-primary-light dark:hover:bg-primary-light text-white dark:text-white hover:text-primary dark:hover:text-primary"
+        ? "bg-primary-dark dark:bg-primary hover:bg-primary-light dark:hover:bg-primary-light text-white dark:text-white hover:text-primary dark:hover:text-primary text-xs sm:text-sm"
         : variant === "secondary"
         ? "bg-primary hover:bg-primary-dark text-white"
         : variant === "outline"

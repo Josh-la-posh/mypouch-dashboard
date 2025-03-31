@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomTab } from "./ui/tabs";
 import UserProfile from "../pages/authenticated/users/UserProfile";
 import UserAccount from "../pages/authenticated/users/UserAccount";
@@ -6,6 +6,7 @@ import UserTransactionHistory from "../pages/authenticated/users/UserTransctionH
 import UserIdVerification from "../pages/authenticated/users/UserIdVerification";
 import UserActivityLog from "../pages/authenticated/users/UserActivityLog";
 import { useParams } from "react-router-dom";
+import useTitle from "../services/hooks/useTitle";
 
 const UserDetails = () => {
 
@@ -19,8 +20,11 @@ const UserDetails = () => {
 
   const [activeTab, setActiveTab] = useState(TABS[0].value);
   const {id} = useParams();
-
-  console.log('The selected id is: ', id);
+  const {setAppTitle} = useTitle();
+  
+    useEffect(() => {
+      setAppTitle('Users');
+    }, []);
 
   return (
     <div className="space-y-6">

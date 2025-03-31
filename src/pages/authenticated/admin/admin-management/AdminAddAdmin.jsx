@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from 'react'
-import InputField from '../../../components/ui/input'
-import Button from '../../../components/ui/button';
-import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
-import SelectField from '../../../components/ui/select';
+import {useEffect, useState} from 'react'
+import InputField from '../../../../components/ui/input'
+import Button from '../../../../components/ui/button';
+import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
+import SelectField from '../../../../components/ui/select';
 import { useDispatch, useSelector } from 'react-redux';
-import useAxiosPrivate from '../../../services/hooks/useAxiosPrivate';
-import AdminService from '../../../services/api/adminApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
+import AdminService from '../../../../services/api/adminApi';
 import { toast } from 'react-toastify';
+import useTitle from '../../../../services/hooks/useTitle';
 
 function AdminAddAdmin() {
+  const {setAppTitle} = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
@@ -21,7 +23,11 @@ function AdminAddAdmin() {
   });
     
   useEffect(() => {
-    setSettingsTitle('Add Admin');
+    setAppTitle('Admin');
+  }, []);
+    
+  useEffect(() => {
+    setSettingsTitle('Admin Management');
   }, []);
 
   const handleChange = (e) => {
@@ -63,6 +69,15 @@ function AdminAddAdmin() {
             value={role}
             onChange={handleRoleChange}
             selectClassName={'bg-primary/14 text-primary text-sm border-transparent dark:border-gray-300 rounded-sm py-2'}
+          />
+          <InputField
+            label='Email'
+            textColor='text-primary'
+            type='email'
+            id='email'
+            inputClassName='bg-primary/14 text-sm py-2'
+            value={formData.email}
+            onChange={handleChange}
           />
           <InputField
             label='Email'
