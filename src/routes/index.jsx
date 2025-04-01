@@ -48,12 +48,10 @@ const RouteSystem = () => {
               <Route path='currency/exchange-limit' element={<CurrencyExchangeLimit />} />
               <Route path='currency/commission-rate' element={<TransactionFeeManagement />} />
               <Route path='add-admin' element={<AdminAddAdmin />} />
-              <Route path='onboarding-form' element={<AdminSupportiveForm />} />
               <Route path='all' element={<AllAdminPage />} />
               <Route path='pouch-wallet' element={<PouchWallet />} />
               {/* <Route path='admin-management' element={<AdminManagementLayout />}>
-                <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />
-                
+                <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />                
                 </Route> */}
             </Route>
           </Route>
@@ -70,6 +68,7 @@ const RouteSystem = () => {
       
       <Route path="/" element={<MainLayout />}>
         <Route path="/admin" element={<AdminLayout />}>
+              <Route path='/admin/onboarding-form' element={<AdminSupportiveForm />} />
           <Route path='/admin/pouch-funding-success' element={<PouchFundingSuccess />} />
         </Route>
       </Route>
