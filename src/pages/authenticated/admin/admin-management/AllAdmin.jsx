@@ -8,6 +8,8 @@ import Spinner from '../../../../components/ui/spinner';
 import Button from '../../../../components/ui/button';
 import { Link } from 'react-router-dom';
 import useTitle from '../../../../services/hooks/useTitle';
+import TextButton from '../../../../components/ui/textButton';
+import { Edit3Icon } from 'lucide-react';
 
 function AllAdminPage() {
   const {setAppTitle} = useTitle();
@@ -52,7 +54,7 @@ function AllAdminPage() {
         </Link>
       </div>
       <div className='w-full space-y-6 text-sm md:text-md'>
-        <div className="font-[600] text-primary dark:text-white grid grid-cols-4 border border-primary px-3 py-2">
+        <div className="font-[600] text-black/70 dark:text-white grid grid-cols-4 border border-primary px-3 py-2">
           <p className='col-span-2'>Name</p>
           <p className='text-center'>User Role</p>
           <p className='text-center'>Actions</p>
@@ -60,7 +62,7 @@ function AllAdminPage() {
         {
           allAdmin.length > 0 && 
           allAdmin.map((admin) => (
-            <div key={admin.id} className="grid grid-cols-4 text-primary dark:text-white px-3">
+            <div key={admin.id} className="grid grid-cols-4 items-center text-black/50 dark:text-white/60 px-3">
               <div className="col-span-2">
                   <p className='text-md font-[600]'>{admin?.firstName} {admin?.lastName}</p>
                   <p className='text-xs font-[400]'>{admin?.email}</p>
@@ -68,12 +70,11 @@ function AllAdminPage() {
               <div className="text-xs font-[600] text-center">
                 {admin?.role?.name}
               </div>
-              <Button
-                className='text-xs font-[600]'
-                variant='custom'
-              >
-                Modify Role
-              </Button>
+              <div className="flex">
+                <TextButton>
+                  <Edit3Icon />
+                </TextButton>
+              </div>
             </div>
           )) 
           }

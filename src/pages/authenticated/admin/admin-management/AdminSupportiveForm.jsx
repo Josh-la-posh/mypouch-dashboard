@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputField from '../../../../components/ui/input';
 import Button from '../../../../components/ui/button';
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
 import AdminService from '../../../../services/api/adminApi';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import SelectField from '../../../../components/ui/select';
 import { GENDER } from '../../../../data/gender';
 
 function AdminSupportiveForm() {
-    const { id } = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const id = queryParams.get('id');
     const { setSettingsTitle } = useSettingsTitle();
     const dispatch = useDispatch();
     const axiosPrivate = useAxiosPrivate();
@@ -64,7 +66,8 @@ function AdminSupportiveForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await adminService.updateAdmin(id, formData, dispatch);
+        console.log('User id: ', id);
+        // await adminService.updateAdmin(id, formData, dispatch);
     };
 
     if (error) toast.error(error);
