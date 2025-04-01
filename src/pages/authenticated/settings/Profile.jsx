@@ -49,10 +49,8 @@ const Profile = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
         <InputField
           label='First Name'
-          textColor='text-primary dark:text-white'
           type='text'
           id='firstName'
-          inputClassName='bg-primary/14 text-sm py-2'
           value={formData.firstName}
           disabled={!canUpdate}
           onChange={handleChange}
@@ -60,10 +58,8 @@ const Profile = () => {
         />
         <InputField
           label='Last Name'
-          textColor='text-primary dark:text-white'
           type='text'
           id='lastName'
-          inputClassName='bg-primary/14 text-sm py-2'
           disabled={!canUpdate}
           value={formData.lastName}
           onChange={handleChange}
@@ -71,10 +67,8 @@ const Profile = () => {
         />
         <InputField
           label='Email'
-          textColor='text-primary dark:text-white'
           type='email'
           id='email'
-          inputClassName='bg-primary/14 text-sm py-2'
           value={formData.email}
           disabled='true'
           onChange={handleChange}
@@ -82,10 +76,8 @@ const Profile = () => {
         />
         <InputField
           label='Phone Number'
-          textColor='text-primary dark:text-white'
           type='tel'
           id='phoneNumber'
-          inputClassName='bg-primary/14 text-sm py-2'
           value={formData.phoneNumber}
           disabled='true'
           onChange={handleChange}

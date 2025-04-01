@@ -48,36 +48,30 @@ function ChangePassword() {
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
-      <p className='text-primary dark:text-[#C2A6DD] text-xl font-[600] '>Change Password</p>
+      <p className='text-black/75 dark:text-white/80 text-xl font-[600] '>Change Password</p>
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <InputField
             type='password'
             label='Current Password'
-            textColor='text-primary'
             id='currentPassword'
             placeholder='Enter current password'
-            inputClassName='bg-primary/14 text-sm py-2'
             value={formData.currentPassword}
             onChange={handleChange}
           />
           <InputField
             type='password'
             label='New Password'
-            textColor='text-primary'
             id='newPassword'
             placeholder='Enter new password'
-            inputClassName='bg-primary/14 text-sm py-2'
             value={formData.newPassword}
             onChange={handleChange}
           />
           <InputField
             type='password'
             label='Confirm Password'
-            textColor='text-primary'
             id='pss'
             placeholder='Re-enter new password'
-            inputClassName='bg-primary/14 text-sm py-2'
             value={pss}
             onChange={(e) => setPss(e.target.value)}
           />

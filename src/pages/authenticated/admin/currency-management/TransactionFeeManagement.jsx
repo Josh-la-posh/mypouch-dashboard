@@ -66,10 +66,8 @@ function TransactionFeeManagement() {
             <form onSubmit={handleSubmit} className='space-y-6'>
               <InputField
                   label='Service Fee Percentage'
-                  textColor='text-primary'
                   id='deviation'
                   placeholder='Enter your %'
-                  inputClassName='bg-primary/14 text-sm py-2'
                   value={String(deviation ?? "10%")}
                   onChange={(e) => setDeviation(e.target.value)}
               />

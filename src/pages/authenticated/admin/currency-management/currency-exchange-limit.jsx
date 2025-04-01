@@ -54,17 +54,15 @@ function CurrencyExchangeLimit() {
 
   return (
     <div className='pl-10 w-full max-w-[400px] space-y-6'>
-      <p className='text-primary dark:text-[#C2A6DD] text-xl font-[600] '>Currency Exchange Limit</p>
+      <p className='text-black/75 dark:text-white/80 text-xl font-[600] '>Currency Exchange Limit</p>
       
-      <p className='text-primary text-sm font-[600] border-b border-b-primary/20 pb-3'>Setting a limit for currency exchange</p>
+      <p className='text-black/75 dark:text-white/80 text-sm font-[600] border-b border-b-primary/20 pb-3'>Setting a limit for currency exchange</p>
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6'>
           <InputField
             label='Set Percentage'
-            textColor='text-primary'
             id='deviation'
             placeholder='Enter your %'
-            inputClassName='bg-primary/14 text-sm py-2'
             value={String(deviation ?? "")}
             onChange={(e) => setDeviation(e.target.value)}
           />

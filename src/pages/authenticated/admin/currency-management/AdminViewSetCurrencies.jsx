@@ -81,7 +81,7 @@ function AdminViewSetCurrencies() {
     <div className="flex">
       <div className="w-full px-5 rounded-sm space-y-8">
         <div className="flex justify-between items-center">
-          <h2 className="text-primary dark:text-[#C2A6DD] text-md lg:text-xl font-[600]">Default Currency List</h2>
+          <h2 className="text-black/75 dark:text-white/80 text-md lg:text-xl font-[600]">Default Currency List</h2>
           <Link
               to='/admin/currency/set-currencies'
               className="bg-primary font-[600] py-2 lg:py-3 px-4 lg:px-6 text-white rounded-sm text-xs lg:text-sm"

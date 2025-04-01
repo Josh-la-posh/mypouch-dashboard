@@ -65,8 +65,6 @@ const UserProfile = ({id}) => {
                 id='email'
                 value={loading ? '' : formData.email}
                 onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
             />
             <InputField
                 label='Country'
@@ -74,8 +72,6 @@ const UserProfile = ({id}) => {
                 id='country'
                 value={loading ? '' : formData.country}
                 onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
             />
             <InputField
                 label='State'
@@ -83,8 +79,6 @@ const UserProfile = ({id}) => {
                 id='state'
                 value={loading ? '' : formData.state}
                 onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
             />
             <InputField
                 label='Home Address'
@@ -92,8 +86,6 @@ const UserProfile = ({id}) => {
                 id='address'
                 value={loading ? '' : formData.address}
                 onChange={handleChange}
-                labelClassName='text-xs'
-                inputClassName='text-sm'
             />
 
             <div className="max-w-[170px] mt-10">

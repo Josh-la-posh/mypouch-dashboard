@@ -62,47 +62,39 @@ function AdminAddAdmin() {
   }
 
   return (
-    <div className='w-full text-primary dark:text-white'>
+    <div className='w-full'>
       {
         !isAdminSuccessful ?
         <div className="space-y-6 max-w-[400px]">
-          <p className='text-lg font-[600]'>Add {formData.role === 'ADMIN' ? 'Admin' : 'Super Admin'}</p>
+          <p className='text-black/75 dark:text-white/80 text-lg font-[600]'>Add {formData.role === 'ADMIN' ? 'Admin' : 'Super Admin'}</p>
           <div className="">
           <form onSubmit={handleSubmit} className='space-y-6'>
             <SelectField
               label='Admin Role'
-              textColor='text-primary dark:text-white'
               options={['Super Admin', 'Admin']}
               value={role}
               onChange={handleRoleChange}
-              selectClassName={'bg-primary/14 text-primary text-sm border-transparent dark:border-gray-300 rounded-sm py-2'}
             />
             <InputField
               label='First Name'
-              textColor='text-primary dark:text-white'
               type='text'
               id='firstName'
-              inputClassName='bg-primary/14 text-sm py-2'
               value={formData.firstName}
               onChange={handleChange}
               required
             />
             <InputField
               label='Last Name'
-              textColor='text-primary dark:text-white'
               type='text'
               id='lastName'
-              inputClassName='bg-primary/14 text-sm py-2'
               value={formData.lastName}
               onChange={handleChange}
               required
             />
             <InputField
               label='Email'
-              textColor='text-primary dark:text-white'
               type='email'
               id='email'
-              inputClassName='bg-primary/14 text-sm py-2'
               value={formData.email}
               onChange={handleChange}
               required

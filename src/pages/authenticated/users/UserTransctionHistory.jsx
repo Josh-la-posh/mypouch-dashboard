@@ -113,7 +113,7 @@ const UserTransactionHistory = ({id}) => {
   return (
     <div className="">
       <div className="space-y-6">
-        <p className="text-primary dark:text-[#C2A6DD] text-lg font-[600]">
+        <p className="text-black/75 dark:text-white/80 text-lg font-[600]">
             Transaction History
         </p>
         <div className="flex items-center gap-4 md:max-w-[600px] my-4">

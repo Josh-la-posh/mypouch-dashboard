@@ -142,18 +142,15 @@ function PouchWallet() {
                 <div className="max-w-[400px] space-y-5">
                     <SelectField
                         label='Select your preferred currency'
-                        textColor='text-primary dark:text-white'
                         options={CURRENCIES}
                         value={selectedCurrency}
                         placeholder=''
                         onChange={(e) => setSelectedCurrency(e.target.value)}
-                        selectClassName={'bg-primary/14 text-primary text-sm border-transparent dark:border-gray-300 rounded-sm py-2'}
+                        selectClassName={'bg-primary/14'}
                     />    
                     <InputField
                         label='Enter amount'
-                        textColor='text-primary dark:text-white'
                         id='fundAmount'
-                        inputClassName='bg-primary/14 text-sm py-2'
                         value={fundAmount}
                         onChange={(e) => setFundAmount(e.target.value)}
                         required

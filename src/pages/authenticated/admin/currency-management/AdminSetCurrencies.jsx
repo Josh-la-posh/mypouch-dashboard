@@ -66,7 +66,7 @@ function AdminSetCurrencies() {
 
   return (
     <div className="w-full p-5 rounded-sm shadow-sm space-y-5">
-      <h2 className="text-primary dark:text-white text-lg lg:text-xl font-[600]">Set Default Exchange Currency</h2>
+      <h2 className="text-black/75 dark:text-white/80 text-lg lg:text-xl font-[600]">Set Default Exchange Currency</h2>
       <div className="space-y-6">
         <div className="flex flex-col gap-5">
           {pairs.map((pair) => (

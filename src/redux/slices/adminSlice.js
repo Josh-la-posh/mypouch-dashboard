@@ -12,11 +12,13 @@ const initialState = {
   adminCurrenciesError: null,
   adminCurrencies: [],
   exchangeLimit: {},
+  adminRoles: [],
   isFundingAdminWallet: false,
   isGottenLink: false,
   fundingWalletLink: null,
   isFundingAdminError: null,
-  isAdminSuccessful: false
+  isAdminSuccessful: false,
+  isActivatingAdmin: false,
 };
 
 const adminSlice = createSlice({
@@ -38,6 +40,12 @@ const adminSlice = createSlice({
       state.error = action.payload;
       state.success = false;
       state.isAdminSuccessful = false;
+    },
+    activateAdminStart: (state) => {
+      state.isActivatingAdmin = true;
+    },
+    activateAdminSuccess: (state) => {
+      state.isActivatingAdmin = false;
     },
     adminDeleteStart: (state) => {
       state.loading = true;
@@ -107,9 +115,12 @@ const adminSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    adminRoleSuccess: (state, action) => {
+      state.adminRoles = action.payload;
+    }
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess } = adminSlice.actions;
 
 export default adminSlice.reducer;

@@ -9,11 +9,13 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import SelectField from '../../../../components/ui/select';
 import { GENDER } from '../../../../data/gender';
+import useTitle from '../../../../services/hooks/useTitle';
 
 function AdminSupportiveForm() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get('id');
+    const {setAppTitle} = useTitle();
     const { setSettingsTitle } = useSettingsTitle();
     const dispatch = useDispatch();
     const axiosPrivate = useAxiosPrivate();
@@ -29,7 +31,11 @@ function AdminSupportiveForm() {
     });
 
     useEffect(() => {
-        setSettingsTitle('Add Admin');
+        setAppTitle('Admin');
+    }, []);
+
+    useEffect(() => {
+        setSettingsTitle('Admin Management');
     }, []);
 
     const handleChange = (e) => {
@@ -55,7 +61,7 @@ function AdminSupportiveForm() {
             reader.onloadend = () => {
                 setFormData((prev) => ({
                     ...prev,
-                    profilePicture: reader.result // base64 string
+                    profilePicture: reader.result
                 }));
             };
             reader.readAsDataURL(file);
@@ -70,57 +76,42 @@ function AdminSupportiveForm() {
     if (error) toast.error(error);
 
     return (
-        <div className="pl-10 w-full space-y-6">
-            <p className="text-primary text-lg font-[600]">Supportive Admin Form</p>
-            <form onSubmit={handleSubmit} className='w-full'>
-              <div className="space-y-6 grid grid-cols-3 gap-6">
+        <div className="px-10 w-full space-y-6">
+            <p className="text-black/75 dark:text-white/80 text-lg font-[600]">Supportive Admin Form</p>
+            <form onSubmit={handleSubmit} className='w-full space-y-10'>
+              <div className="grid grid-cols-2 gap-6">
                 <InputField
                   id="address"
                   label="Address"
-                  textColor="text-primary dark:text-white"
                   value={formData.address}
                   onChange={handleChange}
-                  inputClassName="bg-primary/14 text-sm py-2"
                 />
                 <InputField
                   id="state"
                   label="State"
-                  textColor="text-primary dark:text-white"
                   value={formData.state}
                   onChange={handleChange}
-                  inputClassName="bg-primary/14 text-sm py-2"
                 />
                 <InputField
                   id="phoneNumber"
                   label="Phone Number"
-                  textColor="text-primary dark:text-white"
                   type="number"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  inputClassName="bg-primary/14 text-sm py-2"
                 />
                 <SelectField
                   label="Gender"
-                  textColor="text-primary dark:text-white"
                   options={GENDER}
                   value={gender}
                   onChange={handleGenderChange}
-                  selectClassName="bg-primary/14"
                 />
-                <div className="col-span-2 flex flex-col gap-2">
-                  <InputField
-                    id="profilePicture"
-                    label="Profile Picture"
-                    textColor="text-primary dark:text-white"
-                    type="file"
-                    accept="image/*"                                  
-                    onChange={handleImageChange}
-                    inputClassName="bg-primary/14 text-sm py-2"
-                  />
-                  {/* {formData.profilePicture && (
-                    <img src={formData.profilePicture} alt="Profile Preview" className="mt-2 w-32 h-32 object-cover" />
-                  )} */}
-                </div>
+                <InputField
+                  id="profilePicture"
+                  label="Profile Picture"
+                  type="file"
+                  accept="image/*"                                  
+                  onChange={handleImageChange}
+                />
             </div>
             <div className="w-36">
               <Button variant="primary" disabled={loading}>
