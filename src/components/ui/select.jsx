@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 const SelectField = ({ label, options, value, onChange, textColor, placeholder = "Select an option", disabled = false, labelClassName, className, selectClassName, border }) => {
@@ -25,6 +24,11 @@ const SelectField = ({ label, options, value, onChange, textColor, placeholder =
 
 SelectField.propTypes = {
   label: PropTypes.string,
+  className: PropTypes.string,
+  textColor: PropTypes.string,
+  labelClassName: PropTypes.string,
+  selectClassName: PropTypes.string,
+  border: PropTypes.string,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,

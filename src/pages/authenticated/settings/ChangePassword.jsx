@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import InputField from '../../../components/ui/input'
 import Button from '../../../components/ui/button';
 import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxiosPrivate from '../../../services/hooks/useAxiosPrivate';
-import AdminService from '../../../services/api/adminApi';
+import SettingService from '../../../services/api/settingsApi';
 import { toast } from 'react-toastify';
 import useTitle from '../../../services/hooks/useTitle';
 
@@ -13,8 +13,8 @@ function ChangePassword() {
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading} = useSelector((state) => state.admin);
-  const adminService = new AdminService(axiosPrivate);
+  const {isChangingPassword} = useSelector((state) => state.admin);
+  const settingService = new SettingService(axiosPrivate);
   const [pss, setPss] = useState('');
   const [formData, setFormData] = useState({
     currentPassword: '',
@@ -41,7 +41,7 @@ function ChangePassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (pss !== formData.newPassword) return toast.error('Password do no match');
-    await adminService.changePassword(formData, dispatch);
+    await settingService.changePassword(formData, dispatch);
     setFormData({ currentPassword: "", newPassword: ""});
     setPss('');
   }
@@ -84,9 +84,9 @@ function ChangePassword() {
           <div className="flex gap-8">
             <Button
               variant='primary'
-              disabled={loading}
+              disabled={isChangingPassword}
             >
-              {loading ? 'Updating' : 'Update'}
+              {isChangingPassword ? 'Updating' : 'Update'}
             </Button>
           </div>
         </form>

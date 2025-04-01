@@ -32,9 +32,12 @@ function PouchFundingSuccess() {
     }, [dispatch]);
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center text-primary dark:text-white space-y-7">
-            <CircleCheckBig size='60px'/>
-            <p className="text-lg md:text-2xl">Deposit Successful!</p>
+        <div className="w-full h-full flex flex-col items-center justify-center space-y-10">
+            <CircleCheckBig size='90px' className="text-green-600"/>
+            <div className="space-y-4 text-center">
+                <p className="text-lg md:text-2xl font-[700] text-black dark:text-white">Success</p>
+                <p className="text-sm md:text-md text-black/60 dark:text-white/40">Deposit Request Successful</p>
+            </div>
         </div>
     )
 

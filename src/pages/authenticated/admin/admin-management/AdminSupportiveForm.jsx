@@ -8,6 +8,7 @@ import AdminService from '../../../../services/api/adminApi';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import SelectField from '../../../../components/ui/select';
+import { GENDER } from '../../../../data/gender';
 
 function AdminSupportiveForm() {
     const {id} = useParams();
@@ -16,16 +17,12 @@ function AdminSupportiveForm() {
     const axiosPrivate = useAxiosPrivate();
     const {loading, error, addAdminMsg} = useSelector((state) => state.admin);
     const adminService = new AdminService(axiosPrivate);
-
-    const [gender, setGender] = useState('Male');
+    const [gender, setGender] = useState('MALE');
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
         phoneNumber: '',
         address: '',
         state: '',
-        gender: gender === 'Male' ? 'MALE' : 'FEMALE',
-        pasword: '',
+        gender: gender,
         profilePicture: ''
     });
         
@@ -66,31 +63,6 @@ function AdminSupportiveForm() {
       <div className="">
         <form onSubmit={handleSubmit} className='space-y-6 grid grid-cols-3'>
             <InputField
-                label='First Name'
-                textColor='text-primary'
-                id='firstName'
-                inputClassName='bg-primary/14 text-sm py-2'
-                value={formData.firstName}
-                onChange={handleChange}
-            />
-            <InputField
-                label='Last Name'
-                textColor='text-primary'
-                id='lastName'
-                inputClassName='bg-primary/14 text-sm py-2'
-                value={formData.lastName}
-                onChange={handleChange}
-            />
-            <InputField
-                label='Phone Number'
-                textColor='text-primary'
-                type='number'
-                id='phoneNumber'
-                inputClassName='bg-primary/14 text-sm py-2'
-                value={formData.phoneNumber}
-                onChange={handleChange}
-            />
-            <InputField
                 label='Address'
                 textColor='text-primary'
                 id='address'
@@ -106,21 +78,22 @@ function AdminSupportiveForm() {
                 value={formData.state}
                 onChange={handleChange}
             />
+            <InputField
+                label='Phone Number'
+                textColor='text-primary'
+                type='number'
+                id='phoneNumber'
+                inputClassName='bg-primary/14 text-sm py-2'
+                value={formData.phoneNumber}
+                onChange={handleChange}
+            />
             <SelectField
                 label='Gender'
                 textColor='text-primary'
-                options={['Male', 'Female']}
+                options={GENDER}
                 value={gender}
                 onChange={handleGenderChange}
                 selectClassName={'bg-primary/14 text-sm py-2'}
-            />
-            <InputField
-                label='Password'
-                textColor='text-primary'
-                id='password'
-                inputClassName='bg-primary/14 text-sm py-2'
-                value={formData.password}
-                onChange={handleChange}
             />
             <InputField
                 label='Profile Picture'

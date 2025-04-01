@@ -11,6 +11,7 @@ import Button from "../../../components/ui/button";
 import SelectField from "../../../components/ui/select";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import CustomModal from "../../../components/ui/custom-modal.jsx";
+import { TRANSACTIONSTATUS } from "../../../data/transaction-status.jsx";
 
 const UserTransactionHistory = ({id}) => {
   const columns = [
@@ -78,7 +79,8 @@ const UserTransactionHistory = ({id}) => {
   const closeModal = () => setModalOpen(false);
 
   const loadUserTransaction = async (id, search, status, page, limit) => {
-    await userService.fetchUserTraansactions(id, search, status, page, limit, dispatch);
+    const finalStatus = status === 'All' ? '' : status;
+    await userService.fetchUserTraansactions(id, search, finalStatus, page, limit, dispatch);
   }
 
   useEffect(() => {
@@ -116,8 +118,8 @@ const UserTransactionHistory = ({id}) => {
         </p>
         <div className="flex items-center gap-4 md:max-w-[600px] my-4">
           <SelectField
-            options={['Successful', 'Failed', 'Reversed', 'Pending']}
-            placeholder="Filter"
+            options={TRANSACTIONSTATUS}
+            placeholder=""
             value={status}
             onChange={handleFilterChange}
           />

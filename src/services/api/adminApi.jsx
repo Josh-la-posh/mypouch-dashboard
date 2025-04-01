@@ -115,31 +115,6 @@ class AdminService {
     }
   };
 
-  async changePassword(formData, dispatch) {
-    try {
-      dispatch(adminStart());
-      const response = await axiosPrivate.post(
-        '/admin/change-password',
-          JSON.stringify(formData),
-        );
-        toast.success('Password changed successfully');
-        dispatch(changePasswordSuccess())
-    } catch (err) {
-      if (!err.response) {
-        toast.error('No Server Response');
-        return dispatch(adminFailure('No Server Response'));
-      } else {
-        if (err.response.status === 400) {
-          console.log('The error is ', err.response);
-          dispatch(loginFailure(err.response.data.message));
-        } else {
-          dispatch(adminFailure(err.response.data.message));
-          toast.error(err.response.data.message);
-        }
-      }
-    }
-  };
-
   async setCurrencyExchangelimit(formData, dispatch) {
     try {
       dispatch(adminStart());

@@ -1,4 +1,4 @@
-import { Banknote, DollarSign, Lock } from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '../services/hooks/useSettitngsTitle';
 
@@ -8,6 +8,13 @@ const SettingsSidebar = () => {
     const sidebarItems = [
         {
             id: 1,
+            icon: <User size={'17px'} />,
+            name: 'Profile',
+            abbr: 'Profile',
+            url: '/settings/profile'
+        },
+        {
+            id: 2,
             icon: <Lock size={'17px'} />,
             name: 'Security & Permission',
             abbr: 'Security',

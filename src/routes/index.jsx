@@ -22,6 +22,7 @@ import Transactions from "../pages/authenticated/transactions/Transactions";
 import PouchWallet from "../pages/authenticated/admin/pouch-wallet/PouchWallet";
 import AdminSupportiveForm from "../pages/authenticated/admin/admin-management/AdminSupportiveForm";
 import PouchFundingSuccess from "../pages/authenticated/admin/pouch-wallet/SuccessPage";
+import Profile from "../pages/authenticated/settings/Profile";
 
 const RouteSystem = () => {
   return (
@@ -60,6 +61,7 @@ const RouteSystem = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route path="/settings">
+            <Route path='profile' element={<Profile />} />
               <Route path='security-and-permission' element={<SecurityAndPermission />} />
               <Route path='security-and-permission/change-password' element={<ChangePassword />} />
             </Route>

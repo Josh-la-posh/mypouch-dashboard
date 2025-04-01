@@ -1,7 +1,6 @@
-import React from "react";
 import PropTypes from "prop-types";
 
-const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, textColor, inputClassName, labelClassName }) => {
+const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, disabled = false, textColor, inputClassName, labelClassName }) => {
   return (
     <div className="flex flex-col gap-2">
       {label && (
@@ -17,6 +16,7 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         required
         className={`border border-gray-300 rounded-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary ${textColor ? textColor : 'text-gray-700'} dark:text-white placeholder:text-sm placeholder:${textColor ? textColor : 'text-gray-700 dark:text-white'} ${inputClassName}`}
       />
@@ -25,12 +25,17 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
 };
 
 InputField.propTypes = {
+  id: PropTypes.string,
   label: PropTypes.string,
+  textColor: PropTypes.string,
+  inputClassName: PropTypes.string,
+  labelClassName: PropTypes.string,
   placeholder: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default InputField;

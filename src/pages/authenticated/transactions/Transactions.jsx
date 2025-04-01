@@ -12,6 +12,7 @@ import Spinner from "../../../components/ui/spinner";
 import SelectField from "../../../components/ui/select";
 import Button from "../../../components/ui/button";
 import useTitle from "../../../services/hooks/useTitle";
+import { TRANSACTIONSTATUS } from "../../../data/transaction-status";
 
 const Transactions = () => {
     const columns = [
@@ -82,7 +83,8 @@ const Transactions = () => {
     const closeModal = () => setModalOpen(false);
 
     const loadTransaction = async (date, status, page, limit) => {
-        await transactionService.fetchtransactions(date, status, page, limit, dispatch);
+        const newStatus = status === 'All' ? '' : status;
+        await transactionService.fetchtransactions(date, newStatus, page, limit, dispatch);
     }
   
     useEffect(() => {
@@ -123,7 +125,7 @@ const Transactions = () => {
     <div className="space-y-6">
         <div className="flex items-center gap-4 md:max-w-[600px] my-4">
             <SelectField
-                options={['All', 'Successful', 'Failed', 'Reversed', 'Pending']}
+                options={TRANSACTIONSTATUS}
                 placeholder="Filter"
                 value={status}
                 onChange={handleFilterChange}

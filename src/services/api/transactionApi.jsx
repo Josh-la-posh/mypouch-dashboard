@@ -8,10 +8,9 @@ class TransactionService {
     }
 
     async fetchtransactions(date, status, page, limit, dispatch) {
-      const newStatus = status === 'All' ? '' : status;
       try {
         dispatch(transactionStart());
-        const response = await axiosPrivate.get(`/transaction/admin/all/transactions?date=${date}&status=${newStatus}&page=${page}&limit=${limit}`);
+        const response = await axiosPrivate.get(`/transaction/admin/all/transactions?date=${date}&status=${status}&page=${page}&limit=${limit}`);
         
         const data = response.data;
         console.log('user transactions: ', data);
