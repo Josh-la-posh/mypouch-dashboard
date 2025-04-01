@@ -60,14 +60,11 @@ function AdminSupportiveForm() {
             };
             reader.readAsDataURL(file);
         }
-
-        console.log('The new profile is: ', formData.profilePicture);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('User id: ', id);
-        // await adminService.updateAdmin(id, formData, dispatch);
+        await adminService.updateAdmin(id, formData, dispatch);
     };
 
     if (error) toast.error(error);
