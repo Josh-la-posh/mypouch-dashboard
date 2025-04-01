@@ -51,7 +51,6 @@ const RouteSystem = () => {
               <Route path='onboarding-form' element={<AdminSupportiveForm />} />
               <Route path='all' element={<AllAdminPage />} />
               <Route path='pouch-wallet' element={<PouchWallet />} />
-              <Route path='pouch-funding-success' element={<PouchFundingSuccess />} />
               {/* <Route path='admin-management' element={<AdminManagementLayout />}>
                 <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />
                 
@@ -66,6 +65,12 @@ const RouteSystem = () => {
               <Route path='security-and-permission/change-password' element={<ChangePassword />} />
             </Route>
           </Route>
+        </Route>
+      </Route>
+      
+      <Route path="/" element={<MainLayout />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path='/admin/pouch-funding-success' element={<PouchFundingSuccess />} />
         </Route>
       </Route>
     </Routes>
