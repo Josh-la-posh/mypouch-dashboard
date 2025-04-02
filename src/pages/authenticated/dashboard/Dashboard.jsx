@@ -68,7 +68,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-10">
       <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcom back {auth?.data?.firstName}</h1>
-      <div className="flex gap-3 overflow-x-scroll scrollbar-none">
+      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none">
         <Card
           icon={<Loader size='22px' />}
           amount={data?.statuses?.active?.current}

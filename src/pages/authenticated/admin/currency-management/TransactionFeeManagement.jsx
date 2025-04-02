@@ -13,63 +13,49 @@ function TransactionFeeManagement() {
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, exchangeLimit} = useSelector((state) => state.admin);
+  const {loading, error, commissionRate} = useSelector((state) => state.admin);
   const adminService = new AdminService(axiosPrivate);
-  const [deviation, setDeviation] = useState(exchangeLimit);
+  const [commission, setCommission] = useState(commissionRate);
     
   useEffect(() => {
     setAppTitle('Admin');
   }, []);
 
-//   const fetchDeviation = async () => {
-//     await adminService.fetchCurrencyExchangelimit(dispatch);
-//   }
+  const fetchCommissionRate = async () => {
+    await adminService.fetchCommissionRate(dispatch);
+  }
     
   useEffect(() => {
     setSettingsTitle('Currency Management');
   }, []);
 
-//   useEffect(() => {
-//     fetchDeviation();
-//   }, [])
+  useEffect(() => {
+    fetchCommissionRate();
+  }, [])
 
-//   useEffect(() => {
-//     setDeviation(exchangeLimit);
-//   }, [exchangeLimit])
-
-//   const onRefresh = () => {
-//     fetchDeviation();
-//   }
-
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  }
+  useEffect(() => {
+    setCommission(commissionRate);
+  }, [commissionRate])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {"deviation": deviation}
-    await adminService.setCurrencyExchangelimit(formData, dispatch);
-    setDeviation('');
+    const formData = {"commission": commission}
+    await adminService.setCommissionRate(formData, dispatch);
+    setCommission('');
   }
-
-  if (error) toast.error(error);
 
   return (
     <div className='lg:pl-10 w-full pt-10'>
       <div className="max-w-[400px] space-y-6">
-        <p className='text-primary text-sm font-[600] border-b border-b-primary/20 pb-3'>A percentage fee will be applied to every transaction a user completes on the app</p>
+        <p className='text-black/70 dark:text-white/60 text-sm font-[600] border-b border-b-primary/20 pb-3'>A percentage fee will be applied to every transaction a user completes on the app</p>
         <div className="">
             <form onSubmit={handleSubmit} className='space-y-6'>
               <InputField
                   label='Service Fee Percentage'
-                  id='deviation'
+                  id='commission'
                   placeholder='Enter your %'
-                  value={String(deviation ?? "10%")}
-                  onChange={(e) => setDeviation(e.target.value)}
+                  value={String(commission ?? "10")}
+                  onChange={(e) => setCommission(e.target.value)}
               />
               <div className="flex gap-8">
                 <Button

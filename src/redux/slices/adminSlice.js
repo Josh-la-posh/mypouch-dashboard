@@ -12,6 +12,7 @@ const initialState = {
   adminCurrenciesError: null,
   adminCurrencies: [],
   exchangeLimit: {},
+  commissionRate: {},
   adminRoles: [],
   isFundingAdminWallet: false,
   isGottenLink: false,
@@ -19,6 +20,12 @@ const initialState = {
   isFundingAdminError: null,
   isAdminSuccessful: false,
   isActivatingAdmin: false,
+  pouchTransaction: [],
+  currentPage: 1,
+  pageSize: 10,
+  totalPages: 1,
+  pouchTransactionLoading: false,
+  pouchTransactionError: null,
 };
 
 const adminSlice = createSlice({
@@ -40,6 +47,7 @@ const adminSlice = createSlice({
       state.error = action.payload;
       state.success = false;
       state.isAdminSuccessful = false;
+      state.isActivatingAdmin = false;
     },
     activateAdminStart: (state) => {
       state.isActivatingAdmin = true;
@@ -70,6 +78,10 @@ const adminSlice = createSlice({
     exchangeLimitSuccess: (state, action) => {
       state.loading = false;
       state.exchangeLimit = action.payload;
+    },
+    commissionRateSuccess: (state, action) => {
+      state.loading = false;
+      state.commissionRate = action.payload;
     },
     updateRateStart: (state) => {
       state.isUpdating = true;
@@ -117,10 +129,25 @@ const adminSlice = createSlice({
     },
     adminRoleSuccess: (state, action) => {
       state.adminRoles = action.payload;
-    }
+    },
+    pouchTransactionStart: (state) => {
+      state.pouchTransactionLoading = true;
+      state.pouchTransactionError = null;
+    },
+    pouchTransactionSuccess: (state, action) => {
+      state.pouchTransactionLoading = false;
+      state.pouchTransaction = action.payload.content;
+      state.currentPage = action.payload.currentPage;
+      state.totalPages = action.payload.totalPages;
+      state.pageSize = action.payload.payloadSize;
+    },
+    pouchTransactionFailure: (state, action) => {
+      state.pouchTransactionLoading = false;
+      state.pouchTransactionError = action.payload;
+    },
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure } = adminSlice.actions;
 
 export default adminSlice.reducer;

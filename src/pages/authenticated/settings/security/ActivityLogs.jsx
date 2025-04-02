@@ -12,16 +12,16 @@ import ErrorLayout from "../../../../components/ui/error_page";
 import { dateFormatter } from "../../../../utils/dateFormatter";
 
 
-const AuditLog = () => {
+const ActivityLog = () => {
     const {setAppTitle} = useTitle();
     const { setSettingsTitle } = useSettingsTitle();
     const dispatch = useDispatch();
     const axiosPrivate = useAxiosPrivate();
-    const {adminLogsLoading, adminLogsError, adminLogs} = useSelector((state) => state.setting);
+    const {activityLogsLoading, activityLogsError, activityLogs} = useSelector((state) => state.setting);
     const settingService = new SettingsService(axiosPrivate);
 
-    const loadAdminLogs = async () => {
-        await settingService.fetchAdminLogs(dispatch);
+    const loadActivityLogs = async () => {
+        await settingService.fetchActivityLogs(dispatch);
     }
         
     useEffect(() => {
@@ -33,30 +33,21 @@ const AuditLog = () => {
     }, []);
 
     useEffect(() => {
-        loadAdminLogs();
+        loadActivityLogs();
     }, [dispatch]);
 
     const onRefresh = () => {
-        loadAdminLogs();
+        loadActivityLogs();
     };
 
+  if (activityLogsLoading) return <Spinner />
 
-
-  const [logs] = useState([
-    { user: "SuperAdmin", action: "Bankole account was disable", ip: "182.70.60.179", date: "19/02/2025 08:03:23" },
-    { user: "SuperAdmin", action: "Log In", ip: "182.70.60.179", date: "19/02/2025 08:03:23" },
-    { user: "SuperAdmin", action: "Bankole account was disable", ip: "182.70.60.179", date: "19/02/2025 08:03:23" },
-    { user: "Admin", action: "Bankole account was disable", ip: "182.70.60.179", date: "19/02/2025 08:03:23" },
-  ]);
-
-  if (adminLogsLoading) return <Spinner />
-
-  if (adminLogsError) return <ErrorLayout errMsg={adminLogsError} handleRefresh={onRefresh} />
+  if (activityLogsError) return <ErrorLayout errMsg={activityLogsError} handleRefresh={onRefresh} />
 
   return (
-    <div className="p-6 min-h-screen">
-      <div className="">
-        <div className="flex space-x-10 mb-4 text-gray-500 mb-10">
+    <div className="min-h-screen">
+        <h2 className="mb-5 dark:text-white font-[600] text-md md:text-lg">Activity Log</h2>
+        {/* <div className="flex space-x-10 mb-4 text-gray-500 mb-10">
             <div className="space-y-2">
                 <p className="text-xs">From</p>
                 <div className="flex items-center">
@@ -83,7 +74,7 @@ const AuditLog = () => {
                     />
                 </div>
             </div>
-        </div>
+        </div> */}
 
         <div className="">
             <div className="text-xs md:text-sm lg:text-[16px] font-[600] text-black/70 dark:text-white border px-3 py-2 grid grid-cols-4">
@@ -93,9 +84,9 @@ const AuditLog = () => {
             <span className="text-center">Date</span>
             </div>
 
-            {adminLogs.map((log) => (
+            {activityLogs.map((log) => (
             <div key={log.id} className="text-[9px] md:text-xs font-[600] border-b grid grid-cols-4 text-black/50 dark:text-white/60 py-4 px-3">
-                <div className="flex items-center">{log?.activityType}</div>
+                <div className="flex items-center">{log?.activityType[0].toUpperCase()}{log?.activityType.substring(1)}</div>
                 <div className="flex flex-col justify-center items-center gap-3">
                     {log?.description}
                     <TextButton
@@ -111,20 +102,8 @@ const AuditLog = () => {
             </div>
             ))}
         </div>
-        <div className="flex justify-between items-center p-4">
-          <span>Showing 1 to 4 out of 13</span>
-          <div className="flex space-x-2">
-            <Button variant="outline">
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-            <Button variant="primary">
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default AuditLog;
+export default ActivityLog;

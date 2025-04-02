@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 const TextButton = ({ children, onClick, variant = "primary", className, disabled=false }) => {

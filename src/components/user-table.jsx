@@ -53,11 +53,11 @@ import PropTypes from 'prop-types';
                 <table className="divide-y-6 divide-white dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
                     <thead className="bg-gray-300 dark:bg-[#20263D]">
                         <tr>
-                            <th className="px-4 py-3 text-left text-[9px] md:text-xs font-medium text-gray-500 tracking-wider">S.No</th>
+                            <th className="px-4 py-3 text-left text-[7px] md:text-[9px] lg:text-xs font-medium text-gray-500 tracking-wider">S.No</th>
                             {columns.map((column, colIndex) => (
                                 <th
                                     key={colIndex}
-                                    className="px-4 py-3 text-left text-[9px] md:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    className="px-4 py-3 text-left text-[7px] md:text-[9px] lg:text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
                                     {column.header}
                                 </th>
@@ -75,9 +75,9 @@ import PropTypes from 'prop-types';
                         ) : (
                             data.map((row, rowIndex) => (
                                 <tr key={rowIndex} className="hover:bg-gray-200 dark:hover:bg-gray-600">
-                                    <td className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500 dark:text-white">{rowIndex + 1}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-[7px] md:text-xs lg:text-sm text-gray-500 dark:text-white">{rowIndex + 1}</td>
                                     {columns.map((column, colIndex) => (
-                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500 dark:text-white">
+                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-[7px] md:text-xs lg:text-sm text-gray-500 dark:text-white">
                                             {column.render
                                                 ? column.render(row[column.accessor], row)
                                                 : typeof row[column.accessor] === 'string' && row[column.accessor].length > 17

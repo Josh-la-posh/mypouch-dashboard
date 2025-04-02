@@ -66,7 +66,6 @@ const DashboardTransactions = () => {
 
   const openModal = (val) => {
     setSelectedTransaction(val);
-    console.log('Selected trans: ', val);
     setModalOpen(true);
   };
   const closeModal = () => setModalOpen(false);

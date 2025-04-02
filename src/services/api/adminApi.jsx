@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -77,7 +77,7 @@ class AdminService {
     }
   };
 
-  async activateAdmin(id, dispatch) {  
+  async unblockAdmin(id, dispatch) {  
     try {
       dispatch(activateAdminStart());
       const response = await axiosPrivate.put(`/admin/unblock-admin/${id}`);
@@ -93,12 +93,44 @@ class AdminService {
     }
   };
 
-  async deactivateAdmin(id, dispatch) {  
+  async blockAdmin(id, dispatch) {  
     try {
       dispatch(adminStart());
       const response = await axiosPrivate.put(`/admin/block-admin/${id}`);
       await this.fetchAllAdmin(dispatch);
       dispatch(adminSuccess());
+      toast.success(response.data.message);
+    } catch (err) {
+      if (!err.response) {
+        dispatch(adminFailure('No Server Response'));
+      } else {
+        dispatch(adminFailure(err.response.data.message));
+      }
+    }
+  };
+
+  async deactivateAdmin(id, dispatch) {  
+    try {
+      dispatch(activateAdminStart());
+      const response = await axiosPrivate.put(`/admin/deactivate-admin/${id}`);
+      await this.fetchAllAdmin(dispatch);
+      dispatch(activateAdminSuccess());
+      toast.success(response.data.message);
+    } catch (err) {
+      if (!err.response) {
+        dispatch(adminFailure('No Server Response'));
+      } else {
+        dispatch(adminFailure(err.response.data.message));
+      }
+    }
+  };
+
+  async deleteAdmin(id, dispatch) {  
+    try {
+      dispatch(activateAdminStart());
+      const response = await axiosPrivate.delete(`/admin/delete-admin/${id}`);
+      await this.fetchAllAdmin(dispatch);
+      dispatch(activateAdminSuccess());
       toast.success(response.data.message);
     } catch (err) {
       if (!err.response) {
@@ -206,6 +238,38 @@ class AdminService {
     }
   };
 
+  async setCommissionRate(formData, dispatch) {
+    try {
+      dispatch(adminStart());
+      const response = await axiosPrivate.post('/admin/commission-rate',
+        JSON.stringify(formData)
+      );
+      toast.success('Commission rate set successfully');
+      this.fetchCommissionRate(dispatch);
+    } catch (err) {
+      if (!err.response) {
+        dispatch(adminFailure('No Server Response'));
+      } else {
+        dispatch(adminFailure(err.response.data.message));
+      }
+    }
+  };
+
+  async fetchCommissionRate(dispatch) {
+    try {
+      dispatch(adminStart());
+      const response = await axiosPrivate.get('/admin/commission-rate');
+      console.log(response.data);
+      dispatch(commissionRateSuccess(response.data?.commission));
+    } catch (err) {
+      if (!err.response) {
+        dispatch(adminFailure('No Server Response'));
+      } else {
+        dispatch(adminFailure(err.response.data.message));
+      }
+    }
+  };
+
   async fetchSuspiciousActivities(dispatch) {
     try {
       dispatch(adminStart());
@@ -251,7 +315,7 @@ class AdminService {
     }
   };
 
-  async fetchAdminWallets(currency, dispatch) {
+  async fetchPouchWallets(currency, dispatch) {
     try {
       dispatch(adminCurrencyStart());
       const response = await axiosPrivate.get(`/wallet/get-system-wallets?currency=${currency}`);
@@ -262,6 +326,21 @@ class AdminService {
         dispatch(adminCurrencyFailure('No Server Response'));
       } else {
         dispatch(adminCurrencyFailure(err.response.data.message));
+      }
+    }
+  };
+
+  async fetchPouchTransactions(date, type, status, page, limit, dispatch) {
+    try {
+      dispatch(pouchTransactionStart());
+      const response = await axiosPrivate.get(`/transaction/admin/all/system-transactions?date=${date}&transactionType=${type}&status=${status}&page=${page}&limit=${limit}`);
+      const data = response.data;
+      dispatch(pouchTransactionSuccess(data));
+    } catch (err) {
+      if (!err.response) {
+        dispatch(pouchTransactionFailure('No Server Response'));
+      } else {
+        dispatch(pouchTransactionFailure(err.response.data.message));
       }
     }
   };

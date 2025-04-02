@@ -15,7 +15,7 @@ const Card = ({
 }) => {
 
     return(
-        <div className={`w-full md:min-w-36 md:max-w-60 rounded-md p-3 bg-[#CABEC7] ${className}`}>
+        <div className={`w-full rounded-md p-3 bg-[#CABEC7] ${className}`}>
             <div className="flex gap-2">
                 <div className={`text-[5px] md:text-xs ${color} ${iconClassName}`}>
                     {icon}

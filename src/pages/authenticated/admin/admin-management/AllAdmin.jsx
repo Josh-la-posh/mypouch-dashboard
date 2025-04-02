@@ -8,10 +8,9 @@ import Spinner from '../../../../components/ui/spinner';
 import { Link } from 'react-router-dom';
 import useTitle from '../../../../services/hooks/useTitle';
 import TextButton from '../../../../components/ui/textButton';
-import { Check, Edit3Icon, ToggleLeft, ToggleRight, X } from 'lucide-react';
+import { Ban, Check, Edit3Icon, Info, ToggleLeft, ToggleRight, Trash2Icon, TriangleAlert, X } from 'lucide-react';
 import useAuth from '../../../../services/hooks/useAuth';
 import SelectField from '../../../../components/ui/select';
-import Button from '../../../../components/ui/button';
 
 function AllAdminPage() {
   const {auth} = useAuth();
@@ -37,12 +36,20 @@ function AllAdminPage() {
     setSelectedId('');
   }
 
+  const blockAdmin = async (id) => {
+    await adminService.blockAdmin(id, dispatch);
+  }
+
+  const unblockAdmin = async (id) => {
+    await adminService.unblockAdmin(id, dispatch);
+  }
+
   const deactivateAdmin = async (id) => {
     await adminService.deactivateAdmin(id, dispatch);
   }
 
-  const activateAdmin = async (id) => {
-    await adminService.activateAdmin(id, dispatch);
+  const deleteAdmin = async (id) => {
+    await adminService.deleteAdmin(id, dispatch);
   }
 
   const handleOnEdit = (id) => {
@@ -110,28 +117,58 @@ function AllAdminPage() {
                   {
                     admin?.status === 'active' ?
                     <Check size='18' className='text-green-600' /> :
+                    admin?.status === 'inactive' ?
+                    <TriangleAlert size='18' className='text-yellow-700'/> :
+                    admin?.status === 'blocked' ?
+                    <Ban size='18' className='text-black-700'/> :
                     <X size='18' className='text-red-700'/>
                   }
                 </div>
                 {
                   auth?.data?.role?.name === 'SUPER-ADMIN' &&
                   <div className="flex items-center justify-center gap-3">
+                    {(admin?.status === 'inactive' || admin?.status === 'deleted') ?
+                    <div className='mr-3'></div> :
                     <TextButton
                       onClick={() => handleOnEdit(admin?.id)}
                     >
                       <Edit3Icon size='14px' className='text-blue-500' />                  
-                    </TextButton>
+                    </TextButton>}
                     {admin?.status === 'active' ? 
-                      (<TextButton
-                        onClick={() => deactivateAdmin(admin?.id)}  
-                      >
-                        <ToggleRight className='text-green-600'/>
-                      </TextButton>)
-                      : (<TextButton
-                          onClick={() => activateAdmin(admin?.id, admin?.role?.name)}
+                      (<>
+                        <TextButton
+                          onClick={() => blockAdmin(admin?.id)}  
                         >
-                        <ToggleLeft className='text-red-700' />
-                      </TextButton>)
+                          <ToggleRight className='text-green-600'/>
+                        </TextButton>
+                        <TextButton
+                          onClick={() => deactivateAdmin(admin?.id)}  
+                        >
+                          <Trash2Icon size='16px' className='text-red-600'/>
+                        </TextButton>
+                      </>)
+                      : admin?.status === 'blocked' ?
+                      (<>
+                        <TextButton
+                          onClick={() => unblockAdmin(admin?.id)}  
+                        >
+                          <ToggleLeft className='text-black'/>
+                        </TextButton>
+                        <TextButton
+                          onClick={() => deactivateAdmin(admin?.id)}  
+                        >
+                          <Trash2Icon size='16px' className='text-red-600'/>
+                        </TextButton>
+                      </>) 
+                      : admin?.status === 'inactive' ?
+                      (<>
+                        <div className='mx-3'></div>
+                        <TextButton
+                          onClick={() => deleteAdmin(admin?.id)}  
+                        >
+                          <Trash2Icon size='16px' className='text-red-600'/>
+                        </TextButton>
+                      </>) : <></>
                     }
                   </div>
                 }

@@ -5,7 +5,10 @@ const initialState = {
   isUpdating: false,
   adminLogs: [],
   adminLogsLoading: false,
-  adminLogsError: null
+  adminLogsError: null,
+  activityLogs: [],
+  activityLogsLoading: false,
+  activityLogsError: null,
 };
 
 const settingsSlice = createSlice({
@@ -41,10 +44,22 @@ const settingsSlice = createSlice({
     adminLogFailure: (state, action) => {
       state.adminLogsLoading = false;
       state.adminLogsError = action.payload;
+    },
+    activityLogStart: (state) => {
+      state.activityLogsLoading = true;
+      state.activityLogsError = null;
+    },
+    activityLogSuccess: (state, action) => {
+      state.activityLogsLoading = false;
+      state.activityLogs = action.payload;
+    },
+    activityLogFailure: (state, action) => {
+      state.activityLogsLoading = false;
+      state.activityLogsError = action.payload;
     }
   },
 });
 
-export const { changePasswordStart, changePasswordSuccess, changePasswordFailure, updateAdminStart, updateAdminSuccess, updateAdminFailure, adminLogStart, adminLogSuccess, adminLogFailure } = settingsSlice.actions;
+export const { changePasswordStart, changePasswordSuccess, changePasswordFailure, updateAdminStart, updateAdminSuccess, updateAdminFailure, adminLogStart, adminLogSuccess, adminLogFailure, activityLogStart, activityLogSuccess, activityLogFailure } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

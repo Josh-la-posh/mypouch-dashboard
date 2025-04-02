@@ -21,7 +21,7 @@ const SettingsSidebar = () => {
             url: '/settings/notification'
         },
         {
-            id: 2,
+            id: 3,
             icon: <Lock size={'17px'} />,
             name: 'Security Settings',
             abbr: 'Security',

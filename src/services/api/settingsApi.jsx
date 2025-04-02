@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { changePasswordSuccess } from "../../redux/slices/adminSlice";
-import { adminLogFailure, adminLogStart, adminLogSuccess, changePasswordFailure, changePasswordStart, updateAdminFailure, updateAdminStart, updateAdminSuccess } from "../../redux/slices/settingSlice";
+import { activityLogFailure, activityLogStart, activityLogSuccess, adminLogFailure, adminLogStart, adminLogSuccess, changePasswordFailure, changePasswordStart, updateAdminFailure, updateAdminStart, updateAdminSuccess } from "../../redux/slices/settingSlice";
 import { axiosPrivate } from "./axios";
 
 class SettingsService {
@@ -80,6 +80,28 @@ class SettingsService {
                     toast.error(err?.response?.data?.message);
                 } else {
                     dispatch(adminLogFailure(err?.response?.data?.message));
+                    toast.error(err?.response?.data?.message);
+                }
+            }
+        }
+    };
+    
+    async fetchActivityLogs(dispatch) {
+        try {
+            dispatch(activityLogStart());
+            const response = await axiosPrivate.get('/admin/acticities-admin');
+            const data = response.data;
+            dispatch(activityLogSuccess(data))
+        } catch (err) {
+            if (!err.response) {
+                dispatch(activityLogFailure('No Server Response'));
+                return toast.error('No Server Response');
+            } else {
+                if (err.response.status === 400) {
+                    dispatch(activityLogFailure(err?.response?.data?.message));
+                    toast.error(err?.response?.data?.message);
+                } else {
+                    dispatch(activityLogFailure(err?.response?.data?.message));
                     toast.error(err?.response?.data?.message);
                 }
             }

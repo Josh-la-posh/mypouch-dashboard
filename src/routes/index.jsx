@@ -24,7 +24,8 @@ import Profile from "../pages/authenticated/settings/Profile";
 import NotificationSettings from "../pages/authenticated/settings/notification";
 import SecuritySettings from "../pages/authenticated/settings/security/SecuritySettings";
 import ChangePassword from "../pages/authenticated/settings/security/ChangePassword";
-import AuditLog from "../pages/authenticated/settings/security/AuditLogs";
+import LoginLog from "../pages/authenticated/settings/security/LoginLogs";
+import ActivityLog from "../pages/authenticated/settings/security/ActivityLogs";
 
 const RouteSystem = () => {
   return (
@@ -60,9 +61,10 @@ const RouteSystem = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<SettingsLayout />}>
             <Route path="/settings">
-            <Route path='profile' element={<Profile />} />
-            <Route path='security' element={<SecuritySettings />} />
-            <Route path='security/audit-logs' element={<AuditLog />} />
+              <Route path='profile' element={<Profile />} />
+              <Route path='security' element={<SecuritySettings />} />
+              <Route path='security/login-logs' element={<LoginLog />} />
+              <Route path='security/activity-logs' element={<ActivityLog />} />
               <Route path='security/change-password' element={<ChangePassword />} />
               <Route path='notification' element={<NotificationSettings />} />
             </Route>

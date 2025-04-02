@@ -97,7 +97,7 @@ const UserTransactionHistory = ({id}) => {
   
   useEffect(() => {
     loadUserTransaction(id, '', status, userCurrentPage, userPageSize);
-  }, [dispatch, id, status, userCurrentPage, userPageSize]);
+  }, [dispatch, id, userCurrentPage, userPageSize]);
 
   const onRefresh = () => {
     loadUserTransaction(id, '', status, userCurrentPage, userPageSize);
