@@ -12,8 +12,6 @@ import Dashboard from "../pages/authenticated/dashboard/Dashboard";
 import CurrencyExchangeLimit from "../pages/authenticated/admin/currency-management/currency-exchange-limit";
 import AllAdminPage from "../pages/authenticated/admin/admin-management/AllAdmin";
 import SettingsLayout from "../layouts/SettingsLayout";
-import SecurityAndPermission from "../pages/authenticated/settings/Security&Permission";
-import ChangePassword from "../pages/authenticated/settings/ChangePassword";
 import TransactionFeeManagement from "../pages/authenticated/admin/currency-management/TransactionFeeManagement";
 import AdminSetCurrencies from "../pages/authenticated/admin/currency-management/AdminSetCurrencies";
 import AdminViewSetCurrencies from "../pages/authenticated/admin/currency-management/AdminViewSetCurrencies";
@@ -23,6 +21,10 @@ import PouchWallet from "../pages/authenticated/admin/pouch-wallet/PouchWallet";
 import AdminSupportiveForm from "../pages/authenticated/admin/admin-management/AdminSupportiveForm";
 import PouchFundingSuccess from "../pages/authenticated/admin/pouch-wallet/SuccessPage";
 import Profile from "../pages/authenticated/settings/Profile";
+import NotificationSettings from "../pages/authenticated/settings/notification";
+import SecuritySettings from "../pages/authenticated/settings/security/SecuritySettings";
+import ChangePassword from "../pages/authenticated/settings/security/ChangePassword";
+import AuditLog from "../pages/authenticated/settings/security/AuditLogs";
 
 const RouteSystem = () => {
   return (
@@ -59,8 +61,10 @@ const RouteSystem = () => {
           <Route path="/settings" element={<SettingsLayout />}>
             <Route path="/settings">
             <Route path='profile' element={<Profile />} />
-              <Route path='security-and-permission' element={<SecurityAndPermission />} />
-              <Route path='security-and-permission/change-password' element={<ChangePassword />} />
+            <Route path='security' element={<SecuritySettings />} />
+            <Route path='security/audit-logs' element={<AuditLog />} />
+              <Route path='security/change-password' element={<ChangePassword />} />
+              <Route path='notification' element={<NotificationSettings />} />
             </Route>
           </Route>
         </Route>

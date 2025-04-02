@@ -1,19 +1,19 @@
 import {useEffect, useState} from 'react'
-import InputField from '../../../components/ui/input'
-import Button from '../../../components/ui/button';
-import useSettingsTitle from '../../../services/hooks/useSettitngsTitle';
+import InputField from '../../../../components/ui/input'
+import Button from '../../../../components/ui/button';
+import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
-import useAxiosPrivate from '../../../services/hooks/useAxiosPrivate';
-import SettingService from '../../../services/api/settingsApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
+import SettingService from '../../../../services/api/settingsApi';
 import { toast } from 'react-toastify';
-import useTitle from '../../../services/hooks/useTitle';
+import useTitle from '../../../../services/hooks/useTitle';
 
 function ChangePassword() {
   const {setAppTitle} = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {isChangingPassword} = useSelector((state) => state.admin);
+  const {isChangingPassword} = useSelector((state) => state.setting);
   const settingService = new SettingService(axiosPrivate);
   const [pss, setPss] = useState('');
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ function ChangePassword() {
   }, []);
     
   useEffect(() => {
-    setSettingsTitle('Security & Permission');
+    setSettingsTitle('Security Settings');
   }, []);
 
   const handleChange = (e) => {

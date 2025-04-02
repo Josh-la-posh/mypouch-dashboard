@@ -94,7 +94,7 @@ function PouchWallet() {
             </TextButton>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
             {
                 adminCurrencies && adminCurrencies.map((cur, index) => (
                     <div key={cur.id} className="w-full flex-1">

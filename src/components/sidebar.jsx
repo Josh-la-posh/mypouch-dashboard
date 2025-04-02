@@ -43,7 +43,7 @@ const Sidebar = () => {
             id: 6,
             icon: <Settings size='15' />,
             title: 'Settings',
-            url: '/settings/security-and-permission',
+            url: '/settings/profile',
         },
     ];
 

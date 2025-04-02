@@ -87,7 +87,7 @@ function AllAdminPage() {
           Add Admin
         </Link>
       </div>
-      <div className='w-full space-y-6 text-sm md:text-md'>
+      <div className='w-full space-y-6 text-xs md:text-sm lg:text-[16px]'>
         <div className={`font-[600] text-black/70 dark:text-white grid ${auth?.data?.role?.name === 'SUPER-ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} border border-primary px-3 py-2`}>
           <p className='col-span-2'>Name</p>
           <p className='text-center'>Role</p>
@@ -100,10 +100,10 @@ function AllAdminPage() {
             <div key={admin.id} className="">
               <div className={`grid ${auth?.data?.role?.name === 'SUPER-ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} items-center text-black/50 dark:text-white/60 px-3`}>
                 <div className="col-span-2">
-                    <p className='text-md font-[600]'>{admin?.firstName} {admin?.lastName}</p>
-                    <p className='text-xs font-[400]'>{admin?.email}</p>
+                    <p className='font-[600]'>{admin?.firstName} {admin?.lastName}</p>
+                    <p className='text-[9px] md:text-[11px] font-[400]'>{admin?.email}</p>
                 </div>
-                <div className="text-xs font-[600] text-center">
+                <div className="text-[9px] md:text-xs font-[600] text-center">
                   {admin?.role?.name}
                 </div>
                 <div className="flex items-center justify-center">

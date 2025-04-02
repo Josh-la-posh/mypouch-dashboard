@@ -1,10 +1,10 @@
-import { transactionFailure, transactionStart, transactionSuccess } from "../../redux/slices/transactionSlice";
+import { toast } from "react-toastify";
+import { transactionFailure, transactionStart, transactionSuccess, walletFailure, walletStart, walletSuccess } from "../../redux/slices/transactionSlice";
 import { axiosPrivate } from "./axios";
 
 class TransactionService {
-    constructor(location, navigate) {
+    constructor(location) {
         this.location = location;
-        this.navigate = navigate;
     }
 
     async fetchtransactions(date, status, page, limit, dispatch) {
@@ -13,7 +13,6 @@ class TransactionService {
         const response = await axiosPrivate.get(`/transaction/admin/all/transactions?date=${date}&status=${status}&page=${page}&limit=${limit}`);
         
         const data = response.data;
-        console.log('user transactions: ', data);
 
         dispatch(transactionSuccess(data));
       } catch (err) {
@@ -21,6 +20,23 @@ class TransactionService {
           dispatch(transactionFailure('No Server Response'));
         } else {
             dispatch(transactionFailure(err.response.data.messsage));
+        }
+      }
+    };
+
+    async fetchWallets(dispatch) {
+      try {
+        dispatch(walletStart());
+        const response = await axiosPrivate.get(`/wallet/wallet-balance`);        
+        const data = response.data.totals;
+        dispatch(walletSuccess(data));
+      } catch (err) {
+        if (!err.response) {
+          dispatch(walletFailure());
+          toast.error('No Server Response');
+        } else {
+            dispatch(walletFailure());
+            toast.error(err.response.data.messsage);
         }
       }
     };

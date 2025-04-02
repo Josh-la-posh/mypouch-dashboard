@@ -1,4 +1,4 @@
-import { Lock, User } from 'lucide-react';
+import { AlertCircle, Lock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '../services/hooks/useSettitngsTitle';
 
@@ -15,10 +15,17 @@ const SettingsSidebar = () => {
         },
         {
             id: 2,
+            icon: <AlertCircle size={'17px'} />,
+            name: 'Notification',
+            abbr: 'Notification',
+            url: '/settings/notification'
+        },
+        {
+            id: 2,
             icon: <Lock size={'17px'} />,
-            name: 'Security & Permission',
+            name: 'Security Settings',
             abbr: 'Security',
-            url: '/settings/security-and-permission'
+            url: '/settings/security'
         },
     ]
 

@@ -13,6 +13,7 @@ import SelectField from "../../../components/ui/select";
 import Button from "../../../components/ui/button";
 import useTitle from "../../../services/hooks/useTitle";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status";
+import Card from "../../../components/ui/card";
 
 const Transactions = () => {
     const columns = [
@@ -64,8 +65,8 @@ const Transactions = () => {
     const {setAppTitle} = useTitle();
     const dispatch = useDispatch();
     const axiosPrivate = useAxiosPrivate();
-    const {loading, error, transactions, currentPage, totalPages} = useSelector((state) => state.transaction);
-    const transactionService = new TransactionService(axiosPrivate);
+    const {loading, error, transactions, currentPage, totalPages, isWalletLoading, wallets} = useSelector((state) => state.transaction);
+    const transactionService = new TransactionService();
     const [filteredData, setFilteredData] = useState(transactions);
     const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
     const [userTotalPages, setUserTotalPages] = useState(totalPages);
@@ -74,6 +75,11 @@ const Transactions = () => {
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const [status, setStatus] = useState('');
     const [date, setDate] = useState('');
+    const cardColor = 'bg-[#F1F8FF]';
+  
+    useEffect(() => {
+        setAppTitle('Transactions');
+    }, []);
 
     const openModal = (val) => {
         setSelectedTransaction(val);
@@ -86,10 +92,14 @@ const Transactions = () => {
         const newStatus = status === 'All' ? '' : status;
         await transactionService.fetchtransactions(date, newStatus, page, limit, dispatch);
     }
+
+    const loadWallets = async () => {
+      await transactionService.fetchWallets(dispatch);
+    }
   
     useEffect(() => {
-        setAppTitle('Transactions');
-    }, []);
+      loadWallets('');
+    }, [dispatch]);
 
     useEffect(() => {
         setFilteredData(transactions);
@@ -122,32 +132,52 @@ const Transactions = () => {
     if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
   
     return (
-    <div className="space-y-6">
-        <div className="flex items-center gap-4 md:max-w-[600px] my-4">
-            <SelectField
-                options={TRANSACTIONSTATUS}
-                placeholder="Filter"
-                value={status}
-                onChange={handleFilterChange}
-            />
-            <div className="p-0 m-0">
-                <Button
-                    onClick={() => loadTransaction('', status, '1', '10')}
-                    className='text-xs'
-                >
-                    Search
-                </Button>
-            </div>
+    <div className="space-y-10">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
+            {
+                wallets && wallets.map((wallet) => (
+                    <div key={wallet.currency} className="w-full flex-1">
+                        <Card
+                            icon={wallet?.currency}
+                            iconClassName='w-4 md:w-8 h-4 md:h-8 text-[5px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
+                            className='w-full'
+                            amount={wallet?.totalBalance}
+                            name='Total balance'
+                            rate=''
+                            color={cardColor}
+                        />
+                    </div>
+                ))
+            }
         </div>
-        <UserTable
-            data={filteredData}
-            columns={columns}
-            totalPages={userTotalPages}
-            currentPage={userCurrentPage}
-            setCurrentPage={setUserCurrentPage}
-            rowsPerPage={userPageSize}
-            setRowsPerPage={setUserPageSize}
-        />
+        <div className="space-y-6">
+            <div className="flex items-center gap-4 md:max-w-[600px] my-4">
+                <SelectField
+                    options={TRANSACTIONSTATUS}
+                    placeholder="Filter"
+                    value={status}
+                    onChange={handleFilterChange}
+                />
+                <div className="p-0 m-0">
+                    <Button
+                        onClick={() => loadTransaction('', status, '1', '10')}
+                        className='text-xs'
+                    >
+                        Search
+                    </Button>
+                </div>
+            </div>
+            <UserTable
+                data={filteredData}
+                columns={columns}
+                totalPages={userTotalPages}
+                currentPage={userCurrentPage}
+                setCurrentPage={setUserCurrentPage}
+                rowsPerPage={userPageSize}
+                setRowsPerPage={setUserPageSize}
+            />
+        </div>
+        
         {/* Modal component */}
         <CustomModal isOpen={isModalOpen} title="Transaction Details" onClose={closeModal}>
             <div className="space-y-6">
