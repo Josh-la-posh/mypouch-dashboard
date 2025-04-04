@@ -303,8 +303,9 @@ class AdminService {
   async createAdminWallet(dispatch) {
     try {
       dispatch(adminCurrencyStart());
-      await axiosPrivate.post('/wallet/admin/wallet/create-admin-user-wallet');
-      this.fetchAdminWallets('', dispatch);
+      const response = await axiosPrivate.post('/wallet/admin/wallet/create-admin-user-wallet');
+      const data = response.data;
+      dispatch(adminCurrencySuccess(data))
       toast.success('Wallets created successfully!!!');
     } catch (err) {
       if (!err.response) {
@@ -354,7 +355,6 @@ class AdminService {
       const data = response.data.data.link;
       console.log('new link: ', data);
       // window.location.href = data;
-      // this.fetchAdminWallets('', dispatch);
       dispatch(fundingWalletSuccess(data));
       toast.success(`${formData.currency} wallet credited successfully`);
     } catch (err) {

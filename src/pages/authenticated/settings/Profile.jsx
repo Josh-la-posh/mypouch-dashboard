@@ -30,6 +30,7 @@ const Profile = () => {
     state: auth?.data?.state,
     gender: auth?.data?.gender,
     profilePicture: auth?.data?.profilePicture,
+    role: auth?.data?.role?.name
   });
   const [submittingData, setSubmittingData] = useState({});
 
@@ -177,6 +178,14 @@ const Profile = () => {
           options={GENDER}
           value={formData.gender}
           onChange={handleGenderChange}
+        />
+        <InputField
+          label="Role"
+          type="text"
+          id="role"
+          value={formData.role}
+          disabled={true}
+          onChange={handleChange}
         />
       </div>
       {canUpdate && (
