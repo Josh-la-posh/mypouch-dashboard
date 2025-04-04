@@ -1,10 +1,24 @@
 import { ArrowDown, ArrowRightIcon, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useTitle from "../../../../services/hooks/useTitle";
+import useSettingsTitle from "../../../../services/hooks/useSettitngsTitle";
 
 
 const SecuritySettings = () => {
+  const {setAppTitle} = useTitle();
+  const { setSettingsTitle } = useSettingsTitle();
   const [isLogDisplayed, setIsLogDisplayed] = useState(false);
+  
+    
+  useEffect(() => {
+    setAppTitle('Settings');
+}, []);
+  
+useEffect(() => {
+  setSettingsTitle('Security Settings');
+}, []);
+
   return (
     <div className="min-h-screen">
       <div className="">

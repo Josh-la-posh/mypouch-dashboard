@@ -303,14 +303,14 @@ class AdminService {
   async createAdminWallet(dispatch) {
     try {
       dispatch(adminCurrencyStart());
-      const response = await axiosPrivate.post('/admin/wallet/create-admin-user-wallet');
-      toast.success('Wallets created successfully!!!');
+      await axiosPrivate.post('/wallet/admin/wallet/create-admin-user-wallet');
       this.fetchAdminWallets('', dispatch);
+      toast.success('Wallets created successfully!!!');
     } catch (err) {
       if (!err.response) {
-        dispatch(adminFailure('No Server Response'));
+        dispatch(adminCurrencyFailure('No Server Response'));
       } else {
-        dispatch(adminFailure(err.response.data.message));
+        dispatch(adminCurrencyFailure(err.response.data.message));
       }
     }
   };

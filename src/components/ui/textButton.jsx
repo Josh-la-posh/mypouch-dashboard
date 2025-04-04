@@ -4,7 +4,7 @@ const TextButton = ({ children, onClick, variant = "primary", className, disable
     const baseClass = "font-[700] text-md";
     const variantClass =
       variant === "primary"
-        ? "text-primary hover:text-primary-dark dark:hover:text-white text-xs md:text-md"
+        ? "text-primary hover:text-primary-dark dark:hover:text-white text-xs md:text-md cursor-pointer"
         : variant === "danger"
         ? "text-danger"
         : "bg-green-500 hover:bg-gray-600";

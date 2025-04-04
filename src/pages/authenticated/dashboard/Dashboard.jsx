@@ -103,12 +103,10 @@ const Dashboard = () => {
           <div className="">
             <div className="flex items-center justify-around h-5">
               <SelectField
-                textColor='text-primary'
                 options={CURRENCIES}
                 placeholder=""
                 value={currency}
                 onChange={(e) => selectCurrency(e.target.value)}
-                selectClassName={'bg-primary/14 text-primary text-sm border-transparent dark:border-gray-300 rounded-sm py-2'}
               />
               <p className="text-xs font-[600] text-center dark:text-[#C2A6DD]">Daily Exchange Rate</p>
               <TextButton
@@ -117,11 +115,11 @@ const Dashboard = () => {
                 <RefreshCcw size='16px'/>
               </TextButton>
             </div>
-            <div className="mt-4 space-y-2 flex flex-col items-center">
+            <div className="mt-10 space-y-2 flex flex-col items-center">
               {rateError 
                 ? (
                 <div className="space-y-5 flex flex-col items-center my-10">
-                  <p className="text-primary">Unable to load data</p>
+                  <p className="text-black/70 dark:text-white/60">Unable to load data</p>
                   <div className="w-[120px]">
                     <Button
                       variant="primary"
