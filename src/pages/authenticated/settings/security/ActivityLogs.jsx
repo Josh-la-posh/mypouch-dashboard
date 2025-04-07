@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Calendar, User } from "lucide-react";
-import Button from "../../../../components/ui/button";
 import TextButton from "../../../../components/ui/textButton";
 import useTitle from "../../../../services/hooks/useTitle";
 import useSettingsTitle from "../../../../services/hooks/useSettitngsTitle";
@@ -10,6 +8,7 @@ import SettingsService from "../../../../services/api/settingsApi";
 import Spinner from "../../../../components/ui/spinner";
 import ErrorLayout from "../../../../components/ui/error_page";
 import { dateFormatter, timeFormatter } from "../../../../utils/dateFormatter";
+import CustomModal from "../../../../components/ui/custom-modal";
 
 
 const ActivityLog = () => {
@@ -19,6 +18,14 @@ const ActivityLog = () => {
     const axiosPrivate = useAxiosPrivate();
     const {activityLogsLoading, activityLogsError, activityLogs} = useSelector((state) => state.setting);
     const settingService = new SettingsService(axiosPrivate);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedAdmin, setSelectedAdmin] = useState({});
+
+    const openModal = (val) => {
+        setSelectedAdmin(val);
+        setModalOpen(true);
+    };
+    const closeModal = () => setModalOpen(false);
 
     const loadActivityLogs = async () => {
         await settingService.fetchActivityLogs(dispatch);
@@ -93,6 +100,7 @@ const ActivityLog = () => {
                     </span>                    
                     <TextButton
                         className='border py-1 px-2 rounded-sm text-[8px]'
+                        onClick={() => openModal(log)}
                     >
                         Check Details
                     </TextButton>
@@ -109,6 +117,46 @@ const ActivityLog = () => {
             </div>
             ))}
         </div>
+        
+        {/* Modal component */}
+        <CustomModal isOpen={isModalOpen} title="Activity Details" onClose={closeModal}>
+            <div className="space-y-6">
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Email</p>
+                    <p>{selectedAdmin?.admin?.email}</p>
+                </div>
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Activity</p>
+                    <p>{selectedAdmin.activityType}</p>
+                </div>
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Entity Id</p>
+                    <p>{selectedAdmin.entityId}</p>
+                </div>
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Entity Type</p>
+                    <p>{selectedAdmin.entityType}</p>
+                </div>
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>IP Address</p>
+                    <p>{selectedAdmin.ipAddress}</p>
+                </div>
+                {selectedAdmin?.admin?.role?.name !== null &&
+                    <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <p>Role</p>
+                        <p>{selectedAdmin?.admin?.role?.name}</p>
+                    </div>
+                }
+                <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Created Date</p>
+                    <p>{dateFormatter(selectedAdmin?.createdDate)}</p>
+                </div>
+                <div className="text-center text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <p>Description</p>
+                    <p>{selectedAdmin.description}</p>
+                </div>
+            </div>
+        </CustomModal>
     </div>
   );
 };
