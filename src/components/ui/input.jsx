@@ -18,7 +18,7 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
         onChange={onChange}
         disabled={disabled}
         required
-        className={`text-xs md:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary dark:text-white placeholder:text-sm placeholder:text-gray-700 placeholder:dark:text-white/40 ${inputClassName}`}
+        className={`text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary dark:text-white placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-700 placeholder:dark:text-white/40 ${inputClassName}`}
       />
     </div>
   );

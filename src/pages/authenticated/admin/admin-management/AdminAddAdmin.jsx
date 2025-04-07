@@ -15,15 +15,25 @@ function AdminAddAdmin() {
   const { setSettingsTitle } = useSettingsTitle();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, isAdminSuccessful} = useSelector((state) => state.admin);
+  const {loading, isAdminSuccessful, adminRoles} = useSelector((state) => state.admin);
   const adminService = new AdminService(axiosPrivate);
   const [role, setRole] = useState('Admin');
   const [formData, setFormData] = useState({
     email: '',
-    role: role === 'Admin' ? 'ADMIN' : 'SUPER-ADMIN',
+    role: role,
     firstName: '',
     lastName: ''
   });
+  
+  const fetchAdminRoles = async () => {
+    await adminService.fetchAllAdminRoles(dispatch);
+  }
+  
+    useEffect(() => {
+      if (adminRoles.length === 0) {
+        fetchAdminRoles();
+      }
+    }, [dispatch, adminRoles]);
     
   useEffect(() => {
     setAppTitle('Admin');
@@ -50,7 +60,6 @@ function AdminAddAdmin() {
       ...prev,
       role: e.target.value
     }))
-    console.log(formData);
   }
 
   const handleSubmit = async (e) => {
@@ -71,7 +80,7 @@ function AdminAddAdmin() {
           <form onSubmit={handleSubmit} className='space-y-6'>
             <SelectField
               label='Admin Role'
-              options={['Super Admin', 'Admin']}
+              options={adminRoles?.map(item => item?.name)}
               value={role}
               onChange={handleRoleChange}
             />

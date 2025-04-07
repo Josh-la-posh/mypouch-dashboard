@@ -77,7 +77,7 @@ function AdminSupportiveForm() {
 
     return (
         <div className="px-10 w-full space-y-6">
-            <p className="text-black/75 dark:text-white/80 text-lg font-[600]">Supportive Admin Form</p>
+            <p className="text-black/75 dark:text-white/80 text-lg font-[600]">Kindly fill the form below</p>
             <form onSubmit={handleSubmit} className='w-full space-y-10'>
               <div className="grid grid-cols-2 gap-6">
                 <InputField

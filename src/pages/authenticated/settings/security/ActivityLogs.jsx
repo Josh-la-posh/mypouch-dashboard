@@ -9,7 +9,7 @@ import useAxiosPrivate from "../../../../services/hooks/useAxiosPrivate";
 import SettingsService from "../../../../services/api/settingsApi";
 import Spinner from "../../../../components/ui/spinner";
 import ErrorLayout from "../../../../components/ui/error_page";
-import { dateFormatter } from "../../../../utils/dateFormatter";
+import { dateFormatter, timeFormatter } from "../../../../utils/dateFormatter";
 
 
 const ActivityLog = () => {
@@ -78,7 +78,7 @@ const ActivityLog = () => {
 
         <div className="">
             <div className="text-xs md:text-sm lg:text-[16px] font-[600] text-black/70 dark:text-white border px-3 py-2 grid grid-cols-4">
-            <span>User</span>
+            <span>Activity</span>
             <span className="text-center">Action Details</span>
             <span className="text-center">IP</span>
             <span className="text-center">Date</span>
@@ -88,16 +88,23 @@ const ActivityLog = () => {
             <div key={log.id} className="text-[9px] md:text-xs font-[600] border-b grid grid-cols-4 text-black/50 dark:text-white/60 py-4 px-3">
                 <div className="flex items-center">{log?.activityType[0].toUpperCase()}{log?.activityType.substring(1)}</div>
                 <div className="flex flex-col justify-center items-center gap-3">
-                    {log?.description}
+                    <span className="text-center">
+                        {log?.description}                    
+                    </span>                    
                     <TextButton
-                    className='border py-1 px-2 rounded-sm text-[8px]'
+                        className='border py-1 px-2 rounded-sm text-[8px]'
                     >
                         Check Details
                     </TextButton>
                 </div>
                 <div className="flex items-center justify-center">{log?.ipAddress}</div>
-                <div className="flex items-center justify-center">
-                    {dateFormatter(log.createdDate)}
+                <div className="flex flex-col justify-center items-center gap-3">
+                    <span>
+                        {dateFormatter(log.createdDate)}
+                    </span>
+                    <span>
+                        {timeFormatter(log.createdDate)}
+                    </span>
                 </div>
             </div>
             ))}

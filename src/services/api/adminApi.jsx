@@ -95,10 +95,10 @@ class AdminService {
 
   async blockAdmin(id, dispatch) {  
     try {
-      dispatch(adminStart());
+      dispatch(activateAdminStart());
       const response = await axiosPrivate.put(`/admin/block-admin/${id}`);
       await this.fetchAllAdmin(dispatch);
-      dispatch(adminSuccess());
+      dispatch(activateAdminSuccess());
       toast.success(response.data.message);
     } catch (err) {
       if (!err.response) {

@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { userAccountSuccess, userActivitySuccess, userBankFailure, userBankStart, userBankSuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
+import { actionFinished, actionStart, userAccountSuccess, userActivitySuccess, userBankFailure, userBankStart, userBankSuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
 import { axiosPrivate } from "./axios";
 
 class UserService {
@@ -59,11 +59,41 @@ class UserService {
       }
     };
 
+    async blockUser(id, dispatch) {  
+      try {
+        dispatch(actionStart());
+        await axiosPrivate.patch(`/users/${id}/block`);
+        await this.fetchUserDetail(id, dispatch)
+        dispatch(actionFinished());
+      } catch (err) {
+        if (!err.response) {
+          dispatch(actionFinished('No Server Response'));
+        } else {
+          dispatch(actionFinished(err.response.data.message));
+        }
+      }
+    };
+
+    async unblockUser(id, dispatch) {  
+      try {
+        dispatch(actionStart());
+        await axiosPrivate.patch(`/users/${id}/unblock`);
+        await this.fetchUserDetail(id, dispatch)        
+        dispatch(actionFinished());
+      } catch (err) {
+        if (!err.response) {
+          dispatch(actionFinished('No Server Response'));
+        } else {
+          dispatch(actionFinished(err.response.data.message));
+        }
+      }
+    };
+
     async updateUserDetail(id,formData, dispatch) {  
       try {
         dispatch(userUpdateStart());
 
-        const response = await axiosPrivate.patch(`/users/${id}`,
+        await axiosPrivate.patch(`/users/${id}`,
           JSON.stringify(formData)
         );
         toast.success('User data updated successfully!!!');

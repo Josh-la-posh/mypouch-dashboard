@@ -8,9 +8,12 @@ import Spinner from '../../../../components/ui/spinner';
 import { Link } from 'react-router-dom';
 import useTitle from '../../../../services/hooks/useTitle';
 import TextButton from '../../../../components/ui/textButton';
-import { Ban, Check, Edit3Icon, Info, ToggleLeft, ToggleRight, Trash2Icon, TriangleAlert, X } from 'lucide-react';
+import { Ban, Check, Edit3Icon, ToggleLeft, ToggleRight, Trash2Icon, TriangleAlert, X } from 'lucide-react';
 import useAuth from '../../../../services/hooks/useAuth';
 import SelectField from '../../../../components/ui/select';
+import CustomModal from '../../../../components/ui/custom-modal';
+import Button from '../../../../components/ui/button';
+import { toast } from 'react-toastify';
 
 function AllAdminPage() {
   const {auth} = useAuth();
@@ -21,7 +24,17 @@ function AllAdminPage() {
   const {loading, isActivatingAdmin, error, allAdmin, adminRoles} = useSelector((state) => state.admin);
   const adminService = new AdminService(axiosPrivate);
   const [selectedId, setSelectedId] = useState('');
-  const [selectedRole, setSelectedRole] = useState('USER');
+  const [selectedRole, setSelectedRole] = useState('ADMIN');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
+
+  const onClose = () => setIsModalOpen(false);
+
+  const onOpen = (id, option) => {
+    setSelectedOption(option)
+    setSelectedId(id);
+    setIsModalOpen(true);
+  }
 
   const loginActivities = async () => {
     await adminService.fetchAllAdmin(dispatch);
@@ -57,6 +70,27 @@ function AllAdminPage() {
       setSelectedId('');
     } else {
       setSelectedId(id);
+    }
+  }
+
+  const handleAction = async () => {
+    try {
+      if (selectedOption === 'edit') {
+          await updateAdminRoles(selectedId);
+      } else if (selectedOption === 'blocked') {            
+          await blockAdmin(selectedId);
+      } else if (selectedOption === 'unblocked') {            
+        await unblockAdmin(selectedId);
+      } else if (selectedOption === 'deactivate') {            
+        await deactivateAdmin(selectedId);
+      } else if (selectedOption === 'delete') {            
+        await deleteAdmin(selectedId);
+      }
+      setSelectedOption('');
+      setIsModalOpen(false);
+      toast.success('Successful');
+    } catch (e) {
+
     }
   }
 
@@ -137,12 +171,12 @@ function AllAdminPage() {
                     {admin?.status === 'active' ? 
                       (<>
                         <TextButton
-                          onClick={() => blockAdmin(admin?.id)}  
+                          onClick={() => onOpen(admin?.id, 'block')}  
                         >
                           <ToggleRight className='text-green-600'/>
                         </TextButton>
                         <TextButton
-                          onClick={() => deactivateAdmin(admin?.id)}  
+                          onClick={() => onOpen(admin?.id, 'deactivate')}  
                         >
                           <Trash2Icon size='16px' className='text-red-600'/>
                         </TextButton>
@@ -150,12 +184,12 @@ function AllAdminPage() {
                       : admin?.status === 'blocked' ?
                       (<>
                         <TextButton
-                          onClick={() => unblockAdmin(admin?.id)}  
+                          onClick={() => onOpen(admin?.id, 'unblock')}  
                         >
                           <ToggleLeft className='text-black'/>
                         </TextButton>
                         <TextButton
-                          onClick={() => deactivateAdmin(admin?.id)}  
+                          onClick={() => onOpen(admin?.id, 'deactivate')}  
                         >
                           <Trash2Icon size='16px' className='text-red-600'/>
                         </TextButton>
@@ -164,7 +198,7 @@ function AllAdminPage() {
                       (<>
                         <div className='mx-3'></div>
                         <TextButton
-                          onClick={() => deleteAdmin(admin?.id)}  
+                          onClick={() => onOpen(admin?.id, 'delete')}  
                         >
                           <Trash2Icon size='16px' className='text-red-600'/>
                         </TextButton>
@@ -182,7 +216,8 @@ function AllAdminPage() {
                   />
                   <div className="">
                     <TextButton
-                      onClick={() => updateAdminRoles(admin?.id)}
+                      // onClick={() => updateAdminRoles(admin?.id)}
+                      onClick={() => onOpen(admin?.id, 'edit')}
                     >
                       {isActivatingAdmin ? 'Updating ...' : 'Update'}
                     </TextButton>
@@ -193,6 +228,27 @@ function AllAdminPage() {
           )) 
         }
       </div>
+      <CustomModal
+            title={`Are you sure you want to ${selectedOption === 'edit' ? "change" : "unblock"} this user ${selectedOption === 'edit' ? "role" : ""}?`}
+            isOpen={isModalOpen}
+            onClose={onClose}
+        >
+            <div className="flex justify-center gap-10">
+                <Button
+                    variant="primary"
+                    onClick={handleAction}
+                >
+                    {isActivatingAdmin ? "Confirming" : "Confirm"}
+                </Button>
+                <Button
+                    variant="danger"
+                    onClick={onClose}
+                >
+                    Cancel
+                </Button>
+            </div>
+
+        </CustomModal>
     </div>
   )
 }

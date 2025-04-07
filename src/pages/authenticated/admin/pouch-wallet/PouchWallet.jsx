@@ -159,6 +159,7 @@ function PouchWallet() {
 
   const handleAddWallet = async () => {
     await adminService.createAdminWallet(dispatch);
+    setModalOpen(false);
   }
 
   const handleStatusChange = (e) => {

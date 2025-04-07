@@ -7,10 +7,10 @@ class TransactionService {
         this.location = location;
     }
 
-    async fetchtransactions(date, status, page, limit, dispatch) {
+    async fetchtransactions(date, transactionType, search, status, page, limit, dispatch) {
       try {
         dispatch(transactionStart());
-        const response = await axiosPrivate.get(`/transaction/admin/all/transactions?date=${date}&status=${status}&page=${page}&limit=${limit}`);
+        const response = await axiosPrivate.get(`/transaction/admin/all/transactions?date=${date}&transactionType=${transactionType}&search=${search}&status=${status}&page=${page}&limit=${limit}`);
         
         const data = response.data;
 

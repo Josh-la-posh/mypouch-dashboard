@@ -14,6 +14,8 @@ import Button from "../../../components/ui/button";
 import useTitle from "../../../services/hooks/useTitle";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status";
 import Card from "../../../components/ui/card";
+import InputField from "../../../components/ui/input";
+import { TRANSACTIONTYPE } from "../../../data/transaction-type";
 
 const Transactions = () => {
     const columns = [
@@ -65,7 +67,7 @@ const Transactions = () => {
     const {setAppTitle} = useTitle();
     const dispatch = useDispatch();
     const axiosPrivate = useAxiosPrivate();
-    const {loading, error, transactions, currentPage, totalPages, isWalletLoading, wallets} = useSelector((state) => state.transaction);
+    const {loading, error, transactions, currentPage, totalPages, wallets} = useSelector((state) => state.transaction);
     const transactionService = new TransactionService();
     const [filteredData, setFilteredData] = useState(transactions);
     const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
@@ -74,6 +76,8 @@ const Transactions = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const [status, setStatus] = useState('');
+    const [search, setSearch] = useState('');
+    const [transactionType, setTransactionType] = useState('');
     const [date, setDate] = useState('');
     const cardColor = 'bg-[#F1F8FF]';
   
@@ -88,9 +92,10 @@ const Transactions = () => {
     };
     const closeModal = () => setModalOpen(false);
 
-    const loadTransaction = async (date, status, page, limit) => {
+    const loadTransaction = async (date, transactionType, search, status, page, limit) => {
         const newStatus = status === 'All' ? '' : status;
-        await transactionService.fetchtransactions(date, newStatus, page, limit, dispatch);
+        const newType = transactionType === 'All' ? '' : transactionType;
+        await transactionService.fetchtransactions(date, newType, search, newStatus, page, limit, dispatch);
     }
 
     const loadWallets = async () => {
@@ -114,17 +119,21 @@ const Transactions = () => {
     }, [totalPages]);
 
     useEffect(() => {
-        loadTransaction(date, status, userCurrentPage, userPageSize);
+        loadTransaction(date, transactionType, search, status, userCurrentPage, userPageSize);
     }, [dispatch, date, userCurrentPage, userPageSize]);
 
     const handleFilterChange = (e) => {
         const { value } = e.target;
-        console.log('New value: ', value);
         setStatus(value);
     }
 
+    const handleTransactionChange = (e) => {
+        const { value } = e.target;
+        setTransactionType(value);
+    }
+
     const onRefresh = () => {
-        loadTransaction(date, status, userCurrentPage, userPageSize);
+        loadTransaction(date, transactionType, search, status, userCurrentPage, userPageSize);
     };
 
     if (loading) return <Spinner />
@@ -151,16 +160,31 @@ const Transactions = () => {
             }
         </div>
         <div className="space-y-6">
-            <div className="flex items-center gap-4 md:max-w-[600px] my-4">
-                <SelectField
-                    options={TRANSACTIONSTATUS}
-                    placeholder="Filter"
-                    value={status}
-                    onChange={handleFilterChange}
-                />
+            <div className="flex items-center gap-4 my-4">
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                    <div className="flex items-center gap-4">
+                        <SelectField
+                            options={TRANSACTIONSTATUS}
+                            placeholder="Filter"
+                            value={status}
+                            onChange={handleFilterChange}
+                        />
+                        <SelectField
+                            options={TRANSACTIONTYPE}
+                            placeholder="Type"
+                            value={transactionType}
+                            onChange={handleTransactionChange}
+                        />
+                    </div>
+                    <InputField
+                        placeholder='Transaction Id'
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
                 <div className="p-0 m-0">
                     <Button
-                        onClick={() => loadTransaction('', status, '1', '10')}
+                        onClick={() => loadTransaction('', transactionType, search, status, '1', '10')}
                         className='text-xs'
                     >
                         Search

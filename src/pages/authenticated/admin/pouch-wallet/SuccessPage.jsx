@@ -5,7 +5,8 @@ import useAxiosPrivate from "../../../../services/hooks/useAxiosPrivate";
 import AdminService from "../../../../services/api/adminApi";
 import { useEffect } from "react";
 import { CircleCheckBig, Cloud } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../../../../components/ui/button";
 
 function PouchFundingSuccess() {
     const {setAppTitle} = useTitle();
@@ -37,6 +38,14 @@ function PouchFundingSuccess() {
             <div className="space-y-4 text-center">
                 <p className="text-lg md:text-2xl font-[700] text-black dark:text-white">Success</p>
                 <p className="text-sm md:text-md text-black/60 dark:text-white/40">Deposit Request Successful</p>
+            </div>
+            <div className="">
+            <Link
+                to='/admin/pouch-wallet'
+                className='text-white text-xs md:text-sm border bg-primary py-2 px-4 rounded-sm'
+              >
+                Go to Pouch Wallet
+              </Link>
             </div>
         </div>
     )

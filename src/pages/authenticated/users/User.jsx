@@ -150,7 +150,7 @@ const User = () => {
               </Button>
             </div>
           </div>
-          <div className="text-sm text-gray-500">{totalRecords} Records Found</div>
+          <div className="text-sm text-gray-500">{loading ? '0' : totalRecords} Records Found</div>
           {
             loading 
             ? <Spinner /> 

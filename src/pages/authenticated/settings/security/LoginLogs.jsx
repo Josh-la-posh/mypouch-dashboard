@@ -7,7 +7,7 @@ import useAxiosPrivate from "../../../../services/hooks/useAxiosPrivate";
 import SettingsService from "../../../../services/api/settingsApi";
 import Spinner from "../../../../components/ui/spinner";
 import ErrorLayout from "../../../../components/ui/error_page";
-import { dateFormatter } from "../../../../utils/dateFormatter";
+import { dateFormatter, timeFormatter } from "../../../../utils/dateFormatter";
 
 
 const LoginLog = () => {
@@ -54,18 +54,23 @@ const LoginLog = () => {
 
         {adminLogs.map((log) => (
         <div key={log.id} className="text-[9px] md:text-xs font-[600] border-b grid grid-cols-4 text-black/50 dark:text-white/60 py-4 px-3">
-            <div className="">{log?.activityType[0].toUpperCase()}{log?.activityType.substring(1)}</div>
+            <div className="">{log?.entityType}</div>
             <div className="text-center gap-3">
                 {log?.description}
-                {/* <TextButton
-                className='border py-1 px-2 rounded-sm text-[8px]'
+                <TextButton
+                    className='border py-1 px-2 rounded-sm text-[8px]'
                 >
                     Check Details
-                </TextButton> */}
+                </TextButton>
             </div>
             <div className="text-center justify-center">{log?.ipAddress}</div>
             <div className="text-center justify-center">
-                {dateFormatter(log.createdDate)}
+                    <span>
+                        {dateFormatter(log.createdDate)}
+                    </span>
+                    <span>
+                        {timeFormatter(log.createdDate)}
+                    </span>
             </div>
         </div>
         ))}
