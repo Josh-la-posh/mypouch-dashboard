@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import useTitle from '../../../../services/hooks/useTitle';
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
 import AdminService from '../../../../services/api/adminApi';
-import TextButton from '../../../../components/ui/textButton';
+// import TextButton from '../../../../components/ui/textButton';
 import Card from '../../../../components/ui/card';
 import SelectField from '../../../../components/ui/select';
 import InputField from '../../../../components/ui/input';
 import Button from '../../../../components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CURRENCIES } from '../../../../data/currencies';
 import { toast } from 'react-toastify';
 import RedirectToLink from './redirect-link.jsx';
@@ -18,6 +18,8 @@ import { dateFormatter } from '../../../../utils/dateFormatter.jsx';
 import Spinner from '../../../../components/ui/spinner.jsx';
 import { UserTable } from '../../../../components/user-table.jsx';
 import { Printer } from 'lucide-react';
+import { CustomTab } from '../../../../components/ui/tabs';
+import { Check } from 'lucide-react';
 import CustomModal from '../../../../components/ui/custom-modal.jsx';
 import { TRANSACTIONSTATUS } from '../../../../data/transaction-status.jsx';
 import { TRANSACTIONTYPE } from '../../../../data/transaction-type.jsx';
@@ -74,10 +76,13 @@ function PouchWallet() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
-    const adminService = new AdminService(axiosPrivate, navigate);
+  const adminService = useMemo(() => new AdminService(axiosPrivate, navigate), [axiosPrivate, navigate]);
     const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction} = useSelector((state) => state.admin);
-    const [addWallet, setAddWallet] = useState(false);
-    const [fundWallet, setFundWallet] = useState(false);
+  const [activeTab, setActiveTab] = useState('pouch-wallet');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [fundMode, setFundMode] = useState('direct'); // direct | manual
+  const [directFundingType, setDirectFundingType] = useState('naira'); // naira | foreign
+  const [provider, setProvider] = useState('Paystack'); // Paystack | Flutterwave
     const [selectedCurrency, setSelectedCurrency] = useState('USD');
     const [fundAmount, setFundAmount] = useState('0');
     const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
@@ -87,7 +92,7 @@ function PouchWallet() {
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const [status, setStatus] = useState('All');
     const [type, setType] = useState('All');
-    const [date, setDate] = useState('');
+  const [date] = useState('');
   
     const openModal = (val) => {
       setSelectedTransaction(val);
@@ -97,30 +102,30 @@ function PouchWallet() {
     
   useEffect(() => {
     setAppTitle('Admin');
-  }, []);
+  }, [setAppTitle]);
 
   useEffect(() => {
     setSettingsTitle('Pouch Wallet');
-  }, []);
+  }, [setSettingsTitle]);
 
-  const loadCurrencies = async (cur) => {
+  const loadCurrencies = useCallback(async (cur) => {
     await adminService.fetchPouchWallets(cur, dispatch);
-  }
+  }, [adminService, dispatch]);
 
-  const loadPouchTransactions = async (date, type, status, page, limit) => {
-    const finalStatus = status === 'All' ? '' : status;
-    const finalType = type === 'All' ? '' : type === 'System Exchange' ? 'SystemExchange' : type;
-    await adminService.fetchPouchTransactions(date, finalType, finalStatus, page, limit, dispatch);
-  }
+  const loadPouchTransactions = useCallback(async (dateVal, typeVal, statusVal, page, limit) => {
+    const finalStatus = statusVal === 'All' ? '' : statusVal;
+    const finalType = typeVal === 'All' ? '' : typeVal === 'System Exchange' ? 'SystemExchange' : typeVal;
+    await adminService.fetchPouchTransactions(dateVal, finalType, finalStatus, page, limit, dispatch);
+  }, [adminService, dispatch]);
 
   useEffect(() => {
     loadCurrencies('');
-    loadPouchTransactions('', '', '', '1', '10')
-  }, [dispatch]);
+    loadPouchTransactions('', '', '', '1', '10');
+  }, [loadCurrencies, loadPouchTransactions]);
 
   useEffect(() => {
-    loadPouchTransactions('', '', '', '1', '10')
-  }, [dispatch, userCurrentPage, userPageSize]);
+    loadPouchTransactions('', '', '', '1', '10');
+  }, [loadPouchTransactions, userCurrentPage, userPageSize]);
   
     useEffect(() => {
       setUserCurrentPage(currentPage);
@@ -130,31 +135,29 @@ function PouchWallet() {
       setUserTotalPages(totalPages);
     }, [totalPages]);
 
-  const updateFundWalletOption = () => {
-    setFundWallet(!fundWallet);
-    setAddWallet(false);
-  }
-
-  const updateAddWalletOption = () => {
-    setAddWallet(!addWallet);
-    setFundWallet(false);
-  }
+  // Removed toggle button handlers in favor of tabs
 
   const handleFundWallet = async () => {
-    const formData = {
-        'amount': fundAmount,
-        'currency': selectedCurrency
+    const amt = fundAmount.trim();
+    if (!amt) return toast.error('Enter a valid amount');
+    if (isNaN(Number(amt))) return toast.error('Amount must be numeric');
+    if (Number(amt) <= 0) return toast.error('Amount must be greater than 0');
+
+    // Direct Naira funding provider-specific endpoints
+    if (fundMode === 'direct' && directFundingType === 'naira') {
+      if (provider === 'Flutterwave') {
+        await adminService.fundNairaFlutterwave(amt, dispatch);
+        return;
+      }
+      if (provider === 'Paystack') {
+        await adminService.fundNairaPaystack(amt, dispatch);
+        return;
+      }
+      return toast.error('Select a valid Naira provider');
     }
 
-    if (fundAmount === '') {
-        return toast.error('Enter a valid amount');
-    }
-
-    if (fundAmount === '0') {
-        return toast.error('Amount must be greater than 0');
-    }
-
-    await adminService.fundAdminWallet(formData, dispatch);
+    // Fallback to generic endpoint (e.g., foreign funding placeholder)
+    await adminService.fundAdminWallet({ amount: amt, currency: selectedCurrency }, dispatch);
   }
 
   const handleAddWallet = async () => {
@@ -174,133 +177,103 @@ function PouchWallet() {
 
   const cardColor = 'bg-[#F1F8FF]';
 
+  const TABS = [
+    { label: 'Pouch Wallet', value: 'pouch-wallet' },
+    { label: 'Add Wallet', value: 'add-wallet' },
+    { label: 'Fund Wallet', value: 'fund-wallet' },
+    { label: 'Provider', value: 'provider' },
+  ];
+
+  // Initialize tab from query param on mount
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && TABS.some(t => t.value === tabParam)) {
+      setActiveTab(tabParam);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Ensure query param stays in sync whenever activeTab changes
+  useEffect(() => {
+    const current = searchParams.get('tab');
+    if (activeTab && current !== activeTab) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('tab', activeTab);
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [activeTab, searchParams, setSearchParams]);
+
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+  };
+
   return (
-    <div className='space-y-10 w-full'>
-        <div className="flex justify-end gap-5">
-            <TextButton
-                onClick={updateAddWalletOption}
-                className='border border-primary p-2'
-            >
-                Add Wallet
-            </TextButton>
-            <TextButton
-                onClick={updateFundWalletOption}
-                className='border border-primary p-2'
-            >
-                Fund Wallet
-            </TextButton>
-        </div>
-
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
-            {
-                adminCurrencies && adminCurrencies.map((cur) => (
-                    <div key={cur.id} className="w-full flex-1">
-                        <Card
-                            icon={cur?.currency}
-                            iconClassName='w-5 md:w-8 h-5 md:h-8 text-[7px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
-                            className='w-full'
-                            amount={cur?.balance}
-                            name='Total balance'
-                            rate=''
-                            color={cardColor}
-                        />
-                    </div>
-                ))
-            }
-        </div>
-
-        {
-            addWallet &&
-            <div className="w-full flex justify-center pt-10 border-t border-app-bg dark:border-[#20263D]">
-                <div className="max-w-[350px] space-y-5">
-                    <p className='text-primary dark:text-white text-sm sm:text-lg text-center'>Add all available currencies with just a click on the button below</p>
-                    <div className="flex justify-center">
-                        <div className="w-[150px]">
-                            <Button
-                                onClick={handleAddWallet}
-                                disabled={adminCurrenciesLoading}
-                                variant='primary'
-                            >
-                                {adminCurrenciesLoading ? 'Loading ...' : 'Continue'}
-                            </Button>
-                        </div>
-                    </div>
+    <div className='w-full'>
+      <CustomTab
+        TABS={TABS}
+        activeTab={activeTab}
+        setActiveTab={handleTabChange}
+        className='w-full'
+        tabClassName='overflow-x-auto'
+        activeClassName='bg-primary/10 font-semibold'
+        inactiveClassName=''
+      >
+        {/* Pouch Wallet Tab Content */}
+        {activeTab === 'pouch-wallet' && (
+          <div className='space-y-10 w-full'>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
+              {adminCurrencies && adminCurrencies.map((cur) => (
+                <div key={cur.id} className="w-full flex-1">
+                  <Card
+                    icon={cur?.currency}
+                    iconClassName='w-5 md:w-8 h-5 md:h-8 text-[7px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
+                    className='w-full'
+                    amount={cur?.balance}
+                    name='Total balance'
+                    rate=''
+                    color={cardColor}
+                  />
                 </div>
+              ))}
             </div>
-        }
-
-        {
-            !isGottenLink ?
-            (fundWallet && 
-            <div className="w-full pt-10 border-t border-app-bg dark:border-[#20263D]">
-                <div className="max-w-[400px] space-y-5">
-                    <SelectField
-                        label='Select your preferred currency'
-                        options={CURRENCIES}
-                        value={selectedCurrency}
-                        placeholder=''
-                        onChange={(e) => setSelectedCurrency(e.target.value)}
-                        selectClassName={'bg-primary/14'}
-                    />    
-                    <InputField
-                        label='Enter amount'
-                        id='fundAmount'
-                        value={fundAmount}
-                        onChange={(e) => setFundAmount(e.target.value)}
-                        required
-                    />
-
-                    <Button
-                        onClick={handleFundWallet}
-                        disabled={isFundingAdminWallet}
-                        variant='primary'
-                    >
-                        {isFundingAdminWallet ? 'Processing ...' : 'Continue'}
-                    </Button>
-                </div>
-            </div>)
-            : <RedirectToLink externalLink={fundingWalletLink}/>
-        }
-
-        <div className="flex justify-between">
-            <div className="flex items-center gap-3 md:max-w-[600px] my-4">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-3 md:max-w-[600px] my-4">
                 <SelectField
-                options={TRANSACTIONSTATUS}
-                placeholder="Status"
-                value={status}
-                onChange={handleStatusChange}
+                  options={TRANSACTIONSTATUS}
+                  placeholder="Status"
+                  value={status}
+                  onChange={handleStatusChange}
                 />
                 <div className="p-0 m-0">
-                <Button
+                  <Button
                     onClick={() => loadPouchTransactions(date, type, status, '1', '10')}
                     className='text-xs'
-                >
+                  >
                     Search
-                </Button>
+                  </Button>
                 </div>
-            </div>
-            <div className="flex items-center gap-3 md:max-w-[600px] my-4">
+              </div>
+              <div className="flex items-center gap-3 md:max-w-[600px] my-4">
                 <SelectField
-                options={TRANSACTIONTYPE}
-                placeholder="Type"
-                value={type}
-                onChange={handleTypeChange}
+                  options={TRANSACTIONTYPE}
+                  placeholder="Type"
+                  value={type}
+                  onChange={handleTypeChange}
                 />
                 <div className="p-0 m-0">
-                <Button
+                  <Button
                     onClick={() => loadPouchTransactions(date, type, status, '1', '10')}
                     className='text-xs'
-                >
+                  >
                     Search
-                </Button>
+                  </Button>
                 </div>
+              </div>
             </div>
-        </div>
-
-        {
-            pouchTransactionLoading 
-            ? <Spinner /> 
-            : <UserTable
+            {pouchTransactionLoading ? (
+              <Spinner />
+            ) : (
+              <UserTable
                 data={pouchTransaction}
                 columns={columns}
                 totalPages={userTotalPages}
@@ -308,10 +281,149 @@ function PouchWallet() {
                 setCurrentPage={setUserCurrentPage}
                 rowsPerPage={userPageSize}
                 setRowsPerPage={setUserPageSize}
-            />
-        }
-        
-        {/* Modal component */}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Add Wallet Tab */}
+        {activeTab === 'add-wallet' && (
+          <div className="w-full flex justify-center pt-10 border-t border-app-bg dark:border-[#20263D]">
+            <div className="max-w-[350px] space-y-5">
+              <p className='text-primary dark:text-white text-sm sm:text-lg text-center'>Add all available currencies with just a click on the button below</p>
+              <div className="flex justify-center">
+                <div className="w-[150px]">
+                  <Button
+                    onClick={handleAddWallet}
+                    disabled={adminCurrenciesLoading}
+                    variant='primary'
+                  >
+                    {adminCurrenciesLoading ? 'Loading ...' : 'Continue'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Fund Wallet Tab */}
+        {activeTab === 'fund-wallet' && (
+          <div className="w-full space-y-8 pt-6 border-t border-app-bg dark:border-[#20263D]">
+            {!isGottenLink ? (
+              <div className='space-y-6 max-w-[650px]'>
+                {/* Funding mode dropdown */}
+                <div className='space-y-2'>
+                  <SelectField
+                    label='Funding Mode'
+                    options={['direct', 'manual']}
+                    value={fundMode}
+                    onChange={(e) => setFundMode(e.target.value)}
+                    placeholder='Select mode'
+                  />
+                </div>
+
+                {fundMode === 'direct' && (
+                  <div className='space-y-6'>
+                    {/* Direct funding type list */}
+                    <div className='space-y-2'>
+                      <p className='text-xs font-semibold text-primary dark:text-white'>Direct Funding</p>
+                      <div className='space-y-3 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                        {['naira', 'foreign'].map((ftype) => (
+                          <button
+                            key={ftype}
+                            type='button'
+                            onClick={() => setDirectFundingType(ftype)}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${directFundingType === ftype ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'}`}
+                          >
+                            <span className='flex items-center gap-2'>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>₦</span>
+                              {ftype === 'naira' ? 'Naira Funding' : 'Foreign Funding'}
+                            </span>
+                            {directFundingType === ftype && <Check size={16} className='text-white' />}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Provider selection when Naira or Foreign chosen */}
+                    <div className='space-y-2'>
+                      <p className='text-xs font-semibold text-primary dark:text-white capitalize'>{directFundingType} providers</p>
+                      <div className='space-y-3 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                        {(directFundingType === 'naira' ? ['Paystack', 'Flutterwave'] : ['Stripe (Coming Soon)']).map((prov) => (
+                          <button
+                            key={prov}
+                            type='button'
+                            onClick={() => prov.includes('Coming') ? null : setProvider(prov)}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${provider === prov ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'} ${prov.includes('Coming') ? 'opacity-60 cursor-not-allowed' : ''}`}
+                          >
+                            <span className='flex items-center gap-2'>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>◎</span>
+                              {prov}
+                            </span>
+                            {provider === prov && !prov.includes('Coming') && <Check size={16} className='text-white' />}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Funding form */}
+                    <SelectField
+                      label='Select Currency'
+                      options={directFundingType === 'naira' ? ['NGN'] : CURRENCIES}
+                      value={directFundingType === 'naira' ? 'NGN' : selectedCurrency}
+                      placeholder=''
+                      onChange={(e) => directFundingType === 'naira' ? null : setSelectedCurrency(e.target.value)}
+                      disabled={directFundingType === 'naira'}
+                      selectClassName={'bg-primary/14'}
+                    />
+                    <InputField
+                      label='Amount'
+                      id='fundAmount'
+                      value={fundAmount}
+                      onChange={(e) => setFundAmount(e.target.value)}
+                      required
+                    />
+                    <Button
+                      onClick={handleFundWallet}
+                      disabled={isFundingAdminWallet}
+                      variant='primary'
+                    >
+                      {isFundingAdminWallet ? 'Processing ...' : 'Continue'}
+                    </Button>
+                  </div>
+                )}
+
+                {fundMode === 'manual' && (
+                  <div className='space-y-4 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                    <p className='text-sm text-primary dark:text-white font-semibold'>Manual Funding</p>
+                    <p className='text-xs text-black/70 dark:text-white/70'>Upload proof & reference ID (Coming Soon).</p>
+                    <Button variant='primary' disabled>Coming Soon</Button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <RedirectToLink externalLink={fundingWalletLink} />
+            )}
+          </div>
+        )}
+
+        {/* Provider Tab */}
+        {activeTab === 'provider' && (
+          <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-4'>
+            <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
+            <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
+              {['Paystack', 'Flutterwave', 'Stripe (Coming Soon)'].map((prov) => (
+                <div key={prov} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex items-center justify-between'>
+                  <span className='text-xs md:text-sm'>{prov}</span>
+                  <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{prov.includes('Coming') ? 'Pending' : 'Active'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CustomTab>
+
+      {/* Transaction Modal */}
       <CustomModal isOpen={isModalOpen} title="Transaction Details" onClose={closeModal}>
         <div className="space-y-6">
           <div className="text-center">
@@ -325,9 +437,7 @@ function PouchWallet() {
           <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
             <p>Transaction Status</p>
             <div className="flex items-center gap-1">
-              <div className={`
-                  w-2 h-2 rounded-full ${selectedTransaction.status === 'Successful' ? 'bg-green-600' : selectedTransaction.status === 'Pending' ? 'bg-yellow-600' : 'bg-black'}
-              `}></div>
+              <div className={`w-2 h-2 rounded-full ${selectedTransaction.status === 'Successful' ? 'bg-green-600' : selectedTransaction.status === 'Pending' ? 'bg-yellow-600' : 'bg-black'}`}></div>
               <p>{selectedTransaction.status}</p>
             </div>
           </div>
@@ -335,64 +445,64 @@ function PouchWallet() {
             <p>Transaction Id</p>
             <p className="text-xs">{selectedTransaction.transactionId}</p>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
-            <p>Date</p>
-            <p>{dateFormatter(selectedTransaction.createdDate)}</p>
-          </div>
-          { selectedTransaction.buyerCreditedWallet &&
+            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+              <p>Date</p>
+              <p>{dateFormatter(selectedTransaction.createdDate)}</p>
+            </div>
+          {selectedTransaction.buyerCreditedWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Buyer Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerCreditedWallet}</p>
-          </div>
-          }
-          { selectedTransaction.buyerDebitedWallet &&
+            </div>
+          )}
+          {selectedTransaction.buyerDebitedWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Buyer Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerDebitedWallet}</p>
-          </div>
-          }
-          { selectedTransaction.creditedCurrency &&
+            </div>
+          )}
+          {selectedTransaction.creditedCurrency && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Credited Currency</p>
               <p>{selectedTransaction.creditedCurrency}</p>
-          </div>
-          }
-          { selectedTransaction.creditedWallet &&
+            </div>
+          )}
+          {selectedTransaction.creditedWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.creditedWallet}</p>
-          </div>
-          }
-          { selectedTransaction.debitedAmount &&
+            </div>
+          )}
+          {selectedTransaction.debitedAmount && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Debited Amount</p>
               <p>{selectedTransaction.debitedCurrency}{selectedTransaction.debitedAmount}</p>
-          </div>
-          }
-          { selectedTransaction.debitWallet &&
+            </div>
+          )}
+          {selectedTransaction.debitWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.debitedWallet}</p>
-          </div>
-          }
-          { selectedTransaction.rateDescription &&
+            </div>
+          )}
+          {selectedTransaction.rateDescription && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Rate</p>
               <p>{selectedTransaction.rateDescription}</p>
-          </div>
-          }
-          { selectedTransaction.sellerCreditedWallet &&
+            </div>
+          )}
+          {selectedTransaction.sellerCreditedWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Seller Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.sellerCreditedWallet}</p>
-          </div>
-          }
-          { selectedTransaction.sellerDebitedWallet &&
+            </div>
+          )}
+          {selectedTransaction.sellerDebitedWallet && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Seller Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.sellerDebitedWallet}</p>
-          </div>
-          }
+            </div>
+          )}
           <div className="text-center text-sm border border-gray-300 py-2 px-4 rounded-sm">
             <p>Description</p>
             <p>{selectedTransaction.description}</p>
@@ -400,7 +510,7 @@ function PouchWallet() {
         </div>
       </CustomModal>
     </div>
-  )
+  );
 }
 
 export default PouchWallet;

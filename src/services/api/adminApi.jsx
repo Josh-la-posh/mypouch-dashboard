@@ -381,6 +381,50 @@ class AdminService {
       }
     }
   };
+
+  async fundNairaFlutterwave(amount, dispatch) {
+    try {
+      dispatch(fundingWalletStart());
+      const response = await axiosPrivate.post('/wallet/fund-system-admin-wallet/naira/flutterwave',
+        JSON.stringify({ amount: String(amount) })
+      );
+      const link = response?.data?.data?.link;
+      if (!link) throw new Error('No payment link returned');
+      dispatch(fundingWalletSuccess(link));
+      toast.success('Flutterwave payment link generated');
+    } catch (err) {
+      if (!err.response) {
+        dispatch(fundingWalletFailure('No Server Response'));
+        toast.error('No Server Response');
+      } else {
+        const msg = err.response.data?.message || 'Unable to generate Flutterwave link';
+        dispatch(fundingWalletFailure(msg));
+        toast.error(msg);
+      }
+    }
+  };
+
+  async fundNairaPaystack(amount, dispatch) {
+    try {
+      dispatch(fundingWalletStart());
+      const response = await axiosPrivate.post('/wallet/fund-system-admin-wallet/naira/paystack',
+        JSON.stringify({ amount: String(amount) })
+      );
+      const link = response?.data?.data?.authorization_url;
+      if (!link) throw new Error('No authorization URL returned');
+      dispatch(fundingWalletSuccess(link));
+      toast.success('Paystack authorization URL generated');
+    } catch (err) {
+      if (!err.response) {
+        dispatch(fundingWalletFailure('No Server Response'));
+        toast.error('No Server Response');
+      } else {
+        const msg = err.response.data?.message || 'Unable to generate Paystack link';
+        dispatch(fundingWalletFailure(msg));
+        toast.error(msg);
+      }
+    }
+  };
 }
   
 export default AdminService;
