@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useCallback, useMemo} from 'react'
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
@@ -8,7 +8,7 @@ import Spinner from '../../../../components/ui/spinner';
 import { Link } from 'react-router-dom';
 import useTitle from '../../../../services/hooks/useTitle';
 import TextButton from '../../../../components/ui/textButton';
-import { Ban, Check, Edit3Icon, ToggleLeft, ToggleRight, Trash2Icon, TriangleAlert, X } from 'lucide-react';
+import { Edit3Icon } from 'lucide-react';
 import useAuth from '../../../../services/hooks/useAuth';
 import SelectField from '../../../../components/ui/select';
 import CustomModal from '../../../../components/ui/custom-modal';
@@ -22,9 +22,9 @@ function AllAdminPage() {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
   const {loading, isActivatingAdmin, error, allAdmin, adminRoles} = useSelector((state) => state.admin);
-  const adminService = new AdminService(axiosPrivate);
+  const adminService = useMemo(() => new AdminService(axiosPrivate), [axiosPrivate]);
   const [selectedId, setSelectedId] = useState('');
-  const [selectedRole, setSelectedRole] = useState('ADMIN');
+  const [selectedRole, setSelectedRole] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
 
@@ -36,13 +36,13 @@ function AllAdminPage() {
     setIsModalOpen(true);
   }
 
-  const loginActivities = async () => {
+  const loginActivities = useCallback(async () => {
     await adminService.fetchAllAdmin(dispatch);
-  }
+  }, [adminService, dispatch]);
   
-  const fetchAdminRoles = async () => {
+  const fetchAdminRoles = useCallback(async () => {
     await adminService.fetchAllAdminRoles(dispatch);
-  }
+  }, [adminService, dispatch]);
   
   const updateAdminRoles = async (id) => {
     await adminService.updateAdminRole(id, selectedRole, dispatch);
@@ -65,6 +65,10 @@ function AllAdminPage() {
     await adminService.deleteAdmin(id, dispatch);
   }
 
+  const activateAdmin = async (id) => {
+    await adminService.activateAdmin(id, dispatch);
+  }
+
   const handleOnEdit = (id) => {
     if (id === selectedId) {
       setSelectedId('');
@@ -76,15 +80,17 @@ function AllAdminPage() {
   const handleAction = async () => {
     try {
       if (selectedOption === 'edit') {
-          await updateAdminRoles(selectedId);
-      } else if (selectedOption === 'blocked') {            
-          await blockAdmin(selectedId);
-      } else if (selectedOption === 'unblocked') {            
+        await updateAdminRoles(selectedId);
+      } else if (selectedOption === 'block') {
+        await blockAdmin(selectedId);
+      } else if (selectedOption === 'unblock') {
         await unblockAdmin(selectedId);
-      } else if (selectedOption === 'deactivate') {            
+      } else if (selectedOption === 'deactivate') {
         await deactivateAdmin(selectedId);
-      } else if (selectedOption === 'delete') {            
+      } else if (selectedOption === 'delete') {
         await deleteAdmin(selectedId);
+      } else if (selectedOption === 'activate') {
+        await activateAdmin(selectedId);
       }
       setSelectedOption('');
       setIsModalOpen(false);
@@ -96,19 +102,19 @@ function AllAdminPage() {
 
   useEffect(() => {
     loginActivities();
-  }, [dispatch]);
+  }, [loginActivities]);
 
   useEffect(() => {
     fetchAdminRoles();
-  }, []);
+  }, [fetchAdminRoles]);
     
   useEffect(() => {
     setAppTitle('Admin');
-  }, []);
+  }, [setAppTitle]);
     
   useEffect(() => {
     setSettingsTitle('Admin Management');
-  }, []);
+  }, [setSettingsTitle]);
 
   const onRefresh = () => {
     loginActivities();
@@ -129,17 +135,17 @@ function AllAdminPage() {
         </Link>
       </div>
       <div className='w-full space-y-6 text-xs md:text-sm lg:text-[16px]'>
-        <div className={`font-[600] text-black/70 dark:text-white grid ${auth?.data?.role?.name === 'SUPER-ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} border border-primary px-3 py-2`}>
+        <div className={`font-[600] text-black/70 dark:text-white grid ${auth?.data?.role?.name === 'SUPER ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} border border-primary px-3 py-2`}>
           <p className='col-span-2'>Name</p>
           <p className='text-center'>Role</p>
           <p className='text-center'>Status</p>
-          {auth?.data?.role?.name === 'SUPER-ADMIN' && <p className='text-center'>Action</p>}
+          {auth?.data?.role?.name === 'SUPER ADMIN' && <p className='text-center'>Action</p>}
         </div>
         {
           allAdmin.length > 0 && 
           allAdmin.map((admin) => (
             <div key={admin.id} className="">
-              <div className={`grid ${auth?.data?.role?.name === 'SUPER-ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} items-center text-black/50 dark:text-white/60 px-3`}>
+              <div className={`grid ${auth?.data?.role?.name === 'SUPER ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} items-center text-black/50 dark:text-white/60 px-3`}>
                 <div className="col-span-2">
                     <p className='font-[600]'>{admin?.firstName} {admin?.lastName}</p>
                     <p className='text-[9px] md:text-[11px] font-[400]'>{admin?.email}</p>
@@ -148,69 +154,49 @@ function AllAdminPage() {
                   {admin?.role?.name}
                 </div>
                 <div className="flex items-center justify-center">
-                  {
-                    admin?.status === 'active' ?
-                    <Check size='18' className='text-green-600' /> :
-                    admin?.status === 'inactive' ?
-                    <TriangleAlert size='18' className='text-yellow-700'/> :
-                    admin?.status === 'blocked' ?
-                    <Ban size='18' className='text-black-700'/> :
-                    <X size='18' className='text-red-700'/>
-                  }
+                  <span className={`px-2 py-1 rounded-sm text-[9px] md:text-xs font-semibold uppercase ${
+                    admin?.status.toLowerCase() === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300' :
+                    admin?.status.toLowerCase() === 'inactive' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300' :
+                    admin?.status.toLowerCase() === 'blocked' ? 'bg-red-100 text-red-700 dark:bg-red-700/30 dark:text-red-300' :
+                    admin?.status.toLowerCase() === 'deleted' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300' : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {admin?.status.toLowerCase() || 'unknown'}
+                  </span>
                 </div>
                 {
-                  auth?.data?.role?.name === 'SUPER-ADMIN' &&
+                  auth?.data?.role?.name === 'SUPER ADMIN' &&
                   <div className="flex items-center justify-center gap-3">
-                    {(admin?.status === 'inactive' || admin?.status === 'deleted') ?
-                    <div className='mr-3'></div> :
-                    <TextButton
-                      onClick={() => handleOnEdit(admin?.id)}
-                    >
-                      <Edit3Icon size='14px' className='text-blue-500' />                  
-                    </TextButton>}
-                    {admin?.status === 'active' ? 
-                      (<>
-                        <TextButton
-                          onClick={() => onOpen(admin?.id, 'block')}  
-                        >
-                          <ToggleRight className='text-green-600'/>
-                        </TextButton>
-                        <TextButton
-                          onClick={() => onOpen(admin?.id, 'deactivate')}  
-                        >
-                          <Trash2Icon size='16px' className='text-red-600'/>
-                        </TextButton>
-                      </>)
-                      : admin?.status === 'blocked' ?
-                      (<>
-                        <TextButton
-                          onClick={() => onOpen(admin?.id, 'unblock')}  
-                        >
-                          <ToggleLeft className='text-black'/>
-                        </TextButton>
-                        <TextButton
-                          onClick={() => onOpen(admin?.id, 'deactivate')}  
-                        >
-                          <Trash2Icon size='16px' className='text-red-600'/>
-                        </TextButton>
-                      </>) 
-                      : admin?.status === 'inactive' ?
-                      (<>
-                        <div className='mx-3'></div>
-                        <TextButton
-                          onClick={() => onOpen(admin?.id, 'delete')}  
-                        >
-                          <Trash2Icon size='16px' className='text-red-600'/>
-                        </TextButton>
-                      </>) : <></>
-                    }
+                    {admin?.status.toLowerCase() !== 'deleted' && (
+                      <TextButton onClick={() => handleOnEdit(admin?.id)}>
+                        <Edit3Icon size='14px' className='text-blue-500' />
+                      </TextButton>
+                    )}
+                    {admin?.status.toLowerCase() === 'active' && (
+                      <>
+                        <TextButton onClick={() => onOpen(admin?.id, 'block')}>Block</TextButton>
+                        <TextButton onClick={() => onOpen(admin?.id, 'deactivate')}>Deactivate</TextButton>
+                      </>
+                    )}
+                    {admin?.status.toLowerCase() === 'blocked' && (
+                      <>
+                        <TextButton onClick={() => onOpen(admin?.id, 'unblock')}>Unblock</TextButton>
+                        <TextButton onClick={() => onOpen(admin?.id, 'deactivate')}>Deactivate</TextButton>
+                        <TextButton onClick={() => onOpen(admin?.id, 'activate')}>Activate</TextButton>
+                      </>
+                    )}
+                    {admin?.status.toLowerCase() === 'inactive' && (
+                      <>
+                        <TextButton onClick={() => onOpen(admin?.id, 'activate')}>Activate</TextButton>
+                        <TextButton onClick={() => onOpen(admin?.id, 'delete')}>Delete</TextButton>
+                      </>
+                    )}
                   </div>
                 }
               </div>
               {selectedId === admin?.id && 
                 (<div className="flex items-center justify-end gap-4 my-5 mr-10">
                   <SelectField
-                    options={adminRoles?.map(item => item?.name)}
+                    options={adminRoles?.map(item => ({ label: item?.name, value: item?.id }))}
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
                   />
@@ -229,26 +215,35 @@ function AllAdminPage() {
         }
       </div>
       <CustomModal
-            title={`Are you sure you want to ${selectedOption === 'edit' ? "change" : "unblock"} this user ${selectedOption === 'edit' ? "role" : ""}?`}
-            isOpen={isModalOpen}
-            onClose={onClose}
-        >
-            <div className="flex justify-center gap-10">
-                <Button
-                    variant="primary"
-                    onClick={handleAction}
-                >
-                    {isActivatingAdmin ? "Confirming" : "Confirm"}
-                </Button>
-                <Button
-                    variant="danger"
-                    onClick={onClose}
-                >
-                    Cancel
-                </Button>
-            </div>
-
-        </CustomModal>
+        title={(() => {
+          switch (selectedOption) {
+            case 'edit': return 'Confirm role change?';
+            case 'block': return 'Block this admin?';
+            case 'unblock': return 'Unblock this admin?';
+            case 'activate': return 'Activate this admin?';
+            case 'deactivate': return 'Deactivate this admin?';
+            case 'delete': return 'Delete this admin? This action may be irreversible.';
+            default: return 'Confirm action?';
+          }
+        })()}
+        isOpen={isModalOpen}
+        onClose={onClose}
+      >
+        <div className="flex justify-center gap-10">
+          <Button
+            variant="primary"
+            onClick={handleAction}
+          >
+            {isActivatingAdmin ? 'Processing...' : 'Confirm'}
+          </Button>
+          <Button
+            variant="danger"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+        </div>
+      </CustomModal>
     </div>
   )
 }

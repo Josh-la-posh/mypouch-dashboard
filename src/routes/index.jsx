@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/unauthenticated/login";
+import ForgotPassword from "../pages/unauthenticated/forgot-password";
+import ResetPassword from "../pages/unauthenticated/reset-password";
 import MainLayout from "../layouts/MainLayout";
 import User from "../pages/authenticated/users/User";
 import Messages from "../pages/authenticated/messages/Messages";
@@ -36,7 +38,9 @@ const RouteSystem = () => {
   return (
     <Routes>
       {/* public routes */}
-      <Route path="/login" element={<Login />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/forgot-password" element={<ForgotPassword />} />
+  <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* protected routes */}
       <Route element={<RequireAuth />}>

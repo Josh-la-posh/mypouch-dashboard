@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import axios, { axiosPrivate } from "./axios";
+import axios from "./axios";
 import { login2faStart, login2faSuccess, loginFailure, loginQrStart, loginQrSuccess, loginStart, loginSuccess, loginVerifyQrCodeStart, loginVerifyQrCodeSuccess } from "../../redux/slices/authSlice";
 
 class AuthService {

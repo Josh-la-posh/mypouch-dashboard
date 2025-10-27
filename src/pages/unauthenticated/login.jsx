@@ -64,7 +64,7 @@ const Login = () => {
   }
 
   const handleForgotPassword = () => {
-
+    navigate('/forgot-password');
   }
 
   return (
@@ -104,7 +104,7 @@ const Login = () => {
                   checked={isChecked}
                   onChange={() => setIsChecked(!isChecked)}
                 />
-                <TextButton onClick={handleForgotPassword} variant="primary">
+                <TextButton type='button' onClick={handleForgotPassword} variant="primary">
                   Forgot Password
                 </TextButton>
               </div>

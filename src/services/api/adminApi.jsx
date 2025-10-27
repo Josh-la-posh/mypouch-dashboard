@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, changePasswordSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -125,6 +125,22 @@ class AdminService {
     }
   };
 
+  async activateAdmin(id, dispatch) {  
+    try {
+      dispatch(activateAdminStart());
+      const response = await axiosPrivate.put(`/admin/activate-admin/${id}`);
+      await this.fetchAllAdmin(dispatch);
+      dispatch(activateAdminSuccess());
+      toast.success(response.data.message);
+    } catch (err) {
+      if (!err.response) {
+        dispatch(adminFailure('No Server Response'));
+      } else {
+        dispatch(adminFailure(err.response.data.message));
+      }
+    }
+  };
+
   async deleteAdmin(id, dispatch) {  
     try {
       dispatch(activateAdminStart());
@@ -144,7 +160,7 @@ class AdminService {
   async createDefaultExchangeRate(formData, dispatch) {
     try {
       dispatch(adminStart());
-      const response = await axiosPrivate.post('/admin/exchange-rate-bulk-create',
+  await axiosPrivate.post('/admin/exchange-rate-bulk-create',
         JSON.stringify({"exchangeRates": formData})
       );
       dispatch(adminSuccess());
@@ -162,7 +178,7 @@ class AdminService {
   async updateDefaultExchangeRate(formData, dispatch) {
     try {
       dispatch(updateRateStart());
-      const response = await axiosPrivate.post('/admin/exchange-rate-bulk-create',
+  await axiosPrivate.post('/admin/exchange-rate-bulk-create',
         JSON.stringify({"exchangeRates": formData})
       );
       dispatch(updateRateSuccess());
@@ -195,7 +211,7 @@ class AdminService {
   async deleteDefaultExchangeRate(id, dispatch) {
     try {
       dispatch(adminStart());
-      const response = await axiosPrivate.delete(`/admin/exchange-rate/${id}`);
+  await axiosPrivate.delete(`/admin/exchange-rate/${id}`);
       toast('Rate deleted successfully');
       this.fetchDefaultExchangeRate(dispatch);
     } catch (err) {
@@ -210,7 +226,7 @@ class AdminService {
   async setCurrencyExchangelimit(formData, dispatch) {
     try {
       dispatch(adminStart());
-      const response = await axiosPrivate.post('/admin/mark-up',
+  await axiosPrivate.post('/admin/mark-up',
         JSON.stringify(formData)
       );
       toast.success('Exchange limit set successfully');
@@ -241,7 +257,7 @@ class AdminService {
   async setCommissionRate(formData, dispatch) {
     try {
       dispatch(adminStart());
-      const response = await axiosPrivate.post('/admin/commission-rate',
+  await axiosPrivate.post('/admin/commission-rate',
         JSON.stringify(formData)
       );
       toast.success('Commission rate set successfully');
