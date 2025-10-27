@@ -29,11 +29,11 @@ function AdminAddAdmin() {
     await adminService.fetchAllAdminRoles(dispatch);
   }
   
-    useEffect(() => {
-      if (adminRoles.length === 0) {
-        fetchAdminRoles();
-      }
-    }, [dispatch, adminRoles]);
+  useEffect(() => {
+    if (adminRoles.length === 0) {
+      fetchAdminRoles();
+    }
+  }, [dispatch, adminRoles]);
     
   useEffect(() => {
     setAppTitle('Admin');
@@ -45,9 +45,6 @@ function AdminAddAdmin() {
 
   const handleChange = (e) => {
     const {name, value} = e.target;
-
-    console.log(value);
-
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -133,7 +130,7 @@ function AdminAddAdmin() {
             </div>
             <div className="w-[180px] flex justify-center">
               <Link
-                to='/admin/all'
+                to='/admin/management'
                 className='text-primary text-xs md:text-sm border bg-primary-light p-2 rounded-sm'
               >
                 Go to Admin management

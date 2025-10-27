@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomTab } from "../../../components/ui/tabs";
 import { Eye, Users } from "lucide-react";
 import InputField from "../../../components/ui/input";

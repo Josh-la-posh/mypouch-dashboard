@@ -6,6 +6,7 @@ import adminReducer from './slices/adminSlice';
 import transactionReducer from './slices/transactionSlice';
 import messageReducer from './slices/messageSlice';
 import settingReducer from './slices/settingSlice';
+import roleReducer from './slices/roleSlice';
 
 export const store = configureStore({
     reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
         transaction: transactionReducer,
         message: messageReducer,
         setting: settingReducer,
+    role: roleReducer,
     }
 });

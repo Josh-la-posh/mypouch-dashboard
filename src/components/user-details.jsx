@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomTab } from "./ui/tabs";
 import UserProfile from "../pages/authenticated/users/UserProfile";
 import UserAccount from "../pages/authenticated/users/UserAccount";

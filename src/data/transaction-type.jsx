@@ -3,5 +3,9 @@ export const TRANSACTIONTYPE = [
     'Exchange',
     'Credit',
     'Debit',
-    'System Exchange'
-]
+    'SystemExchange', // normalized (API expects no space)
+    'Refund',
+    'Release Funds',
+    'Hold Funds',
+    'Reversal'
+];

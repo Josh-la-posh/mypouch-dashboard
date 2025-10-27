@@ -3,7 +3,7 @@ import { UserTable } from "../../../components/user-table";
 import StatusBadge from "../../../components/ui/status-badge";
 import { Printer } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
+// Removed unused useAxiosPrivate import after refactor
 import TransactionService from "../../../services/api/transactionApi";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import CustomModal from "../../../components/ui/custom-modal";
@@ -13,8 +13,9 @@ import SelectField from "../../../components/ui/select";
 import Button from "../../../components/ui/button";
 import useTitle from "../../../services/hooks/useTitle";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status";
-import Card from "../../../components/ui/card";
-import InputField from "../../../components/ui/input";
+import SummaryCardsTabs from "../../../components/SummaryCardsTabs";
+// Removed InputField in favor of unified plain inputs matching UserTransactionHistory
+import { CURRENCIES } from "../../../data/currencies";
 import { TRANSACTIONTYPE } from "../../../data/transaction-type";
 
 const Transactions = () => {
@@ -66,8 +67,8 @@ const Transactions = () => {
 
     const {setAppTitle} = useTitle();
     const dispatch = useDispatch();
-    const axiosPrivate = useAxiosPrivate();
-    const {loading, error, transactions, currentPage, totalPages, wallets} = useSelector((state) => state.transaction);
+    // const axiosPrivate = useAxiosPrivate(); // currently unused
+    const {loading, error, transactions, currentPage, totalPages} = useSelector((state) => state.transaction);
     const transactionService = new TransactionService();
     const [filteredData, setFilteredData] = useState(transactions);
     const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
@@ -76,13 +77,16 @@ const Transactions = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const [status, setStatus] = useState('');
-    const [search, setSearch] = useState('');
     const [transactionType, setTransactionType] = useState('');
+    const [currency, setCurrency] = useState('');
+    const [search, setSearch] = useState('');
     const [date, setDate] = useState('');
-    const cardColor = 'bg-[#F1F8FF]';
+    const [exporting, setExporting] = useState(false);
+    // const cardColor = 'bg-[#F1F8FF]';
   
     useEffect(() => {
         setAppTitle('Transactions');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const openModal = (val) => {
@@ -92,19 +96,29 @@ const Transactions = () => {
     };
     const closeModal = () => setModalOpen(false);
 
-    const loadTransaction = async (date, transactionType, search, status, page, limit) => {
-        const newStatus = status === 'All' ? '' : status;
-        const newType = transactionType === 'All' ? '' : transactionType;
-        await transactionService.fetchtransactions(date, newType, search, newStatus, page, limit, dispatch);
-    }
+    const loadTransaction = async (page, limit) => {
+        const finalStatus = status === 'All' ? '' : status;
+        const finalType = transactionType === 'All' ? '' : transactionType;
+        const finalCurrency = currency === 'All' ? '' : currency;
+        await transactionService.fetchtransactions({
+            date,
+            transactionType: finalType,
+            search,
+            status: finalStatus,
+            currency: finalCurrency,
+            page,
+            limit
+        }, dispatch);
+    };
 
     const loadWallets = async () => {
       await transactionService.fetchWallets(dispatch);
     }
   
-    useEffect(() => {
-      loadWallets('');
-    }, [dispatch]);
+        useEffect(() => {
+            loadWallets('');
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [dispatch]);
 
     useEffect(() => {
         setFilteredData(transactions);
@@ -119,21 +133,47 @@ const Transactions = () => {
     }, [totalPages]);
 
     useEffect(() => {
-        loadTransaction(date, transactionType, search, status, userCurrentPage, userPageSize);
-    }, [dispatch, date, userCurrentPage, userPageSize]);
+        loadTransaction(userCurrentPage, userPageSize);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, userCurrentPage, userPageSize]);
 
-    const handleFilterChange = (e) => {
-        const { value } = e.target;
-        setStatus(value);
-    }
+    const handleStatusChange = (e) => setStatus(e.target.value);
+    const handleTypeChange = (e) => setTransactionType(e.target.value);
+    const handleCurrencyChange = (e) => setCurrency(e.target.value);
+    const handleSearchChange = (e) => setSearch(e.target.value);
+    const handleDateChange = (e) => setDate(e.target.value);
 
-    const handleTransactionChange = (e) => {
-        const { value } = e.target;
-        setTransactionType(value);
-    }
+    const applyFilters = () => {
+        setUserCurrentPage(1);
+        loadTransaction(1, userPageSize);
+    };
+
+    const resetFilters = () => {
+        setStatus('');
+        setTransactionType('');
+        setCurrency('');
+        setSearch('');
+        setDate('');
+        setUserCurrentPage(1);
+        loadTransaction(1, userPageSize);
+    };
+
+    const handleExport = async () => {
+        setExporting(true);
+        await transactionService.exportTransactionsExcel({
+            date,
+            transactionType: transactionType === 'All' ? '' : transactionType,
+            search,
+            status: status === 'All' ? '' : status,
+            currency: currency === 'All' ? '' : currency,
+            page: userCurrentPage,
+            limit: userPageSize
+        });
+        setExporting(false);
+    };
 
     const onRefresh = () => {
-        loadTransaction(date, transactionType, search, status, userCurrentPage, userPageSize);
+        loadTransaction(userCurrentPage, userPageSize);
     };
 
     if (loading) return <Spinner />
@@ -142,7 +182,8 @@ const Transactions = () => {
   
     return (
     <div className="space-y-10">
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
+        <SummaryCardsTabs />
+        {/* <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-x-scroll scrollbar-none">
             {
                 wallets && wallets.map((wallet) => (
                     <div key={wallet.currency} className="w-full flex-1">
@@ -158,37 +199,48 @@ const Transactions = () => {
                     </div>
                 ))
             }
-        </div>
+        </div> */}
         <div className="space-y-6">
-            <div className="flex items-center gap-4 my-4">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                    <div className="flex items-center gap-4">
-                        <SelectField
-                            options={TRANSACTIONSTATUS}
-                            placeholder="Filter"
-                            value={status}
-                            onChange={handleFilterChange}
-                        />
-                        <SelectField
-                            options={TRANSACTIONTYPE}
-                            placeholder="Type"
-                            value={transactionType}
-                            onChange={handleTransactionChange}
-                        />
-                    </div>
-                    <InputField
-                        placeholder='Transaction Id'
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+            <div className="space-y-4 my-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
+                    <SelectField
+                        options={TRANSACTIONSTATUS}
+                        placeholder="Status"
+                        value={status}
+                        onChange={handleStatusChange}
                     />
-                </div>
-                <div className="p-0 m-0">
-                    <Button
-                        onClick={() => loadTransaction('', transactionType, search, status, '1', '10')}
-                        className='text-xs'
-                    >
-                        Search
-                    </Button>
+                    <SelectField
+                        options={TRANSACTIONTYPE}
+                        placeholder="Type"
+                        value={transactionType}
+                        onChange={handleTypeChange}
+                    />
+                    <SelectField
+                        options={CURRENCIES}
+                        placeholder="Currency"
+                        value={currency}
+                        onChange={handleCurrencyChange}
+                    />
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={handleDateChange}
+                        className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search transaction id or description"
+                        value={search}
+                        onChange={handleSearchChange}
+                        className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2"
+                    />
+                    <div className="col-span-2 flex gap-1">
+                        <Button onClick={applyFilters} className='text-xs'>Apply</Button>
+                        <Button variant='secondary' className='text-xs' onClick={resetFilters}>Reset</Button>
+                        <Button variant='primary' disabled={exporting} onClick={handleExport} className='text-xs'>
+                            {exporting ? 'Exporting...' : 'Export'}
+                        </Button>
+                    </div>
                 </div>
             </div>
             <UserTable

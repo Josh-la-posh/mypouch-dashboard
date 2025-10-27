@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Card from "../../../components/ui/card";
-import { Loader, RefreshCcw, TrendingUp } from "lucide-react";
+import { RefreshCcw, TrendingUp } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
 import DashboardService from "../../../services/api/dashboardApi";
@@ -13,15 +12,15 @@ import SelectField from "../../../components/ui/select";
 import TextButton from "../../../components/ui/textButton";
 import Button from "../../../components/ui/button";
 import { CURRENCIES } from "../../../data/currencies";
+import SummaryCardsTabs from "../../../components/SummaryCardsTabs";
 
 const Dashboard = () => {
   const {auth} = useAuth();
   const dispatch = useDispatch();
   const {setAppTitle} = useTitle();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, totalUsers, transactionStat, rateLoading, rateError, rates} = useSelector((state) => state.dashboard);
+  const {loading, error, transactionStat, rateLoading, rateError, rates} = useSelector((state) => state.dashboard);
   const dashboardService = new DashboardService(axiosPrivate);
-  const [data, setData] = useState(totalUsers);
   const [transactions, setTransactions] = useState(transactionStat);
   const [currency, selectCurrency] = useState('USD');
 
@@ -33,21 +32,24 @@ const Dashboard = () => {
     await dashboardService.fetchtCurrencyRates(currency, dispatch);
   }
 
+  // Balance loads now handled within SummaryCardsTabs
+
   useEffect(() => {
     setAppTitle('Dashboard');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     loadUserStat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
     loadCurrencyRate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, dispatch]);
 
-  useEffect(() => {
-    setData(totalUsers);
-  }, [totalUsers]);
+  // Balance loading handled in reusable component.
 
   useEffect(() => {
     setTransactions(transactionStat);
@@ -61,6 +63,8 @@ const Dashboard = () => {
     loadCurrencyRate();
   };
 
+  // Refresh handlers for balances now internal to SummaryCardsTabs
+
   if (loading) return <Spinner />
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
@@ -68,36 +72,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-10">
       <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcom back {auth?.data?.firstName}</h1>
-      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none">
-        <Card
-          icon={<Loader size='22px' />}
-          amount={data?.statuses?.active?.current}
-          name="Active Users"
-          rate={Number(data?.statuses?.active?.change).toFixed(2)}
-          color="text-green-600"
-        />
-        <Card
-          icon={<Loader size='22px' />}
-          amount={data?.statuses?.inactive?.current}
-          name="Inactive Users"
-          rate={Number(data?.statuses?.inactive?.change).toFixed(2)}
-          color="text-gray-600"
-        />
-        <Card
-          icon={<Loader size='22px' />}
-          amount={data?.statuses?.blocked?.current}
-          name="Blocked Users"
-          rate={Number(data?.statuses?.blocked?.change).toFixed(2)}
-          color="text-black"
-        />
-        <Card
-          icon={<Loader size='22px' />}
-          amount={data?.statuses?.blocked?.current}
-          name="Deleted Users"
-          rate={Number(data?.statuses?.deleted?.change).toFixed(2)}
-          color="text-danger"
-        />
-      </div>
+      <SummaryCardsTabs />
       <div className="md:grid grid-cols-5 space-y-10">
         <div className="col-span-3">
           <div className="">
@@ -116,6 +91,7 @@ const Dashboard = () => {
               </TextButton>
             </div>
             <div className="mt-10 space-y-2 flex flex-col items-center">
+              {rateLoading && <Spinner />}
               {rateError 
                 ? (
                 <div className="space-y-5 flex flex-col items-center my-10">
@@ -131,7 +107,7 @@ const Dashboard = () => {
                   </div>
                 </div>)
                 : 
-                Object.entries(rates).map(([key, value]) => (
+                !rateLoading && Object.entries(rates).map(([key, value]) => (
                   <div key={key} className="flex items-center justify-between text-xs bg-primary dark:bg-white px-3 py-1 rounded-sm w-[80%]">
                     <p className="text-white dark:text-primary-dark">1 {currency}</p>
                     <p className="text-white dark:text-primary-dark">{value} {key}</p>

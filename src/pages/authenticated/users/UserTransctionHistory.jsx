@@ -12,7 +12,10 @@ import SelectField from "../../../components/ui/select";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import CustomModal from "../../../components/ui/custom-modal.jsx";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status.jsx";
+import { TRANSACTIONTYPE } from "../../../data/transaction-type.jsx";
+import { CURRENCIES } from "../../../data/currencies.jsx";
 
+// eslint-disable-next-line react/prop-types
 const UserTransactionHistory = ({id}) => {
   const columns = [
     {
@@ -69,8 +72,13 @@ const UserTransactionHistory = ({id}) => {
   const [userPageSize, setUserPageSize] = useState('10');
   const [filteredData, setFilteredData] = useState(userTransactions);
   const [status, setStatus] = useState('');
+  const [transactionType, setTransactionType] = useState('');
+  const [currency, setCurrency] = useState('');
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState({});
+  const [exporting, setExporting] = useState(false);
 
   const openModal = (val) => {
     setSelectedTransaction(val);
@@ -78,10 +86,20 @@ const UserTransactionHistory = ({id}) => {
   };
   const closeModal = () => setModalOpen(false);
 
-  const loadUserTransaction = async (id, search, status, page, limit) => {
+  const loadUserTransaction = async (page, limit) => {
     const finalStatus = status === 'All' ? '' : status;
-    await userService.fetchUserTraansactions(id, search, finalStatus, page, limit, dispatch);
-  }
+    const finalType = transactionType === 'All' ? '' : transactionType;
+    const finalCurrency = currency === 'All' ? '' : currency;
+    await userService.fetchUserTraansactions(id, {
+      date,
+      transactionType: finalType,
+      search,
+      status: finalStatus,
+      currency: finalCurrency,
+      page,
+      limit
+    }, dispatch);
+  };
 
   useEffect(() => {
     setFilteredData(userTransactions);
@@ -96,17 +114,38 @@ const UserTransactionHistory = ({id}) => {
   }, [totalPages]);
   
   useEffect(() => {
-    loadUserTransaction(id, '', status, userCurrentPage, userPageSize);
+    loadUserTransaction(userCurrentPage, userPageSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, id, userCurrentPage, userPageSize]);
 
   const onRefresh = () => {
-    loadUserTransaction(id, '', status, userCurrentPage, userPageSize);
+    loadUserTransaction(userCurrentPage, userPageSize);
   };
 
-  const handleFilterChange = (e) => {
-    const { value } = e.target;
-    setStatus(value);
-  }
+  const handleStatusChange = (e) => setStatus(e.target.value);
+  const handleTypeChange = (e) => setTransactionType(e.target.value);
+  const handleCurrencyChange = (e) => setCurrency(e.target.value);
+  const handleSearchChange = (e) => setSearch(e.target.value);
+  const handleDateChange = (e) => setDate(e.target.value);
+
+  const applyFilters = () => {
+    setUserCurrentPage(1);
+    loadUserTransaction(1, userPageSize);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    await userService.exportUserTransactionsExcel({
+      date,
+      transactionType: transactionType === 'All' ? '' : transactionType,
+      search,
+      status: status === 'All' ? '' : status,
+      currency: currency === 'All' ? '' : currency,
+      page: userCurrentPage,
+      limit: userPageSize
+    });
+    setExporting(false);
+  };
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
@@ -116,20 +155,54 @@ const UserTransactionHistory = ({id}) => {
         <p className="text-black/75 dark:text-white/80 text-lg font-[600]">
             Transaction History
         </p>
-        <div className="flex items-center gap-4 md:max-w-[600px] my-4">
-          <SelectField
-            options={TRANSACTIONSTATUS}
-            placeholder=""
-            value={status}
-            onChange={handleFilterChange}
-          />
-          <div className="p-0 m-0">
-            <Button
-              onClick={() => loadUserTransaction(id, '', status, '1', '10')}
-              className='text-xs'
-            >
-              Search
-            </Button>
+        <div className="space-y-4 my-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
+            <SelectField
+              options={TRANSACTIONSTATUS}
+              placeholder="Status"
+              value={status}
+              onChange={handleStatusChange}
+            />
+            <SelectField
+              options={TRANSACTIONTYPE}
+              placeholder="Type"
+              value={transactionType}
+              onChange={handleTypeChange}
+            />
+            <SelectField
+              options={CURRENCIES}
+              placeholder="Currency"
+              value={currency}
+              onChange={handleCurrencyChange}
+            />
+            <input
+              type="date"
+              value={date}
+              onChange={handleDateChange}
+              className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent"
+            />
+            <input
+              type="text"
+              placeholder="Search transaction id or description"
+              value={search}
+              onChange={handleSearchChange}
+              className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2"
+            />
+            <div className="col-span-2 flex gap-1">
+              <Button onClick={applyFilters} className='text-xs'>Apply</Button>
+              <Button variant='secondary' className='text-xs' onClick={() => {
+                setStatus('');
+                setTransactionType('');
+                setCurrency('');
+                setSearch('');
+                setDate('');
+                setUserCurrentPage(1);
+                loadUserTransaction(1, userPageSize);
+              }}>Reset</Button>
+              <Button variant='primary' disabled={exporting} onClick={handleExport} className='text-xs'>
+                {exporting ? 'Exporting...' : 'Export'}
+              </Button>
+            </div>
           </div>
         </div>
         {

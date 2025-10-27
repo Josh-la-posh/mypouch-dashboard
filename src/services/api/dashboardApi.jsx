@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { adminActivitiesStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, rateFailure, rateStart, rateSuccess, statFailure, statStart, statSuccess, transactionFailure, transactionStart, transactionStatFailure, transactionStatStart, transactionStatSuccess, transactionSuccess } from "../../redux/slices/dashboardSlice";
+import { adminActivitiesStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, rateFailure, rateStart, rateSuccess, statFailure, statStart, statSuccess, transactionFailure, transactionStart, transactionStatFailure, transactionStatStart, transactionStatSuccess, transactionSuccess, userBalanceStart, userBalanceSuccess, userBalanceFailure, pouchBalanceStart, pouchBalanceSuccess, pouchBalanceFailure } from "../../redux/slices/dashboardSlice";
 
 class DashboardService {
     constructor(location, navigate) {
@@ -104,6 +104,36 @@ class DashboardService {
         }
       }
     };
+
+    async fetchUserBalance(dispatch) {
+      try {
+        dispatch(userBalanceStart());
+        const response = await axiosPrivate.get('/wallet/wallet-balance');
+        // Response shape per spec: { totals: [...], summary: {...} }
+        dispatch(userBalanceSuccess(response.data));
+      } catch (err) {
+        if (!err.response) {
+          dispatch(userBalanceFailure('No Server Response'));
+        } else {
+          dispatch(userBalanceFailure(err.response.data.message || 'Failed to load user balance'));
+        }
+      }
+    }
+
+    async fetchPouchBalance(dispatch) {
+      try {
+        dispatch(pouchBalanceStart());
+        const response = await axiosPrivate.get('/wallet/get-system-wallets');
+        // Response shape per spec: array of system wallets
+        dispatch(pouchBalanceSuccess(response.data));
+      } catch (err) {
+        if (!err.response) {
+          dispatch(pouchBalanceFailure('No Server Response'));
+        } else {
+          dispatch(pouchBalanceFailure(err.response.data.message || 'Failed to load pouch balance'));
+        }
+      }
+    }
 }
   
 export default DashboardService;

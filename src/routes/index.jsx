@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/unauthenticated/login";
-import RequireAuth from "../pages/unauthenticated/RequiredAuth";
 import MainLayout from "../layouts/MainLayout";
 import User from "../pages/authenticated/users/User";
 import Messages from "../pages/authenticated/messages/Messages";
@@ -19,6 +18,11 @@ import AdminCurrency from "../pages/authenticated/admin/currency-management/Admi
 import Transactions from "../pages/authenticated/transactions/Transactions";
 import PouchWallet from "../pages/authenticated/admin/pouch-wallet/PouchWallet";
 import AdminSupportiveForm from "../pages/authenticated/admin/admin-management/AdminSupportiveForm";
+import AdminManagementPage from "../pages/authenticated/admin/admin-management/AdminManagement";
+import RolesLanding from "../pages/authenticated/admin/roles-management/RolesLanding";
+import RolesList from "../pages/authenticated/admin/roles-management/RolesList";
+import CreateRole from "../pages/authenticated/admin/roles-management/CreateRole";
+import UpdateRole from "../pages/authenticated/admin/roles-management/UpdateRole";
 import PouchFundingSuccess from "../pages/authenticated/admin/pouch-wallet/SuccessPage";
 import Profile from "../pages/authenticated/settings/Profile";
 import NotificationSettings from "../pages/authenticated/settings/notification";
@@ -26,6 +30,7 @@ import SecuritySettings from "../pages/authenticated/settings/security/SecurityS
 import ChangePassword from "../pages/authenticated/settings/security/ChangePassword";
 import LoginLog from "../pages/authenticated/settings/security/LoginLogs";
 import ActivityLog from "../pages/authenticated/settings/security/ActivityLogs";
+import RequireAuth from "../pages/unauthenticated/RequiredAuth";
 
 const RouteSystem = () => {
   return (
@@ -53,6 +58,11 @@ const RouteSystem = () => {
               <Route path='add-admin' element={<AdminAddAdmin />} />
               <Route path='all' element={<AllAdminPage />} />
               <Route path='pouch-wallet' element={<PouchWallet />} />
+              <Route path='management' element={<AdminManagementPage />} />
+              <Route path='roles' element={<RolesLanding />} />
+              <Route path='roles/list' element={<RolesList />} />
+              <Route path='roles/create' element={<CreateRole />} />
+              <Route path='roles/update/:id' element={<UpdateRole />} />
               {/* <Route path='admin-management' element={<AdminManagementLayout />}>
                 <Route path='suspicious-login-activities' element={<SuspiciousLoginActivities />} />                
                 </Route> */}

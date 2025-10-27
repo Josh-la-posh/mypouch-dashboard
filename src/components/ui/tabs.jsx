@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 
 export function Tabs({ children, className = "" }) {
   return <div className={`w-full ${className}`}>{children}</div>

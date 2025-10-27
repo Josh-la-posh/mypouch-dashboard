@@ -25,7 +25,7 @@ const AdminSidebar = () => {
             icon: <DatabaseZap size={'17px'} />,
             name: 'Admin Management',
             abbr: 'Admin',
-            url: '/admin/all'
+            url: '/admin/management'
         },
         {
             id: 4,

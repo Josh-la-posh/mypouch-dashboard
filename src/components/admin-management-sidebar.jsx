@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '../services/hooks/useSettitngsTitle';
 
@@ -16,13 +15,28 @@ const AdminManagementSidebar = () => {
             name: 'Admin Roles and Permissions',
             url: '/admin/admin-management/admins/all'
         },
+        {
+            id: 3,
+            name: 'Roles Landing',
+            url: '/admin/roles'
+        },
+        {
+            id: 4,
+            name: 'View Roles',
+            url: '/admin/roles/list'
+        },
+        {
+            id: 5,
+            name: 'Create Role',
+            url: '/admin/roles/create'
+        },
         // {
         //     id: 3,
         //     name: 'Admin Logins Logs',
         //     url: '/admin/admin-management/admin-logins-logs'
         // },
         {
-            id: 4,
+            id: 8,
             name: 'Change Password',
             url: '/admin/admin-management/change-password'
         },

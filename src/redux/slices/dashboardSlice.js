@@ -13,6 +13,14 @@ const initialState = {
   rates: [],
   rateLoading: false,
   rateError: null,
+  // User Balance (All user wallets aggregate)
+  userBalance: null,
+  userBalanceLoading: false,
+  userBalanceError: null,
+  // Pouch / System wallets balance
+  pouchBalance: [],
+  pouchBalanceLoading: false,
+  pouchBalanceError: null,
 };
 
 const dashboardSlice = createSlice({
@@ -53,6 +61,32 @@ const dashboardSlice = createSlice({
       state.rateLoading = false;
       state.error = action.payload;
     },
+    // User Balance reducers
+    userBalanceStart: (state) => {
+      state.userBalanceLoading = true;
+      state.userBalanceError = null;
+    },
+    userBalanceSuccess: (state, action) => {
+      state.userBalanceLoading = false;
+      state.userBalance = action.payload;
+    },
+    userBalanceFailure: (state, action) => {
+      state.userBalanceLoading = false;
+      state.userBalanceError = action.payload;
+    },
+    // Pouch Balance reducers
+    pouchBalanceStart: (state) => {
+      state.pouchBalanceLoading = true;
+      state.pouchBalanceError = null;
+    },
+    pouchBalanceSuccess: (state, action) => {
+      state.pouchBalanceLoading = false;
+      state.pouchBalance = action.payload;
+    },
+    pouchBalanceFailure: (state, action) => {
+      state.pouchBalanceLoading = false;
+      state.pouchBalanceError = action.payload;
+    },
 
     transactionStatStart: (state) => {
       state.loading = true;
@@ -81,6 +115,6 @@ const dashboardSlice = createSlice({
   },
 });
 
-export const { statStart, statSuccess, statFailure, transactionStart, transactionSuccess, transactionFailure, rateStart, rateSuccess, rateFailure, transactionStatStart, transactionStatSuccess, transactionStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, adminActivitiesStatFailure } = dashboardSlice.actions;
+export const { statStart, statSuccess, statFailure, transactionStart, transactionSuccess, transactionFailure, rateStart, rateSuccess, rateFailure, transactionStatStart, transactionStatSuccess, transactionStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, adminActivitiesStatFailure, userBalanceStart, userBalanceSuccess, userBalanceFailure, pouchBalanceStart, pouchBalanceSuccess, pouchBalanceFailure } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

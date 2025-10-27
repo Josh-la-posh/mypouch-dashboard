@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
@@ -90,7 +90,7 @@ function AllAdminPage() {
       setIsModalOpen(false);
       toast.success('Successful');
     } catch (e) {
-
+      console.log('Error performing action:', e);
     }
   }
 

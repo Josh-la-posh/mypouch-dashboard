@@ -89,6 +89,22 @@ class UserService {
       }
     };
 
+    async deleteUser(id, dispatch) {  
+      try {
+        dispatch(actionStart());
+        await axiosPrivate.patch(`/users/${id}/delete`);
+        await this.fetchUserDetail(id, dispatch);
+        dispatch(actionFinished());
+        toast.success('User deleted successfully');
+      } catch (err) {
+        if (!err.response) {
+          dispatch(actionFinished('No Server Response'));
+        } else {
+          dispatch(actionFinished(err.response.data.message));
+        }
+      }
+    };
+
     async updateUserDetail(id,formData, dispatch) {  
       try {
         dispatch(userUpdateStart());
@@ -124,20 +140,28 @@ class UserService {
       }
     };
 
-    async fetchUserTraansactions(id, date, status, page, limit, dispatch) {  
+    async fetchUserTraansactions(id, filters, dispatch) {  
       try {
         dispatch(userTransactionStart());
+        const { date = '', transactionType = '', search = '', status = '', currency = '', page = 1, limit = 10 } = filters || {};
+        // Build query string only with provided (non-empty) params
+        const params = new URLSearchParams();
+        if (date) params.append('date', date);
+        if (transactionType) params.append('transactionType', transactionType);
+        if (search) params.append('search', search);
+        if (status) params.append('status', status);
+        if (currency) params.append('currency', currency);
+        params.append('page', page);
+        params.append('limit', limit);
 
-        const response = await axiosPrivate.get(`/transaction/admin/${id}?date=${date}&status=${status}&page=${page}&limit=${limit}`);
-        
+        const response = await axiosPrivate.get(`/transaction/admin/${id}?${params.toString()}`);
         const data = response.data;
         dispatch(userTransactionSuccess(data));
-        
       } catch (err) {
         if (!err.response) {
           dispatch(userTransactionFailure('No Server Response'));
         } else {
-            dispatch(userTransactionFailure(err.response.data.message));
+          dispatch(userTransactionFailure(err.response.data.message));
         }
       }
     };
@@ -177,6 +201,41 @@ class UserService {
         }
       }
     };
+
+    async exportUserTransactionsExcel(filters) {
+      try {
+        const { date = '', transactionType = '', search = '', status = '', currency = '', page = 1, limit = 10 } = filters || {};
+        const params = new URLSearchParams();
+        if (date) params.append('date', date);
+        if (transactionType) params.append('transactionType', transactionType);
+        if (search) params.append('search', search);
+        if (status) params.append('status', status);
+        if (currency) params.append('currency', currency);
+        params.append('page', page);
+        params.append('limit', limit);
+
+        const response = await axiosPrivate.get(`/transaction/admin/all/transaction/excel?${params.toString()}`, {
+          responseType: 'blob'
+        });
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        a.download = `transactions-export-${timestamp}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success('Export successful');
+      } catch (err) {
+        if (!err.response) {
+          toast.error('Export failed: No Server Response');
+        } else {
+          toast.error(`Export failed: ${err.response.data.message || 'Server Error'}`);
+        }
+      }
+    }
 }
   
 export default UserService;
