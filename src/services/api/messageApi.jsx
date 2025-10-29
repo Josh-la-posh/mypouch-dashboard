@@ -1,16 +1,15 @@
-import { messageFailure, messageStart, messageSuccess } from "../../redux/slices/messageSlice";
+import { messageFailure, messageStart, messageSuccess, broadcastStart, broadcastSuccess, broadcastFailure } from "../../redux/slices/messageSlice";
 import { axiosPrivate } from "./axios";
 
 class MessageService {
-    constructor(location, navigate) {
-        this.location = location;
-        this.navigate = navigate;
-    }
+  constructor(axiosInstance) {
+    this.axios = axiosInstance || axiosPrivate;
+  }
 
     async fetchMessages(dispatch) {  
       try {
         dispatch(messageStart());
-        const response = await axiosPrivate.get('/');
+        const response = await this.axios.get('/');
         
         const data = response.data;
         console.log('user messages: ', data);
@@ -24,6 +23,19 @@ class MessageService {
         }
       }
     };
+
+    async sendBroadcast({ title, information }, dispatch) {
+      try {
+        dispatch(broadcastStart());
+        const body = { topic: 'BROADCAST', information, title };
+        const response = await this.axios.post('/notification/send/topic', JSON.stringify(body));
+        const msg = response?.data?.message || 'Broadcast sent';
+        dispatch(broadcastSuccess(msg));
+      } catch (err) {
+        const errMsg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to send broadcast');
+        dispatch(broadcastFailure(errMsg));
+      }
+    }
 }
   
 export default MessageService;

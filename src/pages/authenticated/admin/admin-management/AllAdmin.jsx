@@ -81,15 +81,15 @@ function AllAdminPage() {
     try {
       if (selectedOption === 'edit') {
         await updateAdminRoles(selectedId);
-      } else if (selectedOption === 'block') {
+      } else if (selectedOption.toLowerCase() === 'block') {
         await blockAdmin(selectedId);
-      } else if (selectedOption === 'unblock') {
+      } else if (selectedOption.toLowerCase() === 'unblock') {
         await unblockAdmin(selectedId);
-      } else if (selectedOption === 'deactivate') {
+      } else if (selectedOption.toLowerCase() === 'deactivate') {
         await deactivateAdmin(selectedId);
-      } else if (selectedOption === 'delete') {
+      } else if (selectedOption.toLowerCase() === 'delete') {
         await deleteAdmin(selectedId);
-      } else if (selectedOption === 'activate') {
+      } else if (selectedOption.toLowerCase() === 'activate') {
         await activateAdmin(selectedId);
       }
       setSelectedOption('');
@@ -147,8 +147,8 @@ function AllAdminPage() {
             <div key={admin.id} className="">
               <div className={`grid ${auth?.data?.role?.name === 'SUPER ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} items-center text-black/50 dark:text-white/60 px-3`}>
                 <div className="col-span-2">
-                    <p className='font-[600]'>{admin?.firstName} {admin?.lastName}</p>
-                    <p className='text-[9px] md:text-[11px] font-[400]'>{admin?.email}</p>
+                  <p className='font-[600]'>{admin?.firstName} {admin?.lastName}</p>
+                  <p className='text-[9px] md:text-[11px] font-[400]'>{admin?.email}</p>
                 </div>
                 <div className="text-[9px] md:text-xs font-[600] text-center">
                   {admin?.role?.name}

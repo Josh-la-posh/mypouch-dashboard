@@ -26,6 +26,17 @@ const initialState = {
   totalPages: 1,
   pouchTransactionLoading: false,
   pouchTransactionError: null,
+  manualFundingProviders: [],
+  manualFundingProvidersLoading: false,
+  manualFundingProvidersError: null,
+  isInitiatingManualFunding: false,
+  manualFundingMessage: null,
+  faqList: [],
+  faqLoading: false,
+  faqError: null,
+  isCreatingFaq: false,
+  isUpdatingFaq: false,
+  isDeletingFaq: false,
 };
 
 const adminSlice = createSlice({
@@ -145,9 +156,82 @@ const adminSlice = createSlice({
       state.pouchTransactionLoading = false;
       state.pouchTransactionError = action.payload;
     },
+    manualFundingProvidersStart: (state) => {
+      state.manualFundingProvidersLoading = true;
+      state.manualFundingProvidersError = null;
+    },
+    manualFundingProvidersSuccess: (state, action) => {
+      state.manualFundingProvidersLoading = false;
+      state.manualFundingProviders = action.payload;
+    },
+    manualFundingProvidersFailure: (state, action) => {
+      state.manualFundingProvidersLoading = false;
+      state.manualFundingProvidersError = action.payload;
+    },
+    initiateManualFundingStart: (state) => {
+      state.isInitiatingManualFunding = true;
+      state.manualFundingMessage = null;
+    },
+    initiateManualFundingSuccess: (state, action) => {
+      state.isInitiatingManualFunding = false;
+      state.manualFundingMessage = action.payload;
+    },
+    initiateManualFundingFailure: (state, action) => {
+      state.isInitiatingManualFunding = false;
+      state.manualFundingMessage = null;
+      state.manualFundingProvidersError = action.payload; // reuse error bucket
+    },
+    clearManualFundingMessage: (state) => {
+      state.manualFundingMessage = null;
+    },
+    faqFetchStart: (state) => {
+      state.faqLoading = true;
+      state.faqError = null;
+    },
+    faqFetchSuccess: (state, action) => {
+      state.faqLoading = false;
+      state.faqList = action.payload;
+    },
+    faqFetchFailure: (state, action) => {
+      state.faqLoading = false;
+      state.faqError = action.payload;
+    },
+    faqCreateStart: (state) => {
+      state.isCreatingFaq = true;
+    },
+    faqCreateSuccess: (state, action) => {
+      state.isCreatingFaq = false;
+      state.faqList = [action.payload, ...state.faqList];
+    },
+    faqCreateFailure: (state, action) => {
+      state.isCreatingFaq = false;
+      state.faqError = action.payload;
+    },
+    faqUpdateStart: (state) => {
+      state.isUpdatingFaq = true;
+    },
+    faqUpdateSuccess: (state, action) => {
+      state.isUpdatingFaq = false;
+      state.faqList = state.faqList.map(item => item.id === action.payload.id ? action.payload : item);
+    },
+    faqUpdateFailure: (state, action) => {
+      state.isUpdatingFaq = false;
+      state.faqError = action.payload;
+    },
+    faqDeleteStart: (state) => {
+      state.isDeletingFaq = true;
+    },
+    faqDeleteSuccess: (state, action) => {
+      state.isDeletingFaq = false;
+      state.faqList = state.faqList.filter(item => item.id !== action.payload);
+    },
+    faqDeleteFailure: (state, action) => {
+      state.isDeletingFaq = false;
+      state.faqError = action.payload;
+    },
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure } = adminSlice.actions;
 
 export default adminSlice.reducer;

@@ -77,7 +77,16 @@ function PouchWallet() {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
   const adminService = useMemo(() => new AdminService(axiosPrivate, navigate), [axiosPrivate, navigate]);
-    const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction} = useSelector((state) => state.admin);
+  const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding} = useSelector((state) => state.admin);
+  useEffect(() => {
+    if (manualFundingMessage) {
+      const t = setTimeout(() => {
+        // Clear message after 6s
+        dispatch({ type: 'admin/clearManualFundingMessage' });
+      }, 6000);
+      return () => clearTimeout(t);
+    }
+  }, [manualFundingMessage, dispatch]);
   const [activeTab, setActiveTab] = useState('pouch-wallet');
   const [searchParams, setSearchParams] = useSearchParams();
   const [fundMode, setFundMode] = useState('direct'); // direct | manual
@@ -85,6 +94,9 @@ function PouchWallet() {
   const [provider, setProvider] = useState('Paystack'); // Paystack | Flutterwave
     const [selectedCurrency, setSelectedCurrency] = useState('USD');
     const [fundAmount, setFundAmount] = useState('0');
+    const [manualProvider, setManualProvider] = useState('');
+    const [manualCurrency, setManualCurrency] = useState('USD');
+    const [manualAmount, setManualAmount] = useState('');
     const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
     const [userTotalPages, setUserTotalPages] = useState(totalPages);
     const [userPageSize, setUserPageSize] = useState('10');
@@ -164,6 +176,20 @@ function PouchWallet() {
     await adminService.createAdminWallet(dispatch);
     setModalOpen(false);
   }
+
+  const handleManualFunding = async () => {
+    if (!manualProvider) return toast.error('Select a provider');
+    if (!manualCurrency) return toast.error('Select currency');
+    if (!manualAmount || isNaN(Number(manualAmount)) || Number(manualAmount) <= 0) return toast.error('Enter valid amount');
+    await adminService.initiateManualFunding({ amount: manualAmount, currency: manualCurrency, provider: manualProvider }, dispatch);
+  };
+
+  // Fetch providers when switching to manual mode first time
+  useEffect(() => {
+    if (fundMode === 'manual' && manualFundingProviders.length === 0 && !manualFundingProvidersLoading) {
+      adminService.fetchManualFundingProviders(dispatch);
+    }
+  }, [fundMode, manualFundingProviders.length, manualFundingProvidersLoading, adminService, dispatch]);
 
   const handleStatusChange = (e) => {
     const { value } = e.target;
@@ -394,10 +420,42 @@ function PouchWallet() {
                 )}
 
                 {fundMode === 'manual' && (
-                  <div className='space-y-4 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                  <div className='space-y-6 bg-primary/10 p-4 rounded-sm border border-primary/20'>
                     <p className='text-sm text-primary dark:text-white font-semibold'>Manual Funding</p>
-                    <p className='text-xs text-black/70 dark:text-white/70'>Upload proof & reference ID (Coming Soon).</p>
-                    <Button variant='primary' disabled>Coming Soon</Button>
+                    <p className='text-[11px] text-black/70 dark:text-white/70'>Initiate a manual funding request. Operations team will verify and credit after proof review.</p>
+                    <div className='grid sm:grid-cols-2 gap-4'>
+                      <SelectField
+                        label='Provider'
+                        options={manualFundingProvidersLoading ? ['Loading...'] : manualFundingProviders.length ? manualFundingProviders : ['No providers']}
+                        value={manualProvider}
+                        onChange={(e) => setManualProvider(e.target.value)}
+                        placeholder='Select provider'
+                      />
+                      <SelectField
+                        label='Currency'
+                        options={CURRENCIES}
+                        value={manualCurrency}
+                        onChange={(e) => setManualCurrency(e.target.value)}
+                        placeholder='Select currency'
+                      />
+                    </div>
+                    <InputField
+                      label='Amount'
+                      id='manualAmount'
+                      value={manualAmount}
+                      onChange={(e) => setManualAmount(e.target.value)}
+                      required
+                    />
+                    <Button
+                      onClick={handleManualFunding}
+                      disabled={isInitiatingManualFunding || manualFundingProvidersLoading}
+                      variant='primary'
+                    >
+                      {isInitiatingManualFunding ? 'Initiating...' : 'Initiate Manual Funding'}
+                    </Button>
+                    {manualFundingProvidersLoading && <p className='text-xs text-black/50 dark:text-white/50'>Fetching providers...</p>}
+                    {manualFundingProviders.length === 0 && !manualFundingProvidersLoading && <p className='text-xs text-red-500'>No providers available.</p>}
+                    {manualFundingMessage && <p className='text-xs text-green-600 dark:text-green-300 font-semibold'>{manualFundingMessage}</p>}
                   </div>
                 )}
               </div>

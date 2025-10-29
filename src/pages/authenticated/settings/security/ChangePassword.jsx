@@ -22,12 +22,12 @@ function ChangePassword() {
   });
     
   useEffect(() => {
-      setAppTitle('Settings');
-  }, []);
+    setAppTitle('Settings');
+  }, [setAppTitle]);
     
   useEffect(() => {
     setSettingsTitle('Security Settings');
-  }, []);
+  }, [setSettingsTitle]);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -58,6 +58,7 @@ function ChangePassword() {
             placeholder='Enter current password'
             value={formData.currentPassword}
             onChange={handleChange}
+            showToggle
           />
           <InputField
             type='password'
@@ -66,6 +67,8 @@ function ChangePassword() {
             placeholder='Enter new password'
             value={formData.newPassword}
             onChange={handleChange}
+            showToggle
+            showStrength
           />
           <InputField
             type='password'
@@ -74,6 +77,7 @@ function ChangePassword() {
             placeholder='Re-enter new password'
             value={pss}
             onChange={(e) => setPss(e.target.value)}
+            showToggle
           />
           <div className="flex gap-8">
             <Button

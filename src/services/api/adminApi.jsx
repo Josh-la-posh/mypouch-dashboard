@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -425,6 +425,92 @@ class AdminService {
       }
     }
   };
+
+  async fetchManualFundingProviders(dispatch) {
+    try {
+      dispatch(manualFundingProvidersStart());
+      const response = await axiosPrivate.get('/wallet/list-all-providers');
+      const data = response?.data;
+      if (!Array.isArray(data)) throw new Error('Unexpected providers response');
+      dispatch(manualFundingProvidersSuccess(data));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch providers');
+      dispatch(manualFundingProvidersFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async initiateManualFunding({ amount, currency, provider }, dispatch) {
+    try {
+      dispatch(initiateManualFundingStart());
+      const body = { amount: Number(amount), currency, provider };
+      const response = await axiosPrivate.post('/wallet/initiate-manual-funding', JSON.stringify(body));
+      const message = response?.data?.message || 'Manual funding initiated';
+      dispatch(initiateManualFundingSuccess(message));
+      toast.success(message);
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to initiate manual funding');
+      dispatch(initiateManualFundingFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  // FAQ / Terms & Conditions endpoints
+  async fetchFaq(dispatch) {
+    try {
+      dispatch(faqFetchStart());
+      const response = await axiosPrivate.get('/admin/terms-conditions');
+      const data = response?.data;
+      // Expecting array
+      if (!Array.isArray(data)) throw new Error('Unexpected FAQ response');
+      dispatch(faqFetchSuccess(data));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch FAQ');
+      dispatch(faqFetchFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async createFaq({ title, content, isActive }, dispatch) {
+    try {
+      dispatch(faqCreateStart());
+      const response = await axiosPrivate.post('/admin/terms-conditions/create', JSON.stringify({ title, content, isActive }));
+      const created = response?.data;
+      dispatch(faqCreateSuccess(created));
+      toast.success('FAQ created');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to create FAQ');
+      dispatch(faqCreateFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async updateFaq(id, { title, content, isActive }, dispatch) {
+    try {
+      dispatch(faqUpdateStart());
+      const response = await axiosPrivate.put(`/admin/terms-conditions/${id}`, JSON.stringify({ title, content, isActive }));
+      const updated = response?.data;
+      dispatch(faqUpdateSuccess(updated));
+      toast.success('FAQ updated');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to update FAQ');
+      dispatch(faqUpdateFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async deleteFaq(id, dispatch) {
+    try {
+      dispatch(faqDeleteStart());
+      await axiosPrivate.delete(`/admin/terms-conditions/${id}`);
+      dispatch(faqDeleteSuccess(id));
+      toast.success('FAQ deleted');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to delete FAQ');
+      dispatch(faqDeleteFailure(msg));
+      toast.error(msg);
+    }
+  }
 }
   
 export default AdminService;
