@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RoleService from '../../../../services/api/roleApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
 import Button from '../../../../components/ui/button';
 import Spinner from '../../../../components/ui/spinner';
 import ErrorLayout from '../../../../components/ui/error_page';
@@ -12,7 +13,8 @@ const CreateRole = () => {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const { loading, error, permissions, actionLoading } = useSelector(state => state.role);
-  const roleService = new RoleService();
+  const axiosPrivate = useAxiosPrivate();
+  const roleService = new RoleService(axiosPrivate);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

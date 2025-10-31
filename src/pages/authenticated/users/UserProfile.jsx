@@ -96,13 +96,13 @@ const UserProfile = ({id}) => {
             <div className="space-y-6 px-10">
                 {!showPrivacy && (
                     <div className="flex justify-end">
-                        <div className="w-32">
+                        <div className="w-fit">
                             <Button
                                 variant="secondary"
                                 className="text-xs"
                                 onClick={openPrivacy}
                             >
-                                Privacy settings.
+                                Privacy settings
                             </Button>
                         </div>
                     </div>

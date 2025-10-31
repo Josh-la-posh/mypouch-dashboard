@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RoleService from '../../../../services/api/roleApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
 import Spinner from '../../../../components/ui/spinner';
 import ErrorLayout from '../../../../components/ui/error_page';
 import useTitle from '../../../../services/hooks/useTitle';
@@ -12,7 +13,8 @@ const RolesList = () => {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const { loading, error, roles } = useSelector(state => state.role);
-  const roleService = new RoleService();
+  const axiosPrivate = useAxiosPrivate();
+  const roleService = new RoleService(axiosPrivate);
 
   useEffect(() => { setAppTitle('Admin'); }, [setAppTitle]);
   useEffect(() => { setSettingsTitle('Roles Management'); }, [setSettingsTitle]);

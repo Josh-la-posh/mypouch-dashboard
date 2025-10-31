@@ -5,7 +5,7 @@ import UserAccount from "../pages/authenticated/users/UserAccount";
 import UserTransactionHistory from "../pages/authenticated/users/UserTransctionHistory";
 import UserIdVerification from "../pages/authenticated/users/UserIdVerification";
 import UserActivityLog from "../pages/authenticated/users/UserActivityLog";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useTitle from "../services/hooks/useTitle";
 
 const UserDetails = () => {
@@ -24,10 +24,22 @@ const UserDetails = () => {
   
     useEffect(() => {
       setAppTitle('Users');
-    }, []);
+    }, [setAppTitle]);
+
+  const navigate = useNavigate();
+  const goBack = () => navigate('/user');
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          onClick={goBack}
+          className="text-xs px-3 py-2 rounded-sm border border-primary text-primary hover:bg-primary/10 transition-colors"
+        >
+          ← Back to Users
+        </button>
+      </div>
       <CustomTab
         TABS={TABS}
         activeTab={activeTab}

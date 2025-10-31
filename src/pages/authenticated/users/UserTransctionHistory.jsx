@@ -78,7 +78,6 @@ const UserTransactionHistory = ({id}) => {
   const [date, setDate] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState({});
-  const [exporting, setExporting] = useState(false);
 
   const openModal = (val) => {
     setSelectedTransaction(val);
@@ -133,20 +132,6 @@ const UserTransactionHistory = ({id}) => {
     loadUserTransaction(1, userPageSize);
   };
 
-  const handleExport = async () => {
-    setExporting(true);
-    await userService.exportUserTransactionsExcel({
-      date,
-      transactionType: transactionType === 'All' ? '' : transactionType,
-      search,
-      status: status === 'All' ? '' : status,
-      currency: currency === 'All' ? '' : currency,
-      page: userCurrentPage,
-      limit: userPageSize
-    });
-    setExporting(false);
-  };
-
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
   return (
@@ -199,9 +184,6 @@ const UserTransactionHistory = ({id}) => {
                 setUserCurrentPage(1);
                 loadUserTransaction(1, userPageSize);
               }}>Reset</Button>
-              <Button variant='primary' disabled={exporting} onClick={handleExport} className='text-xs'>
-                {exporting ? 'Exporting...' : 'Export'}
-              </Button>
             </div>
           </div>
         </div>

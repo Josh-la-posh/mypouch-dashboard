@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import RoleService from '../../../../services/api/roleApi';
+import useAxiosPrivate from '../../../../services/hooks/useAxiosPrivate';
 import Button from '../../../../components/ui/button';
 import Spinner from '../../../../components/ui/spinner';
 import ErrorLayout from '../../../../components/ui/error_page';
@@ -15,7 +16,8 @@ const UpdateRole = () => {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const { loading, error, roles, permissions, actionLoading } = useSelector(state => state.role);
-  const roleService = useMemo(() => new RoleService(), []);
+  const axiosPrivate = useAxiosPrivate();
+  const roleService = useMemo(() => new RoleService(axiosPrivate), [axiosPrivate]);
 
   const [roleName, setRoleName] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);

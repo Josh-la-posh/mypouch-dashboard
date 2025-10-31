@@ -3,11 +3,16 @@ import { axiosPrivate } from './axios';
 import { roleStart, roleSuccess, roleFailure, permissionStart, permissionSuccess, permissionFailure, roleActionStart, roleActionFinished } from '../../redux/slices/roleSlice';
 
 class RoleService {
+  constructor(client = axiosPrivate) {
+    // Allow dependency injection of a pre-configured axios instance (with auth interceptors)
+    this.client = client;
+  }
+
   async fetchRoles(dispatch) {
     try {
       dispatch(roleStart());
       // Updated endpoint per latest spec: GET /role/get
-      const response = await axiosPrivate.get('/role/get');
+      const response = await this.client.get('/role/get');
       dispatch(roleSuccess(response.data));
     } catch (err) {
       const message = !err.response ? 'No Server Response' : (err.response.data.message || 'Error fetching roles');
@@ -19,7 +24,7 @@ class RoleService {
   async fetchPermissions(dispatch) {
     try {
       dispatch(permissionStart());
-      const response = await axiosPrivate.get('/permission');
+      const response = await this.client.get('/permission');
       // Response format: [{ category: 'Admin Management', permissions: [ {id, slug, description}, ... ]}, ...]
       const raw = response.data || [];
       // Flatten while preserving category for grouped UI rendering
@@ -41,7 +46,7 @@ class RoleService {
   async createRole(payload, dispatch) {
     try {
       dispatch(roleActionStart());
-      await axiosPrivate.post('/role/create', JSON.stringify(payload));
+      await this.client.post('/role/create', JSON.stringify(payload));
       toast.success('Role created successfully');
       await this.fetchRoles(dispatch);
       dispatch(roleActionFinished());
@@ -55,7 +60,7 @@ class RoleService {
   async updateRole(id, payload, dispatch) {
     try {
       dispatch(roleActionStart());
-      await axiosPrivate.put(`/role/${id}/permissions`, JSON.stringify(payload));
+      await this.client.put(`/role/${id}/permissions`, JSON.stringify(payload));
       toast.success('Role updated successfully');
       await this.fetchRoles(dispatch);
       dispatch(roleActionFinished());
@@ -70,7 +75,7 @@ class RoleService {
   async fetchRole(id, dispatch) {
     try {
       dispatch(roleStart());
-      const response = await axiosPrivate.get('/role/get');
+      const response = await this.client.get('/role/get');
       const roles = response.data || [];
       const role = roles.find(r => r.id === Number(id));
       dispatch(roleSuccess(roles)); // keep full list in store
