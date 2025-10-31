@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -333,6 +333,56 @@ class AdminService {
       }
     }
   };
+
+  async fetchPendingManualFunding(dispatch) {
+    try {
+      dispatch(pendingManualFundingStart());
+      const response = await axiosPrivate.get('/wallet/pending-approval-manual-funding');
+      const data = response?.data;
+      if (!Array.isArray(data)) {
+        // Assume maybe wrapped object {content: []}
+        const list = data?.content || [];
+        dispatch(pendingManualFundingSuccess(list));
+      } else {
+        dispatch(pendingManualFundingSuccess(data));
+      }
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch pending manual funding approvals');
+      dispatch(pendingManualFundingFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async reviewManualFunding(id, status, dispatch) {
+    try {
+      dispatch(reviewManualFundingStart(id));
+      await axiosPrivate.post(`/wallet/review-manual-fund/${id}`, JSON.stringify({ status }));
+      dispatch(reviewManualFundingSuccess(id));
+      toast.success(`Request ${status === 'approve' ? 'approved' : 'rejected'}`);
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to review funding request');
+      dispatch(reviewManualFundingFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async fetchAllManualFunding({ search='', currency='', status='', page=1, limit=10 }, dispatch) {
+    try {
+      dispatch(manualFundingAllStart());
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (currency) params.append('currency', currency);
+      if (status) params.append('status', status);
+      params.append('page', page);
+      params.append('limit', limit);
+      const response = await axiosPrivate.get(`/wallet/manual-funding/all?${params.toString()}`);
+      dispatch(manualFundingAllSuccess(response?.data));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch manual funding records');
+      dispatch(manualFundingAllFailure(msg));
+      toast.error(msg);
+    }
+  }
 
   async fetchAllAdmin(dispatch) {
     try {

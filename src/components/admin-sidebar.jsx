@@ -9,7 +9,7 @@ const AdminSidebar = () => {
         {
             id: 1,
             icon: <Speaker size={'17px'} />,
-            name: 'Pending Request',
+            name: 'Admin Requests',
             abbr: 'Request',
             url: '/admin/pending-request'
         },

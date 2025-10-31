@@ -37,6 +37,21 @@ const initialState = {
   isCreatingFaq: false,
   isUpdatingFaq: false,
   isDeletingFaq: false,
+  // Pending manual funding approvals
+  pendingManualFunding: [],
+  pendingManualFundingLoading: false,
+  pendingManualFundingError: null,
+  manualFundingReviewingId: null,
+  isReviewingManualFunding: false,
+  manualFundingReviewError: null,
+  // All manual funding list (paginated)
+  manualFundingAll: [],
+  manualFundingAllLoading: false,
+  manualFundingAllError: null,
+  manualFundingAllPage: 1,
+  manualFundingAllTotalPages: 1,
+  manualFundingAllPageSize: 10,
+  manualFundingAllTotalRecords: 0,
   // Currency history
   currencyHistory: [],
   currencyHistoryLoading: false,
@@ -238,6 +253,52 @@ const adminSlice = createSlice({
       state.isDeletingFaq = false;
       state.faqError = action.payload;
     },
+    pendingManualFundingStart: (state) => {
+      state.pendingManualFundingLoading = true;
+      state.pendingManualFundingError = null;
+    },
+    pendingManualFundingSuccess: (state, action) => {
+      state.pendingManualFundingLoading = false;
+      state.pendingManualFunding = action.payload;
+    },
+    pendingManualFundingFailure: (state, action) => {
+      state.pendingManualFundingLoading = false;
+      state.pendingManualFundingError = action.payload;
+    },
+    reviewManualFundingStart: (state, action) => {
+      state.isReviewingManualFunding = true;
+      state.manualFundingReviewingId = action.payload; // id
+      state.manualFundingReviewError = null;
+    },
+    reviewManualFundingSuccess: (state, action) => {
+      const id = action.payload;
+      state.isReviewingManualFunding = false;
+      state.manualFundingReviewingId = null;
+      // remove item from pending list
+      state.pendingManualFunding = state.pendingManualFunding.filter(item => item.id !== id);
+    },
+    reviewManualFundingFailure: (state, action) => {
+      state.isReviewingManualFunding = false;
+      state.manualFundingReviewError = action.payload?.message || action.payload;
+      state.manualFundingReviewingId = null;
+    },
+    manualFundingAllStart: (state) => {
+      state.manualFundingAllLoading = true;
+      state.manualFundingAllError = null;
+    },
+    manualFundingAllSuccess: (state, action) => {
+      state.manualFundingAllLoading = false;
+      const payload = action.payload || {};
+      state.manualFundingAll = payload.content || [];
+      state.manualFundingAllPage = payload.currentPage || 1;
+      state.manualFundingAllTotalPages = payload.totalPages || 1;
+      state.manualFundingAllPageSize = payload.payloadSize || (payload.content ? payload.content.length : 0);
+      state.manualFundingAllTotalRecords = payload.totalRecords || (payload.content ? payload.content.length : 0);
+    },
+    manualFundingAllFailure: (state, action) => {
+      state.manualFundingAllLoading = false;
+      state.manualFundingAllError = action.payload;
+    },
     currencyHistoryStart: (state) => {
       state.currencyHistoryLoading = true;
       state.currencyHistoryError = null;
@@ -269,6 +330,6 @@ const adminSlice = createSlice({
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure } = adminSlice.actions;
 
 export default adminSlice.reducer;
