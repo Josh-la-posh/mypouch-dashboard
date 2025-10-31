@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -285,6 +285,39 @@ class AdminService {
       }
     }
   };
+
+  async fetchExchangeRateHistory(params, dispatch) {
+    try {
+      dispatch(currencyHistoryStart());
+      const { adminId='', toCurrency='', fromCurrency='', endDate='', startDate='', page=1, limit=10 } = params || {};
+      const searchParams = new URLSearchParams();
+      if (adminId) searchParams.append('adminId', adminId);
+      if (toCurrency) searchParams.append('toCurrency', toCurrency);
+      if (fromCurrency) searchParams.append('fromCurrency', fromCurrency);
+      if (startDate) searchParams.append('startDate', startDate);
+      if (endDate) searchParams.append('endDate', endDate);
+      searchParams.append('page', page);
+      searchParams.append('limit', limit);
+      const response = await axiosPrivate.get(`/admin/exchange-rate-history?${searchParams.toString()}`);
+      const data = response?.data;
+      // Normalize expected shape: { totalPages, payloadSize, hasNext, content, currentPage, totalRecords }
+      const normalized = Array.isArray(data) ? data : {
+        content: data?.content || [],
+        currentPage: data?.currentPage ?? page,
+        totalPages: data?.totalPages ?? 1,
+        payloadSize: data?.payloadSize ?? (data?.content?.length || 0),
+        hasNext: data?.hasNext ?? false,
+        totalRecords: data?.totalRecords ?? (data?.content?.length || 0),
+      };
+      dispatch(currencyHistorySuccess(normalized));
+    } catch (err) {
+      if (!err.response) {
+        dispatch(currencyHistoryFailure('No Server Response'));
+      } else {
+        dispatch(currencyHistoryFailure(err.response.data.message || 'Failed to fetch history'));
+      }
+    }
+  }
 
   async fetchSuspiciousActivities(dispatch) {
     try {

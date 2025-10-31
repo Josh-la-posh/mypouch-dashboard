@@ -10,7 +10,7 @@ import DashboardTransactions from "./Transactions";
 import useTitle from "../../../services/hooks/useTitle";
 import SelectField from "../../../components/ui/select";
 import TextButton from "../../../components/ui/textButton";
-import Button from "../../../components/ui/button";
+import RatesCarousel from "../../../components/RatesCarousel";
 import { CURRENCIES } from "../../../data/currencies";
 import SummaryCardsTabs from "../../../components/SummaryCardsTabs";
 
@@ -71,7 +71,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-10">
-      <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcom back {auth?.data?.firstName}</h1>
+      <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcome back {auth?.data?.firstName}</h1>
       <SummaryCardsTabs />
       <div className="md:grid grid-cols-5 space-y-10">
         <div className="col-span-3">
@@ -92,28 +92,15 @@ const Dashboard = () => {
             </div>
             <div className="mt-10 space-y-2 flex flex-col items-center">
               {rateLoading && <Spinner />}
-              {rateError 
-                ? (
-                <div className="space-y-5 flex flex-col items-center my-10">
-                  <p className="text-black/70 dark:text-white/60">Unable to load data</p>
-                  <div className="w-[120px]">
-                    <Button
-                      variant="primary"
-                      className='text-xs'
-                      onClick={onRefreshRate}
-                    >
-                      Retry                      
-                    </Button>
-                  </div>
-                </div>)
-                : 
-                !rateLoading && Object.entries(rates).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between text-xs bg-primary dark:bg-white px-3 py-1 rounded-sm w-[80%]">
-                    <p className="text-white dark:text-primary-dark">1 {currency}</p>
-                    <p className="text-white dark:text-primary-dark">{value} {key}</p>
-                  </div>
-                ))
-              }
+              <RatesCarousel
+                rates={rates}
+                loading={rateLoading}
+                error={rateError}
+                onRefresh={onRefreshRate}
+                onRetry={onRefreshRate}
+                autoplay
+                interval={5000}
+              />
             </div>
           </div>
         </div>

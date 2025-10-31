@@ -27,20 +27,29 @@ class DashboardService {
     async fetchtCurrencyRates(currency, dispatch) {  
       try {
         dispatch(rateStart());
-        const response = await axiosPrivate.get(`/wallet/fx-rates?baseCurrency=${currency}`);
-        
-        const data = response.data.conversion_rates;
-        const requiredCurrencies = ['USD', 'NGN', 'CAD', 'EUR', 'GBP'];
+        const response = await axiosPrivate.get(`/wallet/best-rates?currency=${currency}`);
+        /* New response shape (array): [ { productAlias, source, destination, value, fetchedAt, fee?, feeCurrency? }, ... ]
+           We will normalize into array of objects as-is, and also compute a displayValue for 1 source -> destination. */
+        const data = Array.isArray(response.data) ? response.data : (response.data?.rates || []);
 
-        const filteredCurrencies = Object.fromEntries(
-          requiredCurrencies.map((cur) => [cur, data[cur]]));
+        // Sort by destination then productAlias for consistent ordering
+        const normalized = data.map(r => ({
+          productAlias: r.productAlias,
+          pair: `${r.source}/${r.destination}`,
+          source: r.source,
+          destination: r.destination,
+          value: r.value, // already numeric
+          fee: r.fee || null,
+          feeCurrency: r.feeCurrency || null,
+          fetchedAt: r.fetchedAt,
+        })).sort((a,b) => a.destination.localeCompare(b.destination) || a.productAlias.localeCompare(b.productAlias));
 
-        dispatch(rateSuccess(filteredCurrencies));
+        dispatch(rateSuccess(normalized));
       } catch (err) {
         if (!err.response) {
           dispatch(rateFailure('No Server Response'));
         } else {
-            dispatch(rateFailure(err.response.data.messsage));
+          dispatch(rateFailure(err.response.data.message || err.response.data.messsage || 'Failed to fetch rates'));
         }
       }
     };

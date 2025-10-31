@@ -37,6 +37,15 @@ const initialState = {
   isCreatingFaq: false,
   isUpdatingFaq: false,
   isDeletingFaq: false,
+  // Currency history
+  currencyHistory: [],
+  currencyHistoryLoading: false,
+  currencyHistoryError: null,
+  currencyHistoryPage: 1,
+  currencyHistoryTotalPages: 1,
+  currencyHistoryPayloadSize: 0,
+  currencyHistoryHasNext: false,
+  currencyHistoryTotalRecords: 0,
 };
 
 const adminSlice = createSlice({
@@ -229,9 +238,37 @@ const adminSlice = createSlice({
       state.isDeletingFaq = false;
       state.faqError = action.payload;
     },
+    currencyHistoryStart: (state) => {
+      state.currencyHistoryLoading = true;
+      state.currencyHistoryError = null;
+    },
+    currencyHistorySuccess: (state, action) => {
+      state.currencyHistoryLoading = false;
+      const payload = action.payload;
+      // Support both paginated {content,currentPage,totalPages} or raw array
+      if (Array.isArray(payload)) {
+        state.currencyHistory = payload;
+        state.currencyHistoryPage = 1;
+        state.currencyHistoryTotalPages = 1;
+        state.currencyHistoryPayloadSize = payload.length;
+        state.currencyHistoryHasNext = false;
+        state.currencyHistoryTotalRecords = payload.length;
+      } else {
+        state.currencyHistory = payload.content || [];
+        state.currencyHistoryPage = payload.currentPage || 1;
+        state.currencyHistoryTotalPages = payload.totalPages || 1;
+        state.currencyHistoryPayloadSize = payload.payloadSize || state.currencyHistory.length;
+        state.currencyHistoryHasNext = payload.hasNext || false;
+        state.currencyHistoryTotalRecords = payload.totalRecords || state.currencyHistory.length;
+      }
+    },
+    currencyHistoryFailure: (state, action) => {
+      state.currencyHistoryLoading = false;
+      state.currencyHistoryError = action.payload;
+    },
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure } = adminSlice.actions;
 
 export default adminSlice.reducer;
