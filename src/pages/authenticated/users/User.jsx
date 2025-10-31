@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { CustomTab } from "../../../components/ui/tabs";
 import { Eye, Users } from "lucide-react";
 import InputField from "../../../components/ui/input";
@@ -77,20 +77,21 @@ const User = () => {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
   const {loading, error, users, currentPage, totalPages, totalRecords} = useSelector((state) => state.user);
-  const userService = new UserService(axiosPrivate);
+  const userService = useMemo(()=> new UserService(axiosPrivate), [axiosPrivate]);
   const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
   const [userTotalPages, setUserTotalPages] = useState(totalPages);
   const [userPageSize, setUserPageSize] = useState('10');
   const [filteredData, setFilteredData] = useState(users);
   const [search, setSearch] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
 
-  const loadUsers = async (search, status, page, limit) => {
-    await userService.fetchUsers(search, status, page, limit, dispatch);
-  }
+  const loadUsers = useCallback(async (searchVal, statusVal, pageVal, limitVal) => {
+    await userService.fetchUsers(searchVal, statusVal, pageVal, limitVal, dispatch);
+  }, [userService, dispatch]);
 
   useEffect(() => {
     setAppTitle('Users');
-  }, []);
+  }, [setAppTitle]);
 
   useEffect(() => {
     setFilteredData(users);
@@ -105,8 +106,8 @@ const User = () => {
   }, [totalPages]);
   
   useEffect(() => {
-      loadUsers(search, activeTab, userCurrentPage, userPageSize);
-  }, [dispatch, userCurrentPage, userPageSize, activeTab]);
+    loadUsers(search, activeTab, userCurrentPage, userPageSize);
+  }, [loadUsers, search, activeTab, userCurrentPage, userPageSize]);
 
   const onRefresh = () => {
     loadUsers();
@@ -118,6 +119,15 @@ const User = () => {
 
   const handleNewSearch = () => {
     loadUsers(search, activeTab, '1', '10');
+  }
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      await userService.exportUsersExcel({ search, status: activeTab });
+    } finally {
+      setIsExporting(false);
+    }
   }
 
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
@@ -134,9 +144,9 @@ const User = () => {
         setActiveTab={setActiveTab}
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-4 md:max-w-[600px] my-4">
+          <div className="flex items-center gap-4 md:max-w-[750px] my-4 flex-wrap">
             <InputField
-              placeholder='Search ID/Name/Mobile'
+              placeholder='Search Email/Name/Mobile'
               id='search'
               value={search}
               onChange={handleSearch}
@@ -147,6 +157,16 @@ const User = () => {
                 className='text-xs'
               >
                 Search
+              </Button>
+            </div>
+            <div className="p-0 m-0">
+              <Button
+                onClick={handleExport}
+                disabled={isExporting}
+                variant='secondary'
+                className='text-xs'
+              >
+                {isExporting ? 'Exporting...' : 'Export'}
               </Button>
             </div>
           </div>

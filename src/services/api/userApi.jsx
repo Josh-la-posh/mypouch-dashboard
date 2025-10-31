@@ -236,6 +236,32 @@ class UserService {
         }
       }
     }
+
+    async exportUsersExcel({ search = '', status = '' }) {
+      try {
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (status) params.append('status', status);
+        const response = await axiosPrivate.get(`/users/admin/all/users/excel?${params.toString()}`, { responseType: 'blob' });
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        a.download = `users-export-${timestamp}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success('Users export successful');
+      } catch (err) {
+        if (!err.response) {
+          toast.error('Export failed: No Server Response');
+        } else {
+          toast.error(`Export failed: ${err.response.data.message || 'Server Error'}`);
+        }
+      }
+    }
 }
   
 export default UserService;
