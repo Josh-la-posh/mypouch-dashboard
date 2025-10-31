@@ -17,9 +17,10 @@ import SummaryCardsTabs from "../../../components/SummaryCardsTabs";
 // Removed InputField in favor of unified plain inputs matching UserTransactionHistory
 import { CURRENCIES } from "../../../data/currencies";
 import { TRANSACTIONTYPE } from "../../../data/transaction-type";
+import { formatAmount } from "../../../utils/amountFormmerter";
 
 const Transactions = () => {
-    const columns = [
+        const columns = [
     {
         header: 'Status',
         accessor: 'status',
@@ -50,14 +51,17 @@ const Transactions = () => {
     {
         header: 'Amount',
         accessor: 'amount',
+        render: (amount, row) => (
+          <span className='font-medium'>{row?.creditedCurrency || row?.debitedCurrency || ''} {formatAmount(amount)}</span>
+        )
     },
     {
         header: '',
         accessor: 'row',
         render: (id, row) => (
             <button
-            onClick={() => openModal(row)}
-            className="text-primary dark:text-white"
+                onClick={() => openModal(row)}
+                className="text-primary dark:text-white"
             >
             <Printer size='14px' />
         </button>
@@ -259,7 +263,7 @@ const Transactions = () => {
             <div className="space-y-6">
                 <div className="text-center">
                     <p className="text-sm">Amount</p>
-                    <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {selectedTransaction.amount}</p>
+                    <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {formatAmount(selectedTransaction.amount)}</p>
                 </div>
                 <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
                     <p>Transaction Type</p>
@@ -309,7 +313,7 @@ const Transactions = () => {
                 { selectedTransaction.debitedAmount &&
                     <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
                         <p>Debited Amount</p>
-                        <p>{selectedTransaction.debitedCurrency}{selectedTransaction.debitedAmount}</p>
+                        <p>{selectedTransaction.debitedCurrency} {formatAmount(selectedTransaction.debitedAmount)}</p>
                     </div>
                 }
                 { selectedTransaction.debitWallet &&

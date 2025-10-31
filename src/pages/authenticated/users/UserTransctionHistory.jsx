@@ -14,6 +14,7 @@ import CustomModal from "../../../components/ui/custom-modal.jsx";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status.jsx";
 import { TRANSACTIONTYPE } from "../../../data/transaction-type.jsx";
 import { CURRENCIES } from "../../../data/currencies.jsx";
+import { formatAmount } from "../../../utils/amountFormmerter.jsx";
 
 // eslint-disable-next-line react/prop-types
 const UserTransactionHistory = ({id}) => {
@@ -206,7 +207,7 @@ const UserTransactionHistory = ({id}) => {
         <div className="space-y-6">
           <div className="text-center">
             <p className="text-sm">Amount</p>
-            <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {selectedTransaction.amount}</p>
+            <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {formatAmount(selectedTransaction.amount)}</p>
           </div>
           <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
             <p>Transaction Type</p>
@@ -256,7 +257,7 @@ const UserTransactionHistory = ({id}) => {
           { selectedTransaction.debitedAmount &&
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Debited Amount</p>
-              <p>{selectedTransaction.debitedCurrency}{selectedTransaction.debitedAmount}</p>
+              <p>{selectedTransaction.debitedCurrency}{formatAmount(selectedTransaction.debitedAmount)}</p>
           </div>
           }
           { selectedTransaction.debitWallet &&

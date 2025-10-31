@@ -8,6 +8,7 @@ import ErrorLayout from "../../../components/ui/error_page";
 import Spinner from "../../../components/ui/spinner";
 import ContentDisplayLayout from "../../../components/ui/content-display-layout";
 import { Landmark } from "lucide-react";
+import { formatAmount } from "../../../utils/amountFormmerter";
 
 const UserAccount = ({id}) => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const UserAccount = ({id}) => {
               icon={card.currency}
               iconClassName='w-4 md:w-8 h-4 md:h-8 text-[7px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
               className='w-full'
-              amount={card.balance}
+              amount={formatAmount(card.balance)}
               name='Total Balance'
               rate=''
               color={cardColors[index]}

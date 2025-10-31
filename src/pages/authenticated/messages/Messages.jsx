@@ -139,13 +139,16 @@ const Messages = () => {
                                 value={faqSearch}
                                 onChange={(e) => setFaqSearch(e.target.value)}
                             />
-                            <Button
-                                variant='outline'
-                                onClick={() => adminService.fetchFaq(dispatch)}
-                                disabled={faqLoading}
-                            >
-                                {faqLoading ? 'Refreshing...' : 'Refresh'}
-                            </Button>
+                            <div className="w-fit">
+                                <Button
+                                    variant='outline'
+                                    onClick={() => adminService.fetchFaq(dispatch)}
+                                    disabled={faqLoading}
+                                >
+                                    {faqLoading ? 'Refreshing...' : 'Refresh'}
+                                </Button>
+
+                            </div>
                         </div>
 
                         {/* Create New FAQ */}

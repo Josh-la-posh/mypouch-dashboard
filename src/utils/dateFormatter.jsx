@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const dateAndTimeFormatter = (dateString) => {
   const date = new Date(dateString);
 

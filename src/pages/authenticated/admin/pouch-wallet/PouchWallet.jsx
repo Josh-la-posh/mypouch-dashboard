@@ -23,6 +23,7 @@ import { Check } from 'lucide-react';
 import CustomModal from '../../../../components/ui/custom-modal.jsx';
 import { TRANSACTIONSTATUS } from '../../../../data/transaction-status.jsx';
 import { TRANSACTIONTYPE } from '../../../../data/transaction-type.jsx';
+import { formatAmount } from '../../../../utils/amountFormmerter.jsx';
 
 function PouchWallet() {
     const columns = [
@@ -254,7 +255,7 @@ function PouchWallet() {
                     icon={cur?.currency}
                     iconClassName='w-5 md:w-8 h-5 md:h-8 text-[7px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
                     className='w-full'
-                    amount={cur?.balance}
+                    amount={formatAmount(cur?.balance)}
                     name='Total balance'
                     rate=''
                     color={cardColor}
@@ -395,7 +396,8 @@ function PouchWallet() {
                     {/* Funding form */}
                     <SelectField
                       label='Select Currency'
-                      options={directFundingType === 'naira' ? ['NGN'] : CURRENCIES}
+                      // Foreign funding should exclude NGN
+                      options={directFundingType === 'naira' ? ['NGN'] : CURRENCIES.filter(c => c !== 'NGN')}
                       value={directFundingType === 'naira' ? 'NGN' : selectedCurrency}
                       placeholder=''
                       onChange={(e) => directFundingType === 'naira' ? null : setSelectedCurrency(e.target.value)}
@@ -486,7 +488,7 @@ function PouchWallet() {
         <div className="space-y-6">
           <div className="text-center">
             <p className="text-sm">Amount</p>
-            <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {selectedTransaction.amount}</p>
+            <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {formatAmount(selectedTransaction.amount)}</p>
           </div>
           <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
             <p>Transaction Type</p>
@@ -534,7 +536,7 @@ function PouchWallet() {
           {selectedTransaction.debitedAmount && (
             <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
               <p>Debited Amount</p>
-              <p>{selectedTransaction.debitedCurrency}{selectedTransaction.debitedAmount}</p>
+              <p>{selectedTransaction.debitedCurrency}{formatAmount(selectedTransaction.debitedAmount)}</p>
             </div>
           )}
           {selectedTransaction.debitWallet && (

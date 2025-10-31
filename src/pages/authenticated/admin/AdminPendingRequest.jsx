@@ -9,6 +9,7 @@ import ErrorLayout from '../../../components/ui/error_page';
 import Button from '../../../components/ui/button';
 import { dateAndTimeFormatter } from '../../../utils/dateFormatter';
 import { CustomTab } from '../../../components/ui/tabs';
+import { formatAmount } from '../../../utils/amountFormmerter';
 
 function AdminPendingRequest() {
   const { setAppTitle } = useTitle();
@@ -79,7 +80,7 @@ function AdminPendingRequest() {
                       const rowLoading = isReviewingManualFunding && manualFundingReviewingId === item.id;
                       return (
                         <tr key={item.id || item.transactionId || item.createdDate} className='border-t'>
-                          <td className='p-2 font-medium'>{item.amount != null ? item.amount : '—'} {item.currency || ''}</td>
+                          <td className='p-2 font-medium'>{item.amount != null ? formatAmount(item.amount) : '—'} {item.currency || ''}</td>
                           <td className='p-2'>{item.provider || '—'}</td>
                           <td className='p-2'>{fullName}</td>
                           <td className='p-2'>{dateAndTimeFormatter(item.createdDate || item.createdAt)}</td>
@@ -159,7 +160,7 @@ function AdminPendingRequest() {
                       const actionable = (item.status || '').toLowerCase() === 'awaiting approval';
                       return (
                         <tr key={item.id || item.transactionId || item.createdDate} className='border-t'>
-                          <td className='p-2 font-medium'>{item.amount != null ? item.amount : '—'} {item.currency || ''}</td>
+                          <td className='p-2 font-medium'>{item.amount != null ? formatAmount(item.amount) : '—'} {item.currency || ''}</td>
                           <td className='p-2'>{item.provider || '—'}</td>
                           <td className='p-2'>{fullName}</td>
                           <td className='p-2 capitalize'>{item.status}</td>

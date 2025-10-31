@@ -8,6 +8,7 @@ import ErrorLayout from './ui/error_page';
 // Removed toggle TextButton; using dropdown selects instead
 import { Loader } from 'lucide-react';
 import { Tabs, TabsList, TabTrigger } from './ui/tabs';
+import { formatAmount } from '../utils/amountFormmerter';
 
 // Reusable summary tab component showing: User Status, User Balance, Pouch Balance
 // Fetches required data lazily and reuses dashboard slice state.
@@ -89,28 +90,28 @@ const SummaryCardsTabs = () => {
             <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
               <Card
                 icon={<Loader size='22px' />}
-                amount={totalUsers?.statuses?.active?.current}
+                amount={formatAmount(totalUsers?.statuses?.active?.current)}
                 name='Active Users'
                 rate={totalUsers?.statuses?.active ? Number(totalUsers.statuses.active.change).toFixed(2) : '0.00'}
                 color='text-green-600'
               />
               <Card
                 icon={<Loader size='22px' />}
-                amount={totalUsers?.statuses?.inactive?.current}
+                amount={formatAmount(totalUsers?.statuses?.inactive?.current)}
                 name='Inactive Users'
                 rate={totalUsers?.statuses?.inactive ? Number(totalUsers.statuses.inactive.change).toFixed(2) : '0.00'}
                 color='text-gray-600'
               />
               <Card
                 icon={<Loader size='22px' />}
-                amount={totalUsers?.statuses?.blocked?.current}
+                amount={formatAmount(totalUsers?.statuses?.blocked?.current)}
                 name='Blocked Users'
                 rate={totalUsers?.statuses?.blocked ? Number(totalUsers.statuses.blocked.change).toFixed(2) : '0.00'}
                 color='text-black'
               />
               <Card
                 icon={<Loader size='22px' />}
-                amount={totalUsers?.statuses?.deleted?.current}
+                amount={formatAmount(totalUsers?.statuses?.deleted?.current)}
                 name='Deleted Users'
                 rate={totalUsers?.statuses?.deleted ? Number(totalUsers.statuses.deleted.change).toFixed(2) : '0.00'}
                 color='text-danger'
