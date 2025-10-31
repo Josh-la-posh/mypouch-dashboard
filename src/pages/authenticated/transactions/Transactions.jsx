@@ -51,8 +51,8 @@ const Transactions = () => {
     {
         header: 'Amount',
         accessor: 'amount',
-        render: (amount, row) => (
-          <span className='font-medium'>{row?.creditedCurrency || row?.debitedCurrency || ''} {formatAmount(amount)}</span>
+        render: (amount) => (
+          <span className='font-medium'>{formatAmount(amount)}</span>
         )
     },
     {

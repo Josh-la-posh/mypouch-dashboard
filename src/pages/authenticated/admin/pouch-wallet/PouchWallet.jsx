@@ -54,10 +54,13 @@ function PouchWallet() {
           <StatusBadge status={transactionType} />
         ),
       },
-      {
+    {
         header: 'Amount',
         accessor: 'amount',
-      },
+        render: (amount) => (
+          <span className='font-medium'>{formatAmount(amount)}</span>
+        )
+    },
       {
         header: '',
         accessor: 'row',
