@@ -23,6 +23,7 @@ import { Check } from 'lucide-react';
 import CustomModal from '../../../../components/ui/custom-modal.jsx';
 import { TRANSACTIONSTATUS } from '../../../../data/transaction-status.jsx';
 import { TRANSACTIONTYPE } from '../../../../data/transaction-type.jsx';
+import ErrorLayout from '../../../../components/ui/error_page.jsx';
 import { formatAmount } from '../../../../utils/amountFormmerter.jsx';
 
 function PouchWallet() {
@@ -81,7 +82,7 @@ function PouchWallet() {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
   const adminService = useMemo(() => new AdminService(axiosPrivate, navigate), [axiosPrivate, navigate]);
-  const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding} = useSelector((state) => state.admin);
+  const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding, providerRegions, providerGateways, providersLoading, providersError, isCreatingProvider, providerCreationError, providers} = useSelector((state) => state.admin);
   useEffect(() => {
     if (manualFundingMessage) {
       const t = setTimeout(() => {
@@ -96,6 +97,9 @@ function PouchWallet() {
   const [fundMode, setFundMode] = useState('direct'); // direct | manual
   const [directFundingType, setDirectFundingType] = useState('naira'); // naira | foreign
   const [provider, setProvider] = useState('Paystack'); // Paystack | Flutterwave
+  // Provider setup state
+  const [newProviderGateway, setNewProviderGateway] = useState('');
+  const [newProviderType, setNewProviderType] = useState('');
     const [selectedCurrency, setSelectedCurrency] = useState('USD');
     const [fundAmount, setFundAmount] = useState('0');
     const [manualProvider, setManualProvider] = useState('');
@@ -205,7 +209,34 @@ function PouchWallet() {
     setType(value);
   }
 
+  // Load provider metadata when provider tab activated
+  useEffect(() => {
+    if (activeTab === 'provider') {
+      adminService.fetchProviderRegionsAndGateways(dispatch);
+    }
+  }, [activeTab, adminService, dispatch]);
+
+  const handleCreateProvider = async () => {
+    if (!newProviderGateway) return toast.error('Select payment gateway');
+    if (!newProviderType) return toast.error('Select provider type');
+    await adminService.createProvider({ paymentGateway: newProviderGateway, type: newProviderType }, dispatch);
+    setNewProviderGateway('');
+    setNewProviderType('');
+  }
+
   const cardColor = 'bg-[#F1F8FF]';
+
+  // Normalize manual funding provider options to avoid React attempting to render object directly
+  const manualFundingProviderOptions = useMemo(() => {
+    if (!Array.isArray(manualFundingProviders)) return [];
+    return manualFundingProviders.map(p => {
+      if (p && typeof p === 'object') {
+        const label = `${p.paymentGateway}${p.type ? ' - ' + p.type : ''}`;
+        return { label, value: p.paymentGateway };
+      }
+      return { label: String(p), value: String(p) };
+    });
+  }, [manualFundingProviders]);
 
   const TABS = [
     { label: 'Pouch Wallet', value: 'pouch-wallet' },
@@ -400,7 +431,7 @@ function PouchWallet() {
                     <SelectField
                       label='Select Currency'
                       // Foreign funding should exclude NGN
-                      options={directFundingType === 'naira' ? ['NGN'] : CURRENCIES.filter(c => c !== 'NGN')}
+                      options={directFundingType === 'naira' ? ['NGN'] : CURRENCIES.filter(c => c !== 'NGN' && c !== 'All')}
                       value={directFundingType === 'naira' ? 'NGN' : selectedCurrency}
                       placeholder=''
                       onChange={(e) => directFundingType === 'naira' ? null : setSelectedCurrency(e.target.value)}
@@ -431,7 +462,7 @@ function PouchWallet() {
                     <div className='grid sm:grid-cols-2 gap-4'>
                       <SelectField
                         label='Provider'
-                        options={manualFundingProvidersLoading ? ['Loading...'] : manualFundingProviders.length ? manualFundingProviders : ['No providers']}
+                        options={manualFundingProvidersLoading ? ['Loading...'] : manualFundingProviderOptions.length ? manualFundingProviderOptions : ['No providers']}
                         value={manualProvider}
                         onChange={(e) => setManualProvider(e.target.value)}
                         placeholder='Select provider'
@@ -460,6 +491,7 @@ function PouchWallet() {
                     </Button>
                     {manualFundingProvidersLoading && <p className='text-xs text-black/50 dark:text-white/50'>Fetching providers...</p>}
                     {manualFundingProviders.length === 0 && !manualFundingProvidersLoading && <p className='text-xs text-red-500'>No providers available.</p>}
+                    {providerCreationError && <p className='text-xs text-red-500'>{providerCreationError}</p>}
                     {manualFundingMessage && <p className='text-xs text-green-600 dark:text-green-300 font-semibold'>{manualFundingMessage}</p>}
                   </div>
                 )}
@@ -472,16 +504,94 @@ function PouchWallet() {
 
         {/* Provider Tab */}
         {activeTab === 'provider' && (
-          <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-4'>
-            <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
-              {['Paystack', 'Flutterwave', 'Stripe (Coming Soon)'].map((prov) => (
-                <div key={prov} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex items-center justify-between'>
-                  <span className='text-xs md:text-sm'>{prov}</span>
-                  <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{prov.includes('Coming') ? 'Pending' : 'Active'}</span>
-                </div>
-              ))}
+          <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-6 max-w-[900px]'>
+            <div className='flex justify-between items-center'>
+              <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
+              <div className="w-fit">
+                <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
+              </div>
             </div>
+            {providersLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
+            {providersError && <ErrorLayout errMsg={providersError} handleRefresh={()=> adminService.fetchProviderRegionsAndGateways(dispatch)} />}
+            {!providersLoading && !providersError && providers.length === 0 && (
+              <div className='space-y-4 border border-dashed border-primary/40 p-4 rounded-sm'>
+                <p className='text-xs text-black/70 dark:text-white/70'>No providers set up yet. Create the first one below.</p>
+                <div className='grid sm:grid-cols-2 gap-4'>
+                  <div className='space-y-1'>
+                    <p className='text-[10px] font-semibold'>Payment Gateway</p>
+                    <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                      <option value=''>Select gateway</option>
+                      {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                  <div className='space-y-1'>
+                    <p className='text-[10px] font-semibold'>Type</p>
+                    <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                      <option value=''>Select type</option>
+                      {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
+                  {isCreatingProvider ? 'Creating...' : 'Create Provider'}
+                </Button>
+              </div>
+            )}
+            {!providersLoading && !providersError && providers.length > 0 && (
+              <div className='space-y-5'>
+                <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
+                  {providers.map(p => (
+                    <div key={p.id || p.paymentGateway} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px]'>
+                      <div className='flex justify-between items-center'>
+                        <span className='font-semibold'>{p.paymentGateway}</span>
+                        <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{(p.status || 'active').toLowerCase().includes('pending') ? 'Pending' : 'Active'}</span>
+                      </div>
+                      <div className='flex justify-between'>
+                        <span className='text-gray-500'>Type:</span>
+                        <span className='capitalize'>{p.type || p.region || '—'}</span>
+                      </div>
+                      {p.createdDate && <div className='flex justify-between'>
+                        <span className='text-gray-500'>Created:</span>
+                        <span>{dateFormatter(p.createdDate)}</span>
+                      </div>}
+                    </div>
+                  ))}
+                  {/* Show gateways not yet configured */}
+                  {providerGateways.filter(gw => !providers.some(p => p.paymentGateway === gw)).map(gw => (
+                    <div key={gw} className='p-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px] bg-white/40 dark:bg-[#20263D]/40'>
+                      <div className='flex justify-between items-center'>
+                        <span className='font-semibold'>{gw}</span>
+                        <span className='text-[10px] px-2 py-1 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300'>Not Configured</span>
+                      </div>
+                      <p className='text-[10px] text-black/60 dark:text-white/60'>Gateway discovered but not yet registered. Use form below to configure.</p>
+                    </div>
+                  ))}
+                </div>
+                <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
+                  <p className='text-xs font-semibold'>Add Another Provider</p>
+                  <div className='grid sm:grid-cols-2 gap-4'>
+                    <div className='space-y-1'>
+                      <p className='text-[10px] font-semibold'>Payment Gateway</p>
+                      <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                        <option value=''>Select gateway</option>
+                        {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
+                      </select>
+                    </div>
+                    <div className='space-y-1'>
+                      <p className='text-[10px] font-semibold'>Type</p>
+                      <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                        <option value=''>Select type</option>
+                        {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
+                    {isCreatingProvider ? 'Creating...' : 'Add Provider'}
+                  </Button>
+                  {isCreatingProvider && <p className='text-[10px] text-gray-500'>Please wait...</p>}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </CustomTab>

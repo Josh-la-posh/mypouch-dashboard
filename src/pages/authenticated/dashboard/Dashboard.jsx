@@ -73,25 +73,33 @@ const Dashboard = () => {
     <div className="space-y-10">
       <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcome back {auth?.data?.firstName}</h1>
       <SummaryCardsTabs />
-      <div className="md:grid grid-cols-5 space-y-10">
-        <div className="col-span-3">
-          <div className="">
-            <div className="flex items-center justify-around h-5">
-              <SelectField
-                options={CURRENCIES}
-                placeholder=""
-                value={currency}
-                onChange={(e) => selectCurrency(e.target.value)}
-              />
-              <p className="text-xs font-[600] text-center dark:text-[#C2A6DD]">Daily Exchange Rate</p>
-              <TextButton
-                onClick={onRefreshRate}
-              >
-                <RefreshCcw size='16px'/>
+      {/* Rates & Most Traded Section */}
+      <div className="grid md:grid-cols-5 gap-6">
+        {/* Daily Exchange Rate Panel */}
+        <div className="md:col-span-3 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <p className="text-[11px] font-semibold dark:text-[#C2A6DD]">Daily Exchange Rate</p>
+              <TextButton onClick={onRefreshRate} className="text-[11px]" aria-label="Refresh rates">
+                <RefreshCcw size='14px' />
               </TextButton>
             </div>
-            <div className="mt-10 space-y-2 flex flex-col items-center">
-              {rateLoading && <Spinner />}
+            <div className="w-[130px]">
+              <SelectField
+                options={CURRENCIES}
+                placeholder="Currency"
+                value={currency}
+                onChange={(e) => selectCurrency(e.target.value)}
+                selectClassName="bg-white dark:bg-[#20263D]"
+              />
+            </div>
+          </div>
+          <div className="relative min-h-[160px] flex flex-col items-center justify-center">
+            {rateLoading && <Spinner />}
+            {rateError && !rateLoading && (
+              <ErrorLayout errMsg={rateError} handleRefresh={onRefreshRate} />
+            )}
+            {!rateLoading && !rateError && (
               <RatesCarousel
                 rates={rates}
                 loading={rateLoading}
@@ -101,26 +109,37 @@ const Dashboard = () => {
                 autoplay
                 interval={5000}
               />
-            </div>
+            )}
           </div>
         </div>
-        <div className="md:mt-0 col-span-2">
-          <div className="">
-            <p className="text-xs font-[600] text-center dark:text-[#C2A6DD] h-5">The Most Traded Currency</p>
-            <div className="mt-4 space-y-2 flex flex-col items-center">
-              {transactions.map((cur) => (
-                  <div key={cur.currency} className="flex items-center justify-between text-xs bg-primary dark:bg-white px-3 py-1 rounded-sm w-[80%]">
-                    <p className="text-white dark:text-primary-dark">{cur?.currency}</p>
-                    <div className={`flex items-center gap-4 ${cur?.change.toString()[0] == '-' ? 'text-danger' : 'text-color-green'}`}>
-                      <div className=""><TrendingUp size='15px' /></div>
-                      <p>{cur.change}%</p>
+
+        {/* Most Traded Currency Panel */}
+        <div className="md:col-span-2 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold dark:text-[#C2A6DD]">Most Traded Currency</p>
+            <TextButton onClick={onRefresh} className="text-[11px]" aria-label="Refresh stats">
+              <RefreshCcw size='14px' />
+            </TextButton>
+          </div>
+          <div className="space-y-2">
+            {transactions && transactions.length > 0 ? transactions.map((cur) => {
+              const negative = cur?.change?.toString().startsWith('-');
+              return (
+                <div key={cur.currency} className="group flex items-center w-full text-[11px] rounded-sm overflow-hidden">
+                  {/* Bar background */}
+                  <div className={`flex items-center justify-between w-full px-4 py-2 bg-primary dark:bg-[#1C2034] transition-colors group-hover:bg-primary/90`}> 
+                    <p className="text-white dark:text-[#C2A6DD] font-medium tracking-wide">{cur?.currency}</p>
+                    <div className={`flex items-center gap-2 ${negative ? 'text-red-400' : 'text-green-300'}`}>
+                      <TrendingUp size='13px' className={`${negative ? 'rotate-180' : ''}`} />
+                      <p className="font-semibold">{cur.change}%</p>
                     </div>
                   </div>
-                ))
-              }
-            </div>
+                </div>
+              )
+            }) : (
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">No trading data available.</p>
+            )}
           </div>
-
         </div>
       </div>
 

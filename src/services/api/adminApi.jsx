@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure, providerFetchStart, providerFetchSuccess, providerFetchFailure, providerCreateStart, providerCreateSuccess, providerCreateFailure } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -380,6 +380,43 @@ class AdminService {
     } catch (err) {
       const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch manual funding records');
       dispatch(manualFundingAllFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async fetchProviderRegionsAndGateways(dispatch) {
+    try {
+      dispatch(providerFetchStart());
+      // Endpoint semantics:
+      // /wallet/all-provider-region -> ["local","foreign"] (regions/types)
+      // /wallet/provider/all -> [{id,paymentGateway,type,...}] configured providers
+      // /wallet/list-all-providers -> ["Paystack","Flutterwave", ...] available gateways
+      const [regionsRes, providersRes, gatewaysRes] = await Promise.all([
+        axiosPrivate.get('/wallet/all-provider-region'),
+        axiosPrivate.get('/wallet/provider/all'),
+        axiosPrivate.get('/wallet/list-all-providers')
+      ]);
+      const regions = Array.isArray(regionsRes?.data) ? regionsRes.data : [];
+      const providers = Array.isArray(providersRes?.data) ? providersRes.data : [];
+      const gateways = Array.isArray(gatewaysRes?.data) ? gatewaysRes.data : [];
+      dispatch(providerFetchSuccess({ regions, gateways, providers }));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch providers');
+      dispatch(providerFetchFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async createProvider({ paymentGateway, type }, dispatch) {
+    try {
+      dispatch(providerCreateStart());
+      const response = await axiosPrivate.post('/wallet/provider/create', JSON.stringify({ paymentGateway, type }));
+      const created = response?.data;
+      dispatch(providerCreateSuccess(created));
+      toast.success('Provider created');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to create provider');
+      dispatch(providerCreateFailure(msg));
       toast.error(msg);
     }
   }

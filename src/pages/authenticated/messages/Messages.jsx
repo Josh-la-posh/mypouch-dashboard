@@ -61,7 +61,7 @@ const Messages = () => {
                 TABS={TABS}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
-                activeClassName='bg-primary/10 font-semibold'
+                activeClassName='font-semibold'
             >
                 {activeTab === 'message' && (
                     <div className="grid md:grid-cols-2 gap-6">

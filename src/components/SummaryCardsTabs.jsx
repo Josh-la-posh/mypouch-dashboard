@@ -5,21 +5,17 @@ import DashboardService from '../services/api/dashboardApi';
 import Card from './ui/card';
 import Spinner from './ui/spinner';
 import ErrorLayout from './ui/error_page';
-// Removed toggle TextButton; using dropdown selects instead
 import { Loader } from 'lucide-react';
 import { Tabs, TabsList, TabTrigger } from './ui/tabs';
 import { formatAmount } from '../utils/amountFormmerter';
 
-// Reusable summary tab component showing: User Status, User Balance, Pouch Balance
-// Fetches required data lazily and reuses dashboard slice state.
 const SummaryCardsTabs = () => {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
   const dashboardService = new DashboardService(axiosPrivate);
   const { totalUsers, loading, error, userBalance, userBalanceLoading, userBalanceError, pouchBalance, pouchBalanceLoading, pouchBalanceError } = useSelector((state) => state.dashboard);
 
-  const [activeTab, setActiveTab] = useState('dashboard'); // dashboard | userBalance | pouchBalance
-  // User balance metric toggle state
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [userBalanceMetric, setUserBalanceMetric] = useState('totalBalance');
   const balanceMetricOptions = ['availableBalance', 'holdingBalance', 'totalBalance'];
   const balanceMetricLabels = {
@@ -27,16 +23,12 @@ const SummaryCardsTabs = () => {
     holdingBalance: 'Holding Balance',
     totalBalance: 'Total Balance'
   };
-  // Dropdown selection replaces cycling button
-
-  // Pouch balance metric toggle
   const [pouchBalanceMetric, setPouchBalanceMetric] = useState('balance');
   const pouchMetricOptions = ['balance', 'pendingWithdrawals'];
   const pouchMetricLabels = {
     balance: 'Balance',
     pendingWithdrawals: 'Pending Withdrawals'
   };
-  // Dropdown selection replaces cycling button
 
   const ensureUserStat = async () => {
     if (!totalUsers?.statuses && !loading) {
@@ -51,7 +43,6 @@ const SummaryCardsTabs = () => {
     await dashboardService.fetchPouchBalance(dispatch);
   };
 
-  // Initial user stat fetch if needed (for pages other than original dashboard)
   useEffect(() => {
     ensureUserStat();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,7 +136,7 @@ const SummaryCardsTabs = () => {
                     <Card
                       key={item.currency}
                       icon={<Loader size='22px' />}
-                      amount={`${Number(metricValue).toFixed(2)} ${item.currency}`}
+                      amount={`${formatAmount(Number(metricValue).toFixed(2))} ${item.currency}`}
                       name={balanceMetricLabels[userBalanceMetric]}
                       rate={null}
                       color='text-primary-dark'
@@ -183,7 +174,7 @@ const SummaryCardsTabs = () => {
                     <Card
                       key={wallet.id}
                       icon={<Loader size='22px' />}
-                      amount={`${Number(numericValue).toFixed(2)} ${wallet.currency}`}
+                      amount={`${formatAmount(Number(numericValue).toFixed(2))} ${wallet.currency}`}
                       name={pouchMetricLabels[pouchBalanceMetric]}
                       rate={null}
                       color='text-primary-dark'

@@ -3,7 +3,6 @@ import { UserTable } from "../../../components/user-table";
 import StatusBadge from "../../../components/ui/status-badge";
 import { Printer } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-// Removed unused useAxiosPrivate import after refactor
 import TransactionService from "../../../services/api/transactionApi";
 import { dateFormatter } from "../../../utils/dateFormatter";
 import CustomModal from "../../../components/ui/custom-modal";
@@ -14,7 +13,6 @@ import Button from "../../../components/ui/button";
 import useTitle from "../../../services/hooks/useTitle";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status";
 import SummaryCardsTabs from "../../../components/SummaryCardsTabs";
-// Removed InputField in favor of unified plain inputs matching UserTransactionHistory
 import { CURRENCIES } from "../../../data/currencies";
 import { TRANSACTIONTYPE } from "../../../data/transaction-type";
 import { formatAmount } from "../../../utils/amountFormmerter";
@@ -71,7 +69,6 @@ const Transactions = () => {
 
     const {setAppTitle} = useTitle();
     const dispatch = useDispatch();
-    // const axiosPrivate = useAxiosPrivate(); // currently unused
     const {loading, error, transactions, currentPage, totalPages} = useSelector((state) => state.transaction);
     const transactionService = new TransactionService();
     const [filteredData, setFilteredData] = useState(transactions);
@@ -82,11 +79,10 @@ const Transactions = () => {
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const [status, setStatus] = useState('');
     const [transactionType, setTransactionType] = useState('');
-    const [currency, setCurrency] = useState('');
+    const [currency, setCurrency] = useState('All');
     const [search, setSearch] = useState('');
     const [date, setDate] = useState('');
     const [exporting, setExporting] = useState(false);
-    // const cardColor = 'bg-[#F1F8FF]';
   
     useEffect(() => {
         setAppTitle('Transactions');

@@ -1,5 +1,3 @@
-import React from 'react';
-
 const CustomModal = ({ isOpen, title, onClose, children }) => {
   // If modal is not open, render null
   if (!isOpen) return null;
@@ -7,7 +5,7 @@ const CustomModal = ({ isOpen, title, onClose, children }) => {
   return (
     <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50" onClick={onClose}>
       <div
-        className="bg-white rounded-lg shadow-lg max-w-md w-full p-6"
+        className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 h-[95%] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}

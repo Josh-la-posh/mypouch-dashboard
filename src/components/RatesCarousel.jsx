@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Spinner from './ui/spinner';
 import Button from './ui/button';
 import TextButton from './ui/textButton';
-import { ChevronLeft, ChevronRight, RefreshCcw, Clock, Pause, Play } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 
 /*
 Props:
@@ -14,25 +14,22 @@ Props:
 Options:
   autoplay (default true), interval (ms, default 5000)
 */
-const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, autoplay = true, interval = 5000 }) => {
+const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interval = 5000 }) => {
   const [index, setIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(autoplay);
   const timerRef = useRef(null);
 
   const total = rates.length;
 
   const next = useCallback(() => setIndex(i => (i + 1) % (total || 1)), [total]);
-  const prev = useCallback(() => setIndex(i => (i - 1 + (total || 1)) % (total || 1)), [total]);
 
   useEffect(() => {
-    if (isPlaying && total > 1) {
+    if (total > 1) {
       timerRef.current = setTimeout(next, interval);
     }
     return () => timerRef.current && clearTimeout(timerRef.current);
-  }, [isPlaying, index, total, interval, next]);
+  }, [index, total, interval, next]);
 
   useEffect(() => {
-    // Reset index when rates change
     setIndex(0);
   }, [total]);
 
@@ -57,11 +54,10 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, autopla
   }
 
   const current = rates[index];
-  const timeStr = current ? new Date(current.fetchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
   return (
     <div className='space-y-3 w-full flex flex-col items-center'>
-      <div className='flex items-center justify-between w-full max-w-sm'>
+      {/* <div className='flex items-center justify-between w-full max-w-sm'>
         <div className='flex items-center gap-2'>
           <TextButton onClick={prev} disabled={total <= 1}><ChevronLeft size={16} /></TextButton>
           <TextButton onClick={next} disabled={total <= 1}><ChevronRight size={16} /></TextButton>
@@ -72,13 +68,16 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, autopla
           </TextButton>
           <TextButton onClick={onRefresh}><RefreshCcw size={14} /></TextButton>
         </div>
-      </div>
+      </div> */}
 
       {current && (
         <div className='flex flex-col gap-2 text-xs bg-primary dark:bg-white px-4 py-3 rounded-md w-full max-w-sm shadow-sm'>
           <div className='flex items-center justify-between'>
             <p className='text-white dark:text-primary-dark font-semibold'>{current.productAlias}</p>
-            <p className='text-[10px] flex items-center gap-1 text-white/80 dark:text-primary-dark/70'><Clock size={12}/> {timeStr}</p>
+            {/* <p className='text-[10px] flex items-center gap-1 text-white/80 dark:text-primary-dark/70'><Clock size={12}/> {timeStr}</p> */}
+            <div className='flex justify-end text-[9px] text-white/60 dark:text-primary-dark/60'>
+                {index + 1} / {total}
+            </div>
           </div>
           <div className='flex items-center justify-between'>
             <p className='text-white dark:text-primary-dark'>{current.pair}</p>
@@ -89,10 +88,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, autopla
               <p className='text-white dark:text-primary-dark'>Fee</p>
               <p className='text-white dark:text-primary-dark'>{current.fee} {current.feeCurrency}</p>
             </div>
-          )}
-          <div className='flex justify-end text-[9px] text-white/60 dark:text-primary-dark/60'>
-            {index + 1} / {total}
-          </div>
+          )}          
         </div>
       )}
 
