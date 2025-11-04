@@ -27,60 +27,60 @@ import ErrorLayout from '../../../../components/ui/error_page.jsx';
 import { formatAmount } from '../../../../utils/amountFormmerter.jsx';
 
 function PouchWallet() {
-    const columns = [
-      {
-        header: 'Status',
-        accessor: 'status',
-        render: (status) => (
-          <div 
-            className="flex items-center gap-1">
-            <div className={`
-                w-2 h-2 rounded-full ${status === 'Successful' ? 'bg-green-600' : status === 'Pending' ? 'bg-yellow-600' : 'bg-black'}
-            `}></div>
-            {status}
-          </div>
-        ),
-      },
-      {
-        header: 'Date',
-        accessor: 'createdDate',
-        render: (createdDate) => (
-          <span>{dateFormatter(createdDate)}</span>
-        ),
-      },
-      {
-        header: 'Transaction Type',
-        accessor: 'transactionType',
-        render: (transactionType) => (
-          <StatusBadge status={transactionType} />
-        ),
-      },
+  const columns = [
     {
-        header: 'Amount',
-        accessor: 'amount',
-        render: (amount) => (
-          <span className='font-medium'>{formatAmount(amount)}</span>
-        )
+      header: 'Status',
+      accessor: 'status',
+      render: (status) => (
+        <div 
+          className="flex items-center gap-1">
+          <div className={`
+              w-2 h-2 rounded-full ${status === 'Successful' ? 'bg-green-600' : status === 'Pending' ? 'bg-yellow-600' : 'bg-black'}
+          `}></div>
+          {status}
+        </div>
+      ),
     },
-      {
-        header: '',
-        accessor: 'row',
-        render: (id, row) => (
-          <button
-            onClick={() => openModal(row)}
-            className="text-primary dark:text-white"
-          >
-            <Printer size='14px' />
-        </button>
-        )
-      },
-    ];
+    {
+      header: 'Date',
+      accessor: 'createdDate',
+      render: (createdDate) => (
+        <span>{dateFormatter(createdDate)}</span>
+      ),
+    },
+    {
+      header: 'Transaction Type',
+      accessor: 'transactionType',
+      render: (transactionType) => (
+        <StatusBadge status={transactionType} />
+      ),
+    },
+  {
+      header: 'Amount',
+      accessor: 'amount',
+      render: (amount) => (
+        <span className='font-medium'>{formatAmount(amount)}</span>
+      )
+  },
+    {
+      header: '',
+      accessor: 'row',
+      render: (id, row) => (
+        <button
+          onClick={() => openModal(row)}
+          className="text-primary dark:text-white"
+        >
+          <Printer size='14px' />
+      </button>
+      )
+    },
+  ];
 
-    const {setAppTitle} = useTitle();
-    const { setSettingsTitle } = useSettingsTitle();
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const axiosPrivate = useAxiosPrivate();
+  const {setAppTitle} = useTitle();
+  const { setSettingsTitle } = useSettingsTitle();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
   const adminService = useMemo(() => new AdminService(axiosPrivate, navigate), [axiosPrivate, navigate]);
   const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding, providerRegions, providerGateways, providersLoading, providersError, isCreatingProvider, providerCreationError, providers} = useSelector((state) => state.admin);
   useEffect(() => {
@@ -100,18 +100,18 @@ function PouchWallet() {
   // Provider setup state
   const [newProviderGateway, setNewProviderGateway] = useState('');
   const [newProviderType, setNewProviderType] = useState('');
-    const [selectedCurrency, setSelectedCurrency] = useState('USD');
-    const [fundAmount, setFundAmount] = useState('0');
-    const [manualProvider, setManualProvider] = useState('');
-    const [manualCurrency, setManualCurrency] = useState('USD');
-    const [manualAmount, setManualAmount] = useState('');
-    const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
-    const [userTotalPages, setUserTotalPages] = useState(totalPages);
-    const [userPageSize, setUserPageSize] = useState('10');
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedTransaction, setSelectedTransaction] = useState({});
-    const [status, setStatus] = useState('All');
-    const [type, setType] = useState('All');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [fundAmount, setFundAmount] = useState('0');
+  const [manualProvider, setManualProvider] = useState('');
+  const [manualCurrency, setManualCurrency] = useState('USD');
+  const [manualAmount, setManualAmount] = useState('');
+  const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
+  const [userTotalPages, setUserTotalPages] = useState(totalPages);
+  const [userPageSize, setUserPageSize] = useState('10');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState({});
+  const [status, setStatus] = useState('All');
+  const [type, setType] = useState('All');
   const [date] = useState('');
   
     const openModal = (val) => {
@@ -276,7 +276,7 @@ function PouchWallet() {
         setActiveTab={handleTabChange}
         className='w-full'
         tabClassName='overflow-x-auto'
-        activeClassName='bg-primary/10 font-semibold'
+        activeClassName='font-semibold'
         inactiveClassName=''
       >
         {/* Pouch Wallet Tab Content */}
@@ -557,7 +557,7 @@ function PouchWallet() {
                     </div>
                   ))}
                   {/* Show gateways not yet configured */}
-                  {providerGateways.filter(gw => !providers.some(p => p.paymentGateway === gw)).map(gw => (
+                  {/* {providerGateways.filter(gw => !providers.some(p => p.paymentGateway === gw)).map(gw => (
                     <div key={gw} className='p-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px] bg-white/40 dark:bg-[#20263D]/40'>
                       <div className='flex justify-between items-center'>
                         <span className='font-semibold'>{gw}</span>
@@ -565,7 +565,7 @@ function PouchWallet() {
                       </div>
                       <p className='text-[10px] text-black/60 dark:text-white/60'>Gateway discovered but not yet registered. Use form below to configure.</p>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
                 <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
                   <p className='text-xs font-semibold'>Add Another Provider</p>
