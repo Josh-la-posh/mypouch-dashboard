@@ -82,7 +82,6 @@ const CurrencyHistory = () => {
               <th className='p-2'>New Rate</th>
               <th className='p-2'>Δ Change</th>
               <th className='p-2'>% Change</th>
-              <th className='p-2'>Admin</th>
               <th className='p-2'>Created</th>
               <th className='p-2'>Updated</th>
             </tr>
@@ -99,7 +98,7 @@ const CurrencyHistory = () => {
               const newRate = item.newRate ?? item.rateAfter ?? item.rate;
               const change = (newRate != null && oldRate != null) ? (Number(newRate) - Number(oldRate)) : null;
               const pctChange = (change != null && Number(oldRate) !== 0) ? (change / Number(oldRate)) * 100 : null;
-              const adminName = item.adminName || [item.adminFirstName, item.adminLastName].filter(Boolean).join(' ') || item.adminEmail || '—';
+              // const adminName = item.adminName || [item.adminFirstName, item.adminLastName].filter(Boolean).join(' ') || item.adminEmail || '—';
               return (
                 <tr key={item.id || `${item.fromCurrency}-${item.toCurrency}-${oldRate}-${item.createdDate || item.createdAt}` } className='border-t'>
                   <td className='p-2 font-medium'>{item.fromCurrency}</td>
@@ -108,7 +107,6 @@ const CurrencyHistory = () => {
                   <td className='p-2'>{newRate}</td>
                   <td className='p-2'>{change != null ? change.toFixed(4) : '—'}</td>
                   <td className='p-2'>{pctChange != null ? pctChange.toFixed(2)+'%' : '—'}</td>
-                  <td className='p-2'>{adminName}</td>
                   <td className='p-2'>{dateAndTimeFormatter(item.createdDate || item.createdAt)}</td>
                   <td className='p-2'>{dateAndTimeFormatter(item.lastModifiedDate || item.updatedAt)}</td>
                 </tr>

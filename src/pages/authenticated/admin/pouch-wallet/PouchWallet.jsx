@@ -220,6 +220,8 @@ function PouchWallet() {
     if (!newProviderGateway) return toast.error('Select payment gateway');
     if (!newProviderType) return toast.error('Select provider type');
     await adminService.createProvider({ paymentGateway: newProviderGateway, type: newProviderType }, dispatch);
+    // Immediately refetch to ensure we have freshest backend-derived fields (status, ids, timestamps)
+    await adminService.fetchProviderRegionsAndGateways(dispatch);
     setNewProviderGateway('');
     setNewProviderType('');
   }

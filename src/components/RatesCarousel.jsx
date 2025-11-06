@@ -71,11 +71,11 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
       </div> */}
 
       {current && (
-        <div className='flex flex-col gap-2 text-xs bg-primary dark:bg-white px-4 py-3 rounded-md w-full max-w-sm shadow-sm'>
+        <div className='flex flex-col gap-2 text-sm bg-primary dark:bg-white px-4 py-3 rounded-md w-full max-w-sm shadow-sm'>
           <div className='flex items-center justify-between'>
-            <p className='text-white dark:text-primary-dark font-semibold'>{current.productAlias}</p>
+            <p className='text-white dark:text-primary-dark capitalize text-lg font-semibold'>{current.productAlias}</p>
             {/* <p className='text-[10px] flex items-center gap-1 text-white/80 dark:text-primary-dark/70'><Clock size={12}/> {timeStr}</p> */}
-            <div className='flex justify-end text-[9px] text-white/60 dark:text-primary-dark/60'>
+            <div className='flex justify-end text-white/60 dark:text-primary-dark/60'>
                 {index + 1} / {total}
             </div>
           </div>

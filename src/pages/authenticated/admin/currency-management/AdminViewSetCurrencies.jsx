@@ -92,7 +92,7 @@ function AdminViewSetCurrencies() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabClassName='px-3 py-2 flex justify-around border'
-        activeClassName='bg-primary-light/65 border-none font-bold'
+        activeClassName='border-none font-bold'
         inactiveClassName='text-primary font-bold'
       >
         {activeTab === 'list' && (

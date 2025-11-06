@@ -76,7 +76,7 @@ const Dashboard = () => {
       {/* Rates & Most Traded Section */}
       <div className="grid md:grid-cols-5 gap-6">
         {/* Daily Exchange Rate Panel */}
-        <div className="md:col-span-3 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-6 shadow-sm">
+        <div className="md:col-span-3 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-1 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <p className="text-[11px] font-semibold dark:text-[#C2A6DD]">Daily Exchange Rate</p>

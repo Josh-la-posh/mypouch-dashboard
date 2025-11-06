@@ -209,6 +209,18 @@ const UserTransactionHistory = ({id}) => {
             <p className="text-sm">Amount</p>
             <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {formatAmount(selectedTransaction.amount)}</p>
           </div>
+          {selectedTransaction?.user && (
+            <div className="space-y-6">
+              <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                <p>Username</p>
+                <p>{selectedTransaction?.user?.userName}</p>
+              </div>
+              <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                <p>Email</p>
+                <p>{selectedTransaction?.user?.email}</p>
+              </div>
+            </div>
+          )}
           <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
             <p>Transaction Type</p>
             <p>{selectedTransaction.transactionType}</p>
