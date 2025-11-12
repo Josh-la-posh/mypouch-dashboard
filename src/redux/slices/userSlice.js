@@ -18,6 +18,12 @@ const initialState = {
   updateLoading: false,
   error: null,
   isPerformingAction: false
+  , // User-specific transaction limits
+  userLimits: [],
+  userLimitsLoading: false,
+  userLimitsError: null,
+  isSettingUserLimit: false,
+  setUserLimitError: null
 };
 
 const userSlice = createSlice({
@@ -102,10 +108,35 @@ const userSlice = createSlice({
     },
     actionFinished: (state) => {
       state.isPerformingAction = false;
+    },
+    userLimitsFetchStart: (state) => {
+      state.userLimitsLoading = true;
+      state.userLimitsError = null;
+    },
+    userLimitsFetchSuccess: (state, action) => {
+      state.userLimitsLoading = false;
+      state.userLimits = action.payload || [];
+    },
+    userLimitsFetchFailure: (state, action) => {
+      state.userLimitsLoading = false;
+      state.userLimitsError = action.payload;
+    },
+    setUserLimitStart: (state) => {
+      state.isSettingUserLimit = true;
+      state.setUserLimitError = null;
+    },
+    setUserLimitSuccess: (state, action) => {
+      state.isSettingUserLimit = false;
+      // store returned limit(s)
+      if (action.payload) state.userLimits = action.payload;
+    },
+    setUserLimitFailure: (state, action) => {
+      state.isSettingUserLimit = false;
+      state.setUserLimitError = action.payload;
     }
   },
 });
 
-export const { userStart, userSuccess, userFailure, userBankStart, userBankFailure, userBankSuccess, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess, userVerificationSuccess, actionStart, actionFinished } = userSlice.actions;
+export const { userStart, userSuccess, userFailure, userBankStart, userBankFailure, userBankSuccess, userDetailStart, userDetailSuccess, userDetailFailure, userUpdateStart, userAccountSuccess, userTransactionStart, userTransactionSuccess, userTransactionFailure, userActivitySuccess, userVerificationSuccess, actionStart, actionFinished, userLimitsFetchStart, userLimitsFetchSuccess, userLimitsFetchFailure, setUserLimitStart, setUserLimitSuccess, setUserLimitFailure } = userSlice.actions;
 
 export default userSlice.reducer;

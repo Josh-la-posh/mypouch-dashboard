@@ -10,6 +10,12 @@ const initialState = {
   loading: false,
   error: null,
   isWalletLoading: false,
+  // Transaction Limits
+  limits: [],
+  limitsLoading: false,
+  limitsError: null,
+  isCreatingLimit: false,
+  createLimitError: null,
 };
 
 const transactionSlice = createSlice({
@@ -42,9 +48,34 @@ const transactionSlice = createSlice({
     walletFailure: (state) => {
       state.isWalletLoading = false;
     },
+    limitsFetchStart: (state) => {
+      state.limitsLoading = true;
+      state.limitsError = null;
+    },
+    limitsFetchSuccess: (state, action) => {
+      state.limitsLoading = false;
+      state.limits = action.payload || [];
+    },
+    limitsFetchFailure: (state, action) => {
+      state.limitsLoading = false;
+      state.limitsError = action.payload;
+    },
+    createLimitStart: (state) => {
+      state.isCreatingLimit = true;
+      state.createLimitError = null;
+    },
+    createLimitSuccess: (state, action) => {
+      state.isCreatingLimit = false;
+      // prepend new limit for instant feedback
+      if (action.payload) state.limits = [action.payload, ...state.limits];
+    },
+    createLimitFailure: (state, action) => {
+      state.isCreatingLimit = false;
+      state.createLimitError = action.payload;
+    },
   },
 });
 
-export const { transactionStart, transactionSuccess, transactionFailure, walletStart, walletSuccess, walletFailure } = transactionSlice.actions;
+export const { transactionStart, transactionSuccess, transactionFailure, walletStart, walletSuccess, walletFailure, limitsFetchStart, limitsFetchSuccess, limitsFetchFailure, createLimitStart, createLimitSuccess, createLimitFailure } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

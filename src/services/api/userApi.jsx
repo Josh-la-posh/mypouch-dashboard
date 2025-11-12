@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { actionFinished, actionStart, userAccountSuccess, userActivitySuccess, userBankFailure, userBankStart, userBankSuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess } from "../../redux/slices/userSlice";
+import { actionFinished, actionStart, userAccountSuccess, userActivitySuccess, userBankFailure, userBankStart, userBankSuccess, userDetailFailure, userDetailStart, userDetailSuccess, userFailure, userStart, userSuccess, userTransactionFailure, userTransactionStart, userTransactionSuccess, userUpdateStart, userVerificationSuccess, userLimitsFetchStart, userLimitsFetchSuccess, userLimitsFetchFailure, setUserLimitStart, setUserLimitSuccess, setUserLimitFailure } from "../../redux/slices/userSlice";
 import { axiosPrivate } from "./axios";
 
 class UserService {
@@ -260,6 +260,127 @@ class UserService {
         } else {
           toast.error(`Export failed: ${err.response.data.message || 'Server Error'}`);
         }
+      }
+    }
+
+    // Fetch user-specific transaction limit: GET /users/transaction-limit/admin/${id}?currency=XXX
+    async fetchUserTransactionLimit(id, currency, dispatch) {
+      try {
+        dispatch(userLimitsFetchStart());
+        const params = new URLSearchParams();
+        if (currency) params.append('currency', currency);
+        const response = await axiosPrivate.get(`/users/transaction-limit/admin/${id}?${params.toString()}`);
+        const data = response?.data;
+        // New shape example:
+        // { currency: 'NGN', sendLimits: {...}, receiveLimits: {...} }
+        let limits = [];
+        if (data) {
+          const { currency: respCurrency, sendLimits, receiveLimits } = data;
+          const now = new Date().toISOString();
+          const normalizeGroup = (group, label) => {
+            if (!group) return [];
+            const dailyLimitVal = group.dailyLimit == null ? null : parseFloat(group.dailyLimit);
+            const monthlyLimitVal = group.monthlyLimit == null ? null : parseFloat(group.monthlyLimit);
+            const dailyProgress = group.dailyProgress != null ? group.dailyProgress : (dailyLimitVal ? Math.min(100, Math.round((group.dailySpent / dailyLimitVal) * 100)) : 0);
+            const monthlyProgress = group.monthlyProgress != null ? group.monthlyProgress : (monthlyLimitVal ? Math.min(100, Math.round((group.monthlySpent / monthlyLimitVal) * 100)) : 0);
+            return [
+              {
+                transactionType: label,
+                currency: respCurrency,
+                period: 'daily',
+                amount: dailyLimitVal || 0,
+                spent: group.dailySpent,
+                remaining: group.dailyRemaining,
+                progress: dailyProgress,
+                createdDate: now,
+                status: 'Active'
+              },
+              {
+                transactionType: label,
+                currency: respCurrency,
+                period: 'monthly',
+                amount: monthlyLimitVal || 0,
+                spent: group.monthlySpent,
+                remaining: group.monthlyRemaining,
+                progress: monthlyProgress,
+                createdDate: now,
+                status: 'Active'
+              }
+            ];
+          };
+          limits = [
+            ...normalizeGroup(sendLimits, 'Send'),
+            ...normalizeGroup(receiveLimits, 'Receive')
+          ];
+        }
+        dispatch(userLimitsFetchSuccess(limits));
+      } catch (err) {
+        const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch user limit');
+        dispatch(userLimitsFetchFailure(msg));
+        toast.error(msg);
+      }
+    }
+
+    // Set user-specific transaction limit: POST /users/transaction-limit/admin-${id}
+    async setUserTransactionLimit(id, { currency, transactionType, dailyLimit, monthlyLimit }, dispatch) {
+      try {
+        dispatch(setUserLimitStart());
+        const body = {
+          currency,
+          transactionType,
+          limits: {
+            dailyLimit: Number(dailyLimit),
+            monthlyLimit: Number(monthlyLimit)
+          }
+        };
+        const response = await axiosPrivate.post(`/users/transaction-limit/admin/${id}`, JSON.stringify(body));
+        const data = response?.data; // assume same shape as fetch after update
+        let limits = [];
+        if (data) {
+          const { currency: respCurrency, sendLimits, receiveLimits } = data;
+          const now = new Date().toISOString();
+          const normalizeGroup = (group, label) => {
+            if (!group) return [];
+            const dailyLimitVal = group.dailyLimit == null ? null : parseFloat(group.dailyLimit);
+            const monthlyLimitVal = group.monthlyLimit == null ? null : parseFloat(group.monthlyLimit);
+            const dailyProgress = group.dailyProgress != null ? group.dailyProgress : (dailyLimitVal ? Math.min(100, Math.round((group.dailySpent / dailyLimitVal) * 100)) : 0);
+            const monthlyProgress = group.monthlyProgress != null ? group.monthlyProgress : (monthlyLimitVal ? Math.min(100, Math.round((group.monthlySpent / monthlyLimitVal) * 100)) : 0);
+            return [
+              {
+                transactionType: label,
+                currency: respCurrency,
+                period: 'daily',
+                amount: dailyLimitVal || 0,
+                spent: group.dailySpent,
+                remaining: group.dailyRemaining,
+                progress: dailyProgress,
+                createdDate: now,
+                status: 'Active'
+              },
+              {
+                transactionType: label,
+                currency: respCurrency,
+                period: 'monthly',
+                amount: monthlyLimitVal || 0,
+                spent: group.monthlySpent,
+                remaining: group.monthlyRemaining,
+                progress: monthlyProgress,
+                createdDate: now,
+                status: 'Active'
+              }
+            ];
+          };
+          limits = [
+            ...normalizeGroup(sendLimits, 'Send'),
+            ...normalizeGroup(receiveLimits, 'Receive')
+          ];
+        }
+        dispatch(setUserLimitSuccess(limits));
+        toast.success('User transaction limit updated');
+      } catch (err) {
+        const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to set user limit');
+        dispatch(setUserLimitFailure(msg));
+        toast.error(msg);
       }
     }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { UserTable } from "../../../components/user-table";
 import StatusBadge from "../../../components/ui/status-badge";
 import { Printer } from "lucide-react";
@@ -14,7 +14,9 @@ import CustomModal from "../../../components/ui/custom-modal.jsx";
 import { TRANSACTIONSTATUS } from "../../../data/transaction-status.jsx";
 import { TRANSACTIONTYPE } from "../../../data/transaction-type.jsx";
 import { CURRENCIES } from "../../../data/currencies.jsx";
+import { CustomTab } from "../../../components/ui/tabs";
 import { formatAmount } from "../../../utils/amountFormmerter.jsx";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 const UserTransactionHistory = ({id}) => {
@@ -66,8 +68,8 @@ const UserTransactionHistory = ({id}) => {
 
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const {loading, error, userTransactions, currentPage, totalPages} = useSelector((state) => state.user);
-  const userService = new UserService(axiosPrivate);
+  const {loading, error, userTransactions, currentPage, totalPages, userLimits, userLimitsLoading, userLimitsError, isSettingUserLimit, setUserLimitError} = useSelector((state) => state.user);
+  const userService = useMemo(()=> new UserService(axiosPrivate), [axiosPrivate]);
   const [userCurrentPage, setUserCurrentPage] = useState(currentPage);
   const [userTotalPages, setUserTotalPages] = useState(totalPages);
   const [userPageSize, setUserPageSize] = useState('10');
@@ -133,75 +135,161 @@ const UserTransactionHistory = ({id}) => {
     loadUserTransaction(1, userPageSize);
   };
 
-  if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
+  // Tabs & limit state (must be before any early returns to satisfy hook order)
+  const TABS = [
+    { label: 'History', value: 'history' },
+    { label: 'Transaction Limit', value: 'limit' }
+  ];
+  const [activeTab, setActiveTab] = useState('history');
+  const [limitCurrency, setLimitCurrency] = useState('NGN');
+  const [limitTransactionType, setLimitTransactionType] = useState('Credit');
+  const [dailyLimitAmount, setDailyLimitAmount] = useState('');
+  const [monthlyLimitAmount, setMonthlyLimitAmount] = useState('');
+
+  // Defer error rendering until after hook declarations to satisfy hook order rules
+
+  // Fetch limits when opening limit tab (effect always declared, conditional logic inside)
+  useEffect(()=> {
+    if (activeTab === 'limit') {
+      userService.fetchUserTransactionLimit(id, limitCurrency, dispatch);
+    }
+  }, [activeTab, id, limitCurrency, userService, dispatch]);
+
+  const handleSetUserLimit = async () => {
+    if (!dailyLimitAmount || isNaN(Number(dailyLimitAmount))) return toast.error('Enter valid daily limit');
+    if (!monthlyLimitAmount || isNaN(Number(monthlyLimitAmount))) return toast.error('Enter valid monthly limit');
+    await userService.setUserTransactionLimit(id, {
+      currency: limitCurrency,
+      transactionType: limitTransactionType,
+      dailyLimit: dailyLimitAmount,
+      monthlyLimit: monthlyLimitAmount,
+    }, dispatch);
+    if (!setUserLimitError) {
+      setDailyLimitAmount('');
+      setMonthlyLimitAmount('');
+      // Refetch to reflect updated limits
+      userService.fetchUserTransactionLimit(id, limitCurrency, dispatch);
+    }
+  };
+
+  if (error) {
+    return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />;
+  }
 
   return (
-    <div className="">
-      <div className="space-y-6">
-        <p className="text-black/75 dark:text-white/80 text-lg font-[600]">
-            Transaction History
-        </p>
-        <div className="space-y-4 my-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
-            <SelectField
-              options={TRANSACTIONSTATUS}
-              placeholder="Status"
-              value={status}
-              onChange={handleStatusChange}
-            />
-            <SelectField
-              options={TRANSACTIONTYPE}
-              placeholder="Type"
-              value={transactionType}
-              onChange={handleTypeChange}
-            />
-            <SelectField
-              options={CURRENCIES}
-              placeholder="Currency"
-              value={currency}
-              onChange={handleCurrencyChange}
-            />
-            <input
-              type="date"
-              value={date}
-              onChange={handleDateChange}
-              className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent"
-            />
-            <input
-              type="text"
-              placeholder="Search transaction id or description"
-              value={search}
-              onChange={handleSearchChange}
-              className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2"
-            />
-            <div className="col-span-2 flex gap-1">
-              <Button onClick={applyFilters} className='text-xs'>Apply</Button>
-              <Button variant='secondary' className='text-xs' onClick={() => {
-                setStatus('');
-                setTransactionType('');
-                setCurrency('');
-                setSearch('');
-                setDate('');
-                setUserCurrentPage(1);
-                loadUserTransaction(1, userPageSize);
-              }}>Reset</Button>
+    <div className="space-y-10">
+      <CustomTab
+        TABS={TABS}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        className='w-full'
+        activeClassName='font-semibold'
+        inactiveClassName=''
+      >
+        {activeTab === 'history' && (
+          <div className="space-y-6">
+            <p className="text-black/75 dark:text-white/80 text-lg font-[600]">Transaction History</p>
+            <div className="space-y-4 my-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
+                <SelectField options={TRANSACTIONSTATUS} placeholder="Status" value={status} onChange={handleStatusChange} />
+                <SelectField options={TRANSACTIONTYPE} placeholder="Type" value={transactionType} onChange={handleTypeChange} />
+                <SelectField options={CURRENCIES} placeholder="Currency" value={currency} onChange={handleCurrencyChange} />
+                <input type="date" value={date} onChange={handleDateChange} className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent" />
+                <input type="text" placeholder="Search transaction id or description" value={search} onChange={handleSearchChange} className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2" />
+                <div className="col-span-2 flex gap-1">
+                  <Button onClick={applyFilters} className='text-xs'>Apply</Button>
+                  <Button variant='secondary' className='text-xs' onClick={() => { setStatus(''); setTransactionType(''); setCurrency(''); setSearch(''); setDate(''); setUserCurrentPage(1); loadUserTransaction(1, userPageSize); }}>Reset</Button>
+                </div>
+              </div>
+            </div>
+            {loading ? <Spinner /> : (
+              <UserTable data={filteredData} columns={columns} totalPages={userTotalPages} currentPage={userCurrentPage} setCurrentPage={setUserCurrentPage} rowsPerPage={userPageSize} setRowsPerPage={setUserPageSize} />
+            )}
+          </div>
+        )}
+        {activeTab === 'limit' && (
+          <div className='space-y-8 mt-4'>
+            <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+              <div>
+                <p className='text-[10px] font-semibold mb-1'>Currency</p>
+                <SelectField options={CURRENCIES.filter(c=> c !== 'All')} value={limitCurrency} onChange={(e)=> setLimitCurrency(e.target.value)} placeholder='Currency' />
+              </div>
+              <div>
+                <p className='text-[10px] font-semibold mb-1'>Transaction Type</p>
+                <SelectField options={['Credit','Debit']} value={limitTransactionType} onChange={(e)=> setLimitTransactionType(e.target.value)} placeholder='Type' />
+              </div>
+            </div>
+            <div className='space-y-4'>
+              <p className='text-sm font-semibold'>Existing Limits (Send / Receive)</p>
+              {userLimitsLoading && <Spinner />}
+              {userLimitsError && <ErrorLayout errMsg={userLimitsError} handleRefresh={()=> userService.fetchUserTransactionLimit(id, limitCurrency, dispatch)} />}
+              {!userLimitsLoading && !userLimitsError && userLimits.length > 0 && (
+                <div className='grid lg:grid-cols-2 gap-4'>
+                  {['Send','Receive'].map(type => {
+                    const daily = userLimits.find(l => l.transactionType === type && l.period === 'daily');
+                    const monthly = userLimits.find(l => l.transactionType === type && l.period === 'monthly');
+                    const renderProgressBar = (progress) => (
+                      <div className='w-full h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden'>
+                        <div className='h-full bg-primary transition-all duration-300' style={{ width: `${Math.min(100, progress || 0)}%` }}></div>
+                      </div>
+                    );
+                    return (
+                      <div key={type} className='border border-gray-300 dark:border-gray-600 rounded-sm p-4 space-y-4'>
+                        <p className='text-xs font-semibold'>{type} Limits</p>
+                        <div className='space-y-2'>
+                          <div className='flex justify-between text-[11px] font-medium'>
+                            <span>Daily Limit</span>
+                            <span>{formatAmount(daily?.amount || 0)} {daily?.currency}</span>
+                          </div>
+                          {renderProgressBar(daily?.progress)}
+                          <div className='flex justify-between text-[10px] text-gray-600 dark:text-gray-400'>
+                            <span>Spent: {formatAmount(daily?.spent || 0)}</span>
+                            <span>Remaining: {daily?.remaining != null ? formatAmount(daily.remaining) : '—'}</span>
+                          </div>
+                        </div>
+                        <div className='space-y-2'>
+                          <div className='flex justify-between text-[11px] font-medium'>
+                            <span>Monthly Limit</span>
+                            <span>{formatAmount(monthly?.amount || 0)} {monthly?.currency}</span>
+                          </div>
+                          {renderProgressBar(monthly?.progress)}
+                          <div className='flex justify-between text-[10px] text-gray-600 dark:text-gray-400'>
+                            <span>Spent: {formatAmount(monthly?.spent || 0)}</span>
+                            <span>Remaining: {monthly?.remaining != null ? formatAmount(monthly.remaining) : '—'}</span>
+                          </div>
+                        </div>
+                        <StatusBadge status={daily?.status || 'Inactive'} />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {!userLimitsLoading && !userLimitsError && userLimits.length === 0 && (
+                <p className='text-xs text-gray-600 dark:text-gray-400'>No limits set for this user & currency yet.</p>
+              )}
+            </div>
+            <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+              <p className='text-sm font-semibold'>Set / Update Limits</p>
+              <div className='grid sm:grid-cols-2 gap-4'>
+                <div>
+                  <p className='text-[10px] font-semibold mb-1'>Daily Limit Amount</p>
+                  <input type='text' value={dailyLimitAmount} onChange={(e)=> setDailyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                </div>
+                <div>
+                  <p className='text-[10px] font-semibold mb-1'>Monthly Limit Amount</p>
+                  <input type='text' value={monthlyLimitAmount} onChange={(e)=> setMonthlyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                </div>
+              </div>
+              {setUserLimitError && <p className='text-[11px] text-red-500'>{setUserLimitError}</p>}
+              <div className='w-[180px]'>
+                <Button variant='primary' disabled={isSettingUserLimit} onClick={handleSetUserLimit} className='text-xs w-full'>
+                  {isSettingUserLimit ? 'Saving...' : 'Confirm'}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        {
-          loading 
-          ? <Spinner /> 
-          : <UserTable
-              data={filteredData}
-              columns={columns}
-              totalPages={userTotalPages}
-              currentPage={userCurrentPage}
-              setCurrentPage={setUserCurrentPage}
-              rowsPerPage={userPageSize}
-              setRowsPerPage={setUserPageSize}
-            />
-        }
-      </div>
+        )}
+      </CustomTab>
         {/* Modal component */}
       <CustomModal isOpen={isModalOpen} title="Transaction Details" onClose={closeModal}>
         <div className="space-y-6">
