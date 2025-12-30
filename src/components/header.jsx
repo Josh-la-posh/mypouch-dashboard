@@ -26,11 +26,11 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <header className="flex items-center text-black dark:text-white">
-      <div className='flex items-center justify-center gap-4 w-auto lg:w-48 px-4 lg:px-0'>
+      <div className='flex-1 md:flex-0 flex items-center justify-start md:justify-center gap-4 w-auto lg:w-48 px-4 lg:px-0'>
         <div className='w-12 h-12 text-primary font-[700]'><img src="/pouchLogo.svg" alt="Logo" /></div>
         <div className='text-lg font-semibold ml-3 hidden sm:block'>{appTitle ?? ''}</div>
       </div>
-      <div className="px-3 flex-grow flex justify-between items-center">
+      <div className="px-3 flex-2 md:flex-grow flex justify-between items-center">
         <div className="text-xs hidden md:block">{currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}</div>
         <div className="flex gap-6 border-x border-[#664c89] px-6 md:px-12">
           <div className="relative">
