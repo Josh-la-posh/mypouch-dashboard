@@ -80,10 +80,10 @@ const CurrencyHistory = () => {
               <th className='p-2'>To</th>
               <th className='p-2'>Old Rate</th>
               <th className='p-2'>New Rate</th>
-              <th className='p-2'>Δ Change</th>
               <th className='p-2'>% Change</th>
-              <th className='p-2'>Created</th>
-              <th className='p-2'>Updated</th>
+              <th className='p-2'>Name</th>
+              <th className='p-2'>Email</th>
+              <th className='p-2'>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -105,10 +105,10 @@ const CurrencyHistory = () => {
                   <td className='p-2'>{item.toCurrency}</td>
                   <td className='p-2'>{oldRate}</td>
                   <td className='p-2'>{newRate}</td>
-                  <td className='p-2'>{change != null ? change.toFixed(4) : '—'}</td>
                   <td className='p-2'>{pctChange != null ? pctChange.toFixed(2)+'%' : '—'}</td>
+                  <td className='p-2'>{item?.admin?.firstName}</td>
+                  <td className='p-2'>{item?.admin?.email}</td>
                   <td className='p-2'>{dateAndTimeFormatter(item.createdDate || item.createdAt)}</td>
-                  <td className='p-2'>{dateAndTimeFormatter(item.lastModifiedDate || item.updatedAt)}</td>
                 </tr>
               );
             })}

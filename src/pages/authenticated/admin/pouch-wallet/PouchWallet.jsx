@@ -508,7 +508,7 @@ function PouchWallet() {
         {activeTab === 'provider' && (
           <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-6 max-w-[900px]'>
             <div className='flex justify-between items-center'>
-              <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
+              <p className='text-sm text-primary dark:text-white font-semibold'>Payout Providers</p>
               <div className="w-fit">
                 <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
               </div>
@@ -570,7 +570,7 @@ function PouchWallet() {
                   ))} */}
                 </div>
                 <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
-                  <p className='text-xs font-semibold'>Add Another Provider</p>
+                  <p className='text-xs font-semibold'>Select Provider</p>
                   <div className='grid sm:grid-cols-2 gap-4'>
                     <div className='space-y-1'>
                       <p className='text-[10px] font-semibold'>Payment Gateway</p>
@@ -588,7 +588,7 @@ function PouchWallet() {
                     </div>
                   </div>
                   <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
-                    {isCreatingProvider ? 'Creating...' : 'Add Provider'}
+                    {isCreatingProvider ? 'Creating...' : 'Continue'}
                   </Button>
                   {isCreatingProvider && <p className='text-[10px] text-gray-500'>Please wait...</p>}
                 </div>
