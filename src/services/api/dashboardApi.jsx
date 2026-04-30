@@ -1,5 +1,30 @@
 import { axiosPrivate } from "./axios";
-import { adminActivitiesStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, rateFailure, rateStart, rateSuccess, statFailure, statStart, statSuccess, transactionFailure, transactionStart, transactionStatFailure, transactionStatStart, transactionStatSuccess, transactionSuccess, userBalanceStart, userBalanceSuccess, userBalanceFailure, pouchBalanceStart, pouchBalanceSuccess, pouchBalanceFailure } from "../../redux/slices/dashboardSlice";
+import {
+  adminActivitiesStatFailure,
+  adminActivitiesStatStart,
+  adminActivitiesStatSuccess,
+  rateFailure,
+  rateStart,
+  rateSuccess,
+  statFailure,
+  statStart,
+  statSuccess,
+  transactionFailure,
+  transactionStart,
+  transactionStatFailure,
+  transactionStatStart,
+  transactionStatSuccess,
+  transactionSuccess,
+  userBalanceStart,
+  userBalanceSuccess,
+  userBalanceFailure,
+  totalWalletBalanceStart,
+  totalWalletBalanceSuccess,
+  totalWalletBalanceFailure,
+  pouchBalanceStart,
+  pouchBalanceSuccess,
+  pouchBalanceFailure
+} from "../../redux/slices/dashboardSlice";
 
 class DashboardService {
     constructor(location, navigate) {
@@ -140,6 +165,21 @@ class DashboardService {
           dispatch(pouchBalanceFailure('No Server Response'));
         } else {
           dispatch(pouchBalanceFailure(err.response.data.message || 'Failed to load pouch balance'));
+        }
+      }
+    }
+
+    async fetchTotalWalletBalance(dispatch) {
+      try {
+        dispatch(totalWalletBalanceStart());
+        const response = await axiosPrivate.get('/wallet/total-wallet-balance');
+        // Response shape: { totals: [...], summary: {...} }
+        dispatch(totalWalletBalanceSuccess(response.data));
+      } catch (err) {
+        if (!err.response) {
+          dispatch(totalWalletBalanceFailure('No Server Response'));
+        } else {
+          dispatch(totalWalletBalanceFailure(err.response.data.message || 'Failed to load total wallet balance'));
         }
       }
     }

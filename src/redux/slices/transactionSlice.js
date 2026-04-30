@@ -16,6 +16,12 @@ const initialState = {
   limitsError: null,
   isCreatingLimit: false,
   createLimitError: null,
+  // Transaction Fees
+  transactionFees: [],
+  transactionFeesLoading: false,
+  transactionFeesError: null,
+  isSavingTransactionFee: false,
+  saveTransactionFeeError: null,
 };
 
 const transactionSlice = createSlice({
@@ -73,9 +79,51 @@ const transactionSlice = createSlice({
       state.isCreatingLimit = false;
       state.createLimitError = action.payload;
     },
+    transactionFeeFetchStart: (state) => {
+      state.transactionFeesLoading = true;
+      state.transactionFeesError = null;
+    },
+    transactionFeeFetchSuccess: (state, action) => {
+      state.transactionFeesLoading = false;
+      state.transactionFees = action.payload || [];
+    },
+    transactionFeeFetchFailure: (state, action) => {
+      state.transactionFeesLoading = false;
+      state.transactionFeesError = action.payload;
+    },
+    transactionFeeSaveStart: (state) => {
+      state.isSavingTransactionFee = true;
+      state.saveTransactionFeeError = null;
+    },
+    transactionFeeSaveSuccess: (state) => {
+      state.isSavingTransactionFee = false;
+    },
+    transactionFeeSaveFailure: (state, action) => {
+      state.isSavingTransactionFee = false;
+      state.saveTransactionFeeError = action.payload;
+    },
   },
 });
 
-export const { transactionStart, transactionSuccess, transactionFailure, walletStart, walletSuccess, walletFailure, limitsFetchStart, limitsFetchSuccess, limitsFetchFailure, createLimitStart, createLimitSuccess, createLimitFailure } = transactionSlice.actions;
+export const {
+  transactionStart,
+  transactionSuccess,
+  transactionFailure,
+  walletStart,
+  walletSuccess,
+  walletFailure,
+  limitsFetchStart,
+  limitsFetchSuccess,
+  limitsFetchFailure,
+  createLimitStart,
+  createLimitSuccess,
+  createLimitFailure,
+  transactionFeeFetchStart,
+  transactionFeeFetchSuccess,
+  transactionFeeFetchFailure,
+  transactionFeeSaveStart,
+  transactionFeeSaveSuccess,
+  transactionFeeSaveFailure
+} = transactionSlice.actions;
 
 export default transactionSlice.reducer;

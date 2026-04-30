@@ -17,6 +17,10 @@ const initialState = {
   userBalance: null,
   userBalanceLoading: false,
   userBalanceError: null,
+  // Total wallet balance
+  totalWalletBalance: null,
+  totalWalletBalanceLoading: false,
+  totalWalletBalanceError: null,
   // Pouch / System wallets balance
   pouchBalance: [],
   pouchBalanceLoading: false,
@@ -74,6 +78,19 @@ const dashboardSlice = createSlice({
       state.userBalanceLoading = false;
       state.userBalanceError = action.payload;
     },
+    // Total wallet balance reducers
+    totalWalletBalanceStart: (state) => {
+      state.totalWalletBalanceLoading = true;
+      state.totalWalletBalanceError = null;
+    },
+    totalWalletBalanceSuccess: (state, action) => {
+      state.totalWalletBalanceLoading = false;
+      state.totalWalletBalance = action.payload;
+    },
+    totalWalletBalanceFailure: (state, action) => {
+      state.totalWalletBalanceLoading = false;
+      state.totalWalletBalanceError = action.payload;
+    },
     // Pouch Balance reducers
     pouchBalanceStart: (state) => {
       state.pouchBalanceLoading = true;
@@ -115,6 +132,31 @@ const dashboardSlice = createSlice({
   },
 });
 
-export const { statStart, statSuccess, statFailure, transactionStart, transactionSuccess, transactionFailure, rateStart, rateSuccess, rateFailure, transactionStatStart, transactionStatSuccess, transactionStatFailure, adminActivitiesStatStart, adminActivitiesStatSuccess, adminActivitiesStatFailure, userBalanceStart, userBalanceSuccess, userBalanceFailure, pouchBalanceStart, pouchBalanceSuccess, pouchBalanceFailure } = dashboardSlice.actions;
+export const {
+  statStart,
+  statSuccess,
+  statFailure,
+  transactionStart,
+  transactionSuccess,
+  transactionFailure,
+  rateStart,
+  rateSuccess,
+  rateFailure,
+  transactionStatStart,
+  transactionStatSuccess,
+  transactionStatFailure,
+  adminActivitiesStatStart,
+  adminActivitiesStatSuccess,
+  adminActivitiesStatFailure,
+  userBalanceStart,
+  userBalanceSuccess,
+  userBalanceFailure,
+  totalWalletBalanceStart,
+  totalWalletBalanceSuccess,
+  totalWalletBalanceFailure,
+  pouchBalanceStart,
+  pouchBalanceSuccess,
+  pouchBalanceFailure
+} = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

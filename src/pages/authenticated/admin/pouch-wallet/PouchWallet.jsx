@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+﻿import { useEffect, useState, useCallback, useMemo } from 'react';
 import useTitle from '../../../../services/hooks/useTitle';
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
@@ -82,7 +82,7 @@ function PouchWallet() {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const adminService = useMemo(() => new AdminService(axiosPrivate, navigate), [axiosPrivate, navigate]);
-  const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding, providerRegions, providerGateways, providersLoading, providersError, isCreatingProvider, providerCreationError, providers} = useSelector((state) => state.admin);
+  const {adminCurrencies, isFundingAdminWallet, isGottenLink, fundingWalletLink, adminCurrenciesLoading, currentPage, pouchTransactionLoading, totalPages, pouchTransaction, manualFundingProviders, manualFundingProvidersLoading, manualFundingMessage, isInitiatingManualFunding, providerRegions, providerGateways, providersLoading, providersError, isCreatingProvider, providerCreationError, providers, cardPaymentSettings, cardPaymentSettingsLoading, cardPaymentSettingsError, isUpdatingCardPaymentSettings, cardPaymentSettingsUpdateError} = useSelector((state) => state.admin);
   useEffect(() => {
     if (manualFundingMessage) {
       const t = setTimeout(() => {
@@ -97,6 +97,7 @@ function PouchWallet() {
   const [fundMode, setFundMode] = useState('direct'); // direct | manual
   const [directFundingType, setDirectFundingType] = useState('naira'); // naira | foreign
   const [provider, setProvider] = useState('Paystack'); // Paystack | Flutterwave
+  const [providerSubTab, setProviderSubTab] = useState('payout-provider');
   // Provider setup state
   const [newProviderGateway, setNewProviderGateway] = useState('');
   const [newProviderType, setNewProviderType] = useState('');
@@ -213,8 +214,11 @@ function PouchWallet() {
   useEffect(() => {
     if (activeTab === 'provider') {
       adminService.fetchProviderRegionsAndGateways(dispatch);
+      if (!cardPaymentSettings) {
+        adminService.fetchCardPaymentSettings(dispatch);
+      }
     }
-  }, [activeTab, adminService, dispatch]);
+  }, [activeTab, adminService, dispatch, cardPaymentSettings]);
 
   const handleCreateProvider = async () => {
     if (!newProviderGateway) return toast.error('Select payment gateway');
@@ -399,7 +403,7 @@ function PouchWallet() {
                             className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${directFundingType === ftype ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'}`}
                           >
                             <span className='flex items-center gap-2'>
-                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>₦</span>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>â‚¦</span>
                               {ftype === 'naira' ? 'Naira Funding' : 'Foreign Funding'}
                             </span>
                             {directFundingType === ftype && <Check size={16} className='text-white' />}
@@ -420,7 +424,7 @@ function PouchWallet() {
                             className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${provider === prov ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'} ${prov.includes('Coming') ? 'opacity-60 cursor-not-allowed' : ''}`}
                           >
                             <span className='flex items-center gap-2'>
-                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>◎</span>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>â—Ž</span>
                               {prov}
                             </span>
                             {provider === prov && !prov.includes('Coming') && <Check size={16} className='text-white' />}
@@ -507,91 +511,128 @@ function PouchWallet() {
         {/* Provider Tab */}
         {activeTab === 'provider' && (
           <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-6 max-w-[900px]'>
-            <div className='flex justify-between items-center'>
-              <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
-              <div className="w-fit">
-                <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
-              </div>
+            <div className='grid sm:grid-cols-2 gap-4'>
+              <Button variant={providerSubTab === 'payout-provider' ? 'primary' : 'secondary'} className='text-xs' onClick={() => setProviderSubTab('payout-provider')}>
+                Payout Providers
+              </Button>
+              <Button variant={providerSubTab === 'card-payment' ? 'primary' : 'secondary'} className='text-xs' onClick={() => setProviderSubTab('card-payment')}>
+                Card Payment
+              </Button>
             </div>
-            {providersLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
-            {providersError && <ErrorLayout errMsg={providersError} handleRefresh={()=> adminService.fetchProviderRegionsAndGateways(dispatch)} />}
-            {!providersLoading && !providersError && providers.length === 0 && (
-              <div className='space-y-4 border border-dashed border-primary/40 p-4 rounded-sm'>
-                <p className='text-xs text-black/70 dark:text-white/70'>No providers set up yet. Create the first one below.</p>
-                <div className='grid sm:grid-cols-2 gap-4'>
-                  <div className='space-y-1'>
-                    <p className='text-[10px] font-semibold'>Payment Gateway</p>
-                    <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
-                      <option value=''>Select gateway</option>
-                      {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
-                    </select>
-                  </div>
-                  <div className='space-y-1'>
-                    <p className='text-[10px] font-semibold'>Type</p>
-                    <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
-                      <option value=''>Select type</option>
-                      {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
-                    </select>
+            {providerSubTab === 'payout-provider' && (
+              <>
+                <div className='flex justify-between items-center'>
+                  <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
+                  <div className="w-fit">
+                    <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
                   </div>
                 </div>
-                <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
-                  {isCreatingProvider ? 'Creating...' : 'Create Provider'}
-                </Button>
-              </div>
+                {providersLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
+                {providersError && <ErrorLayout errMsg={providersError} handleRefresh={()=> adminService.fetchProviderRegionsAndGateways(dispatch)} />}
+                {!providersLoading && !providersError && providers.length === 0 && (
+                  <div className='space-y-4 border border-dashed border-primary/40 p-4 rounded-sm'>
+                    <p className='text-xs text-black/70 dark:text-white/70'>No providers set up yet. Create the first one below.</p>
+                    <div className='grid sm:grid-cols-2 gap-4'>
+                      <div className='space-y-1'>
+                        <p className='text-[10px] font-semibold'>Payment Gateway</p>
+                        <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                          <option value=''>Select gateway</option>
+                          {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
+                        </select>
+                      </div>
+                      <div className='space-y-1'>
+                        <p className='text-[10px] font-semibold'>Type</p>
+                        <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                          <option value=''>Select type</option>
+                          {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
+                      {isCreatingProvider ? 'Creating...' : 'Create Provider'}
+                    </Button>
+                  </div>
+                )}
+                {!providersLoading && !providersError && providers.length > 0 && (
+                  <div className='space-y-5'>
+                    <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
+                      {providers.map(p => (
+                        <div key={p.id || p.paymentGateway} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px]'>
+                          <div className='flex justify-between items-center'>
+                            <span className='font-semibold'>{p.paymentGateway}</span>
+                            <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{(p.status || 'active').toLowerCase().includes('pending') ? 'Pending' : 'Active'}</span>
+                          </div>
+                          <div className='flex justify-between'>
+                            <span className='text-gray-500'>Type:</span>
+                            <span className='capitalize'>{p.type || p.region || '-'}</span>
+                          </div>
+                          {p.createdDate && <div className='flex justify-between'>
+                            <span className='text-gray-500'>Created:</span>
+                            <span>{dateFormatter(p.createdDate)}</span>
+                          </div>}
+                        </div>
+                      ))}
+                    </div>
+                    <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
+                      <p className='text-xs font-semibold'>Add Another Provider</p>
+                      <div className='grid sm:grid-cols-2 gap-4'>
+                        <div className='space-y-1'>
+                          <p className='text-[10px] font-semibold'>Payment Gateway</p>
+                          <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                            <option value=''>Select gateway</option>
+                            {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
+                          </select>
+                        </div>
+                        <div className='space-y-1'>
+                          <p className='text-[10px] font-semibold'>Type</p>
+                          <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                            <option value=''>Select type</option>
+                            {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
+                          </select>
+                        </div>
+                      </div>
+                      <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
+                        {isCreatingProvider ? 'Creating...' : 'Add Provider'}
+                      </Button>
+                      {isCreatingProvider && <p className='text-[10px] text-gray-500'>Please wait...</p>}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
-            {!providersLoading && !providersError && providers.length > 0 && (
-              <div className='space-y-5'>
-                <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
-                  {providers.map(p => (
-                    <div key={p.id || p.paymentGateway} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px]'>
-                      <div className='flex justify-between items-center'>
-                        <span className='font-semibold'>{p.paymentGateway}</span>
-                        <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{(p.status || 'active').toLowerCase().includes('pending') ? 'Pending' : 'Active'}</span>
-                      </div>
-                      <div className='flex justify-between'>
-                        <span className='text-gray-500'>Type:</span>
-                        <span className='capitalize'>{p.type || p.region || '—'}</span>
-                      </div>
-                      {p.createdDate && <div className='flex justify-between'>
-                        <span className='text-gray-500'>Created:</span>
-                        <span>{dateFormatter(p.createdDate)}</span>
-                      </div>}
-                    </div>
-                  ))}
-                  {/* Show gateways not yet configured */}
-                  {/* {providerGateways.filter(gw => !providers.some(p => p.paymentGateway === gw)).map(gw => (
-                    <div key={gw} className='p-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px] bg-white/40 dark:bg-[#20263D]/40'>
-                      <div className='flex justify-between items-center'>
-                        <span className='font-semibold'>{gw}</span>
-                        <span className='text-[10px] px-2 py-1 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300'>Not Configured</span>
-                      </div>
-                      <p className='text-[10px] text-black/60 dark:text-white/60'>Gateway discovered but not yet registered. Use form below to configure.</p>
-                    </div>
-                  ))} */}
-                </div>
-                <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
-                  <p className='text-xs font-semibold'>Add Another Provider</p>
-                  <div className='grid sm:grid-cols-2 gap-4'>
-                    <div className='space-y-1'>
-                      <p className='text-[10px] font-semibold'>Payment Gateway</p>
-                      <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
-                        <option value=''>Select gateway</option>
-                        {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
-                      </select>
-                    </div>
-                    <div className='space-y-1'>
-                      <p className='text-[10px] font-semibold'>Type</p>
-                      <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
-                        <option value=''>Select type</option>
-                        {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
-                      </select>
-                    </div>
+            {providerSubTab === 'card-payment' && (
+              <div className='space-y-6'>
+                <div className='flex justify-between items-center'>
+                  <p className='text-sm text-primary dark:text-white font-semibold'>Card Payment</p>
+                  <div className="w-fit">
+                    <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchCardPaymentSettings(dispatch)}>Refresh</Button>
                   </div>
-                  <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
-                    {isCreatingProvider ? 'Creating...' : 'Add Provider'}
-                  </Button>
-                  {isCreatingProvider && <p className='text-[10px] text-gray-500'>Please wait...</p>}
                 </div>
+                {cardPaymentSettingsLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
+                {cardPaymentSettingsError && <ErrorLayout errMsg={cardPaymentSettingsError} handleRefresh={()=> adminService.fetchCardPaymentSettings(dispatch)} />}
+                {!cardPaymentSettingsLoading && !cardPaymentSettingsError && cardPaymentSettings && (
+                  <div className='space-y-4 border border-gray-300 dark:border-gray-600 rounded-sm p-6 bg-primary/5'>
+                    <div className='flex justify-between text-sm border border-primary/40 py-2 px-4 rounded-sm'>
+                      <p className='font-semibold'>Card Payment</p>
+                      <p className={cardPaymentSettings.allowCardPayment ? 'text-green-500 font-semibold' : 'text-red-500 font-semibold'}>
+                        {cardPaymentSettings.allowCardPayment ? 'Active' : 'Inactive'}
+                      </p>
+                    </div>
+                    <div className='flex justify-between text-sm border border-primary/40 py-2 px-4 rounded-sm'>
+                      <p className='font-semibold'>Type:</p>
+                      <p className='font-semibold'>Funding</p>
+                    </div>
+                    <div className='grid sm:grid-cols-2 gap-4 pt-4 max-w-[500px]'>
+                      <Button variant='primary' disabled={isUpdatingCardPaymentSettings || cardPaymentSettings.allowCardPayment} onClick={() => adminService.enableCardPayment(dispatch)} className='text-xs'>
+                        {cardPaymentSettings.allowCardPayment ? 'Activated' : (isUpdatingCardPaymentSettings ? 'Processing...' : 'Activate')}
+                      </Button>
+                      <Button variant='danger' disabled={isUpdatingCardPaymentSettings || !cardPaymentSettings.allowCardPayment} onClick={() => adminService.disableCardPayment(dispatch)} className='text-xs'>
+                        {isUpdatingCardPaymentSettings ? 'Processing...' : 'Deactivate'}
+                      </Button>
+                    </div>
+                    {cardPaymentSettingsUpdateError && <p className='text-xs text-red-500'>{cardPaymentSettingsUpdateError}</p>}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -689,3 +730,5 @@ function PouchWallet() {
 }
 
 export default PouchWallet;
+
+

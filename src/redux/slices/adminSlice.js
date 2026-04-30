@@ -60,6 +60,12 @@ const initialState = {
   providersError: null,
   isCreatingProvider: false,
   providerCreationError: null,
+  // Card payment settings
+  cardPaymentSettings: null,
+  cardPaymentSettingsLoading: false,
+  cardPaymentSettingsError: null,
+  isUpdatingCardPaymentSettings: false,
+  cardPaymentSettingsUpdateError: null,
   // Currency history
   currencyHistory: [],
   currencyHistoryLoading: false,
@@ -335,6 +341,30 @@ const adminSlice = createSlice({
       state.isCreatingProvider = false;
       state.providerCreationError = action.payload;
     },
+    cardPaymentSettingsStart: (state) => {
+      state.cardPaymentSettingsLoading = true;
+      state.cardPaymentSettingsError = null;
+    },
+    cardPaymentSettingsSuccess: (state, action) => {
+      state.cardPaymentSettingsLoading = false;
+      state.cardPaymentSettings = action.payload;
+    },
+    cardPaymentSettingsFailure: (state, action) => {
+      state.cardPaymentSettingsLoading = false;
+      state.cardPaymentSettingsError = action.payload;
+    },
+    cardPaymentToggleStart: (state) => {
+      state.isUpdatingCardPaymentSettings = true;
+      state.cardPaymentSettingsUpdateError = null;
+    },
+    cardPaymentToggleSuccess: (state, action) => {
+      state.isUpdatingCardPaymentSettings = false;
+      state.cardPaymentSettings = action.payload;
+    },
+    cardPaymentToggleFailure: (state, action) => {
+      state.isUpdatingCardPaymentSettings = false;
+      state.cardPaymentSettingsUpdateError = action.payload;
+    },
     currencyHistoryStart: (state) => {
       state.currencyHistoryLoading = true;
       state.currencyHistoryError = null;
@@ -366,6 +396,6 @@ const adminSlice = createSlice({
   },
 });
 
-export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure, providerFetchStart, providerFetchSuccess, providerFetchFailure, providerCreateStart, providerCreateSuccess, providerCreateFailure } = adminSlice.actions;
+export const { adminStart, adminSuccess, adminFailure, currencySuccess, adminDeleteStart, changePasswordSuccess, suspiciousActivitiesSuccess, allAdminSuccess, exchangeLimitSuccess, commissionRateSuccess, updateRateStart, updateRateSuccess, adminCurrencyStart, adminCurrencySuccess, adminCurrencyFailure, fundingWalletStart, fundingWalletSuccess, fundingWalletFailure, addAdminSuccess, activateAdminStart, activateAdminSuccess, adminRoleSuccess, pouchTransactionStart, pouchTransactionSuccess, pouchTransactionFailure, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, clearManualFundingMessage, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure, providerFetchStart, providerFetchSuccess, providerFetchFailure, providerCreateStart, providerCreateSuccess, providerCreateFailure, cardPaymentSettingsStart, cardPaymentSettingsSuccess, cardPaymentSettingsFailure, cardPaymentToggleStart, cardPaymentToggleSuccess, cardPaymentToggleFailure } = adminSlice.actions;
 
 export default adminSlice.reducer;

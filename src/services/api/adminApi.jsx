@@ -1,5 +1,5 @@
 import { axiosPrivate } from "./axios";
-import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure, providerFetchStart, providerFetchSuccess, providerFetchFailure, providerCreateStart, providerCreateSuccess, providerCreateFailure } from "../../redux/slices/adminSlice";
+import { activateAdminStart, activateAdminSuccess, addAdminSuccess, adminCurrencyFailure, adminCurrencyStart, adminCurrencySuccess, adminFailure, adminRoleSuccess, adminStart, adminSuccess, allAdminSuccess, commissionRateSuccess, currencySuccess, exchangeLimitSuccess, fundingWalletFailure, fundingWalletStart, fundingWalletSuccess, pouchTransactionFailure, pouchTransactionStart, pouchTransactionSuccess, suspiciousActivitiesSuccess, updateRateStart, updateRateSuccess, manualFundingProvidersStart, manualFundingProvidersSuccess, manualFundingProvidersFailure, initiateManualFundingStart, initiateManualFundingSuccess, initiateManualFundingFailure, faqFetchStart, faqFetchSuccess, faqFetchFailure, faqCreateStart, faqCreateSuccess, faqCreateFailure, faqUpdateStart, faqUpdateSuccess, faqUpdateFailure, faqDeleteStart, faqDeleteSuccess, faqDeleteFailure, currencyHistoryStart, currencyHistorySuccess, currencyHistoryFailure, pendingManualFundingStart, pendingManualFundingSuccess, pendingManualFundingFailure, reviewManualFundingStart, reviewManualFundingSuccess, reviewManualFundingFailure, manualFundingAllStart, manualFundingAllSuccess, manualFundingAllFailure, providerFetchStart, providerFetchSuccess, providerFetchFailure, providerCreateStart, providerCreateSuccess, providerCreateFailure, cardPaymentSettingsStart, cardPaymentSettingsSuccess, cardPaymentSettingsFailure, cardPaymentToggleStart, cardPaymentToggleSuccess, cardPaymentToggleFailure } from "../../redux/slices/adminSlice";
 import { toast } from "react-toastify";
 
 class AdminService {
@@ -417,6 +417,46 @@ class AdminService {
     } catch (err) {
       const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to create provider');
       dispatch(providerCreateFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async fetchCardPaymentSettings(dispatch) {
+    try {
+      dispatch(cardPaymentSettingsStart());
+      const response = await axiosPrivate.get('/wallet/admin/card-settings');
+      dispatch(cardPaymentSettingsSuccess(response?.data));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch card payment settings');
+      dispatch(cardPaymentSettingsFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async enableCardPayment(dispatch) {
+    try {
+      dispatch(cardPaymentToggleStart());
+      await axiosPrivate.patch('/wallet/admin/card-payment/enable');
+      const response = await axiosPrivate.get('/wallet/admin/card-settings');
+      dispatch(cardPaymentToggleSuccess(response?.data));
+      toast.success('Card payment enabled');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to enable card payment');
+      dispatch(cardPaymentToggleFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async disableCardPayment(dispatch) {
+    try {
+      dispatch(cardPaymentToggleStart());
+      await axiosPrivate.patch('/wallet/admin/card-payment/disable');
+      const response = await axiosPrivate.get('/wallet/admin/card-settings');
+      dispatch(cardPaymentToggleSuccess(response?.data));
+      toast.success('Card payment disabled');
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to disable card payment');
+      dispatch(cardPaymentToggleFailure(msg));
       toast.error(msg);
     }
   }

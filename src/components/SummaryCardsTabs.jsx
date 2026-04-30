@@ -13,7 +13,20 @@ const SummaryCardsTabs = () => {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
   const dashboardService = new DashboardService(axiosPrivate);
-  const { totalUsers, loading, error, userBalance, userBalanceLoading, userBalanceError, pouchBalance, pouchBalanceLoading, pouchBalanceError } = useSelector((state) => state.dashboard);
+  const {
+    totalUsers,
+    loading,
+    error,
+    userBalance,
+    userBalanceLoading,
+    userBalanceError,
+    totalWalletBalance,
+    totalWalletBalanceLoading,
+    totalWalletBalanceError,
+    pouchBalance,
+    pouchBalanceLoading,
+    pouchBalanceError
+  } = useSelector((state) => state.dashboard);
 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userBalanceMetric, setUserBalanceMetric] = useState('totalBalance');
@@ -39,6 +52,9 @@ const SummaryCardsTabs = () => {
   const loadUserBalance = async () => {
     await dashboardService.fetchUserBalance(dispatch);
   };
+  const loadTotalWalletBalance = async () => {
+    await dashboardService.fetchTotalWalletBalance(dispatch);
+  };
   const loadPouchBalance = async () => {
     await dashboardService.fetchPouchBalance(dispatch);
   };
@@ -53,6 +69,9 @@ const SummaryCardsTabs = () => {
     if (activeTab === 'userBalance' && !userBalance && !userBalanceLoading) {
       loadUserBalance();
     }
+    if (activeTab === 'totalBalance' && !totalWalletBalance && !totalWalletBalanceLoading) {
+      loadTotalWalletBalance();
+    }
     if (activeTab === 'pouchBalance' && pouchBalance.length === 0 && !pouchBalanceLoading) {
       loadPouchBalance();
     }
@@ -61,6 +80,7 @@ const SummaryCardsTabs = () => {
 
   const onRefreshUserStat = () => ensureUserStat();
   const onRefreshUserBalance = () => loadUserBalance();
+  const onRefreshTotalWalletBalance = () => loadTotalWalletBalance();
   const onRefreshPouchBalance = () => loadPouchBalance();
 
   return (
@@ -68,6 +88,7 @@ const SummaryCardsTabs = () => {
       <Tabs>
         <TabsList>
           <TabTrigger isActive={activeTab==='dashboard'} onClick={() => setActiveTab('dashboard')}>Dashboard</TabTrigger>
+          <TabTrigger isActive={activeTab==='totalBalance'} onClick={() => setActiveTab('totalBalance')}>Total Balance</TabTrigger>
           <TabTrigger isActive={activeTab==='userBalance'} onClick={() => setActiveTab('userBalance')}>User Balance</TabTrigger>
           <TabTrigger isActive={activeTab==='pouchBalance'} onClick={() => setActiveTab('pouchBalance')}>Pouch Balance</TabTrigger>
         </TabsList>
@@ -107,6 +128,27 @@ const SummaryCardsTabs = () => {
                 rate={totalUsers?.statuses?.deleted ? Number(totalUsers.statuses.deleted.change).toFixed(2) : '0.00'}
                 color='text-danger'
               />
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'totalBalance' && (
+        <div>
+          {totalWalletBalanceLoading && <Spinner />}
+          {totalWalletBalanceError && <ErrorLayout errMsg={totalWalletBalanceError} handleRefresh={onRefreshTotalWalletBalance} />}
+          {!totalWalletBalanceLoading && !totalWalletBalanceError && totalWalletBalance?.totals?.length > 0 && (
+            <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
+              {totalWalletBalance.totals.map((item) => (
+                <Card
+                  key={item.currency}
+                  icon={<Loader size='22px' />}
+                  amount={`${formatAmount(Number(item.totalBalance).toFixed(2))} ${item.currency}`}
+                  name='Total Balance'
+                  rate={null}
+                  color='text-primary-dark'
+                />
+              ))}
             </div>
           )}
         </div>

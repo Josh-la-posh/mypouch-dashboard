@@ -15,9 +15,14 @@ const UserProfile = ({id}) => {
     const {loading, updateLoading, error, userDetail, isPerformingAction} = useSelector((state) => state.user);
     const [formData, setFormData] = useState({
         email: userDetail?.email === null ? '' : userDetail?.email ?? '',
+        name: `${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}`.trim(),
+        firstName: userDetail?.firstName,
+        lastName: userDetail?.lastName,
         country: userDetail?.country === null ? '' : userDetail?.country ?? '',
         address: userDetail?.address === null ? '' : userDetail?.address ?? '',
         state: userDetail?.state === null ? '' : userDetail?.state ?? '',
+        postCode: userDetail?.postCode === null ? '' : userDetail?.postCode ?? '',
+        phoneNumber: userDetail?.phoneNumber === null ? '' : userDetail?.phoneNumber ?? '',
     });
     const [isModalOpen, setIsModalOpen] = useState(false); // confirmation modal
     const [showPrivacy, setShowPrivacy] = useState(false); // toggle between profile form and privacy panel
@@ -47,11 +52,18 @@ const UserProfile = ({id}) => {
     }, [id, dispatch]);
 
     useEffect(() => {
+    if (!userDetail) return;
+
     setFormData({
         email: userDetail.email,
+        name: `${userDetail?.firstName ?? ''} ${userDetail?.lastName ?? ''}`.trim(),
         country: userDetail.country,
         state: userDetail.state,
-        address: userDetail.address
+        address: userDetail.address,
+        postCode: userDetail.postCode,
+        phoneNumber: userDetail.phoneNumber,
+        firstName: userDetail?.firstName,
+        lastName: userDetail?.lastName
     });
     }, [userDetail]);
 
@@ -62,6 +74,20 @@ const UserProfile = ({id}) => {
     const handleChange = (e) => {
         const {name, value} = e.target;
 
+        if (name === 'name') {
+            const cleaned = value.trim().replace(/\s+/g, ' ');
+            const [firstName = '', ...rest] = cleaned ? cleaned.split(' ') : [];
+            const lastName = rest.join(' ');
+
+            setFormData((prev) => ({
+                ...prev,
+                name: value,
+                firstName,
+                lastName
+            }));
+            return;
+        }
+
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -70,6 +96,7 @@ const UserProfile = ({id}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // console.log(formData)
         await userService.updateUserDetail(id, formData, dispatch);
     }
 
@@ -109,13 +136,18 @@ const UserProfile = ({id}) => {
                 )}
 
                 {!showPrivacy && (
-                    <form onSubmit={handleSubmit} className="space-y-6 max-w-[450px]">
+                    <form onSubmit={handleSubmit} className="space-y-6 max-w-[450px] md:max-w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* <div className="flex flex-col gap-2">
+                            <p className="text-sm font-[600] text-black/70 dark:text-white">Full Name</p>
+                            <div className="w-full pr-10 text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-700 placeholder:dark:text-white/40">
+                                {userDetail?.firstName} {userDetail?.lastName}
+                            </div>
+                        </div> */}
                         <InputField
-                            label='Email Address'
-                            type="email"
-                            placeholder='my@pouch.com'
-                            id='email'
-                            value={loading ? '' : formData.email}
+                            label='Full Name'
+                            placeholder='My Pouch'
+                            id='name'
+                            value={loading ? '' : formData.name}
                             onChange={handleChange}
                         />
                         <InputField
@@ -126,10 +158,26 @@ const UserProfile = ({id}) => {
                             onChange={handleChange}
                         />
                         <InputField
-                            label='State'
+                            label='Email Address'
+                            type="email"
+                            placeholder='my@pouch.com'
+                            id='email'
+                            value={loading ? '' : formData.email}
+                            onChange={handleChange}
+                        />
+                        <InputField
+                            label='Postal Code'
+                            type="text"
+                            placeholder='123456'
+                            id='postCode'
+                            value={loading ? '' : formData.postCode}
+                            onChange={handleChange}
+                        />
+                        <InputField
+                            label='Phone Number'
                             placeholder='Lagos'
-                            id='state'
-                            value={loading ? '' : formData.state}
+                            id='phoneNumber'
+                            value={loading ? '' : formData.phoneNumber}
                             onChange={handleChange}
                         />
                         <InputField
@@ -139,14 +187,16 @@ const UserProfile = ({id}) => {
                             value={loading ? '' : formData.address}
                             onChange={handleChange}
                         />
-                        <div className="max-w-[170px] mt-10">
-                            <Button
-                                variant="primary"
-                                className='text-xs'
-                                disabled={updateLoading}
-                            >
-                                {updateLoading ? 'Updating' : 'Update'}
-                            </Button>
+                        <div className="col-span-2 flex justify-center mt-14">
+                            <div className="w-56">
+                                <Button
+                                    variant="primary"
+                                    className='text-xs'
+                                    disabled={updateLoading}
+                                >
+                                    {updateLoading ? 'Updating' : 'Update'}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 )}

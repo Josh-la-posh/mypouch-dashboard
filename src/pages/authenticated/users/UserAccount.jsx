@@ -86,10 +86,11 @@ const UserAccount = ({id}) => {
               banks.length > 0 ? (banks.map((data) => (
                 <div key={data.id} className="bg-white text-primary text-xs px-2 py-2 flex items-center gap-5">
                   <Landmark size='17px' />
-                  <div className="">
+                  <div className="mr-auto">
                     <p className="font-[600] mb-1">{data.accountName}</p>
                     <p className="font-[500]">{data.accountNumber}</p>
                   </div>
+                  <p className="font-[600]">{data.currency}</p>
                 </div>
               ))) : (
                 <div>No bank account available</div>

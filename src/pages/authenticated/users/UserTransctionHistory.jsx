@@ -50,7 +50,10 @@ const UserTransactionHistory = ({id}) => {
     },
     {
         header: 'Amount',
-        accessor: 'amount',
+        accessor: 'row',
+        render: (id, row) => (
+          <div className="">{row.creditedCurrency !== null ? row.creditedCurrency : row.debitedCurrency} {row.amount}</div>
+        )
     },
     {
         header: '',

@@ -18,15 +18,25 @@ const User = () => {
 
   const columns = [
     {
-        header: 'ID',
-        accessor: 'id',
-    },
-    {
         header: 'Name',
         accessor: 'firstName',
-        render: (firstName) => (
-          <div>{firstName.charAt(0).toUpperCase() + firstName.slice(1)}</div>
-        ),
+        render: (_, row) => {
+          const firstName = row?.firstName || '';
+          const lastName = row?.lastName || '';
+          const fullName = `${firstName} ${lastName}`.trim();
+
+          if (!fullName) return <div>-</div>;
+
+          return (
+            <div>
+              {fullName
+                .split(' ')
+                .filter(Boolean)
+                .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                .join(' ')}
+            </div>
+          );
+        },
     },
     {
         header: 'Email',

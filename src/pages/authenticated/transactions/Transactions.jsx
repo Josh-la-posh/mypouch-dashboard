@@ -182,6 +182,7 @@ const Transactions = () => {
     const limitTabs = [
         { label: 'Transactions', value: 'transactions' },
         { label: 'Transaction Limit', value: 'transaction-limit' },
+        { label: 'Transaction Fee', value: 'transaction-fee' },
     ];
     const [activeSubTab, setActiveSubTab] = useState('transactions');
     const { limits, limitsLoading, limitsError, isCreatingLimit, createLimitError } = useSelector((state)=> state.transaction);
@@ -193,6 +194,17 @@ const Transactions = () => {
     const [limitPeriod, setLimitPeriod] = useState('daily'); // keeps progress bar context (daily or monthly view)
     const [dailyLimitAmount, setDailyLimitAmount] = useState('');
     const [monthlyLimitAmount, setMonthlyLimitAmount] = useState('');
+    const {
+        transactionFees,
+        transactionFeesLoading,
+        transactionFeesError,
+        isSavingTransactionFee,
+        saveTransactionFeeError
+    } = useSelector((state) => state.transaction);
+    const [feeCurrency, setFeeCurrency] = useState('NGN');
+    const [feeTransactionType, setFeeTransactionType] = useState('funding');
+    const [feeType, setFeeType] = useState('percentage');
+    const [feeAmount, setFeeAmount] = useState('');
 
     // Progress bar assumptions: Using a fixed MAX reference value to show percentage of entered amount.
     // Assumption: 2,000,000 as illustrative cap (adjust when real cap data is available from backend).
@@ -217,6 +229,26 @@ const Transactions = () => {
             transactionService.fetchTransactionLimits(dispatch);
         }
     }, [activeSubTab, limitMode, limits.length, transactionService, dispatch]);
+
+    useEffect(() => {
+        if (activeSubTab === 'transaction-fee') {
+            transactionService.fetchTransactionFees({
+                currency: feeCurrency,
+                transactionType: feeTransactionType
+            }, dispatch);
+        }
+    }, [activeSubTab, feeCurrency, feeTransactionType, transactionService, dispatch]);
+
+    useEffect(() => {
+        const existingFee = transactionFees?.[0];
+        if (existingFee) {
+            setFeeAmount(existingFee?.feeAmount ? String(existingFee.feeAmount) : '');
+            setFeeType(existingFee?.feeType || 'percentage');
+        } else {
+            setFeeAmount('');
+            setFeeType('percentage');
+        }
+    }, [transactionFees]);
 
     if (loading) return <Spinner />
 
@@ -243,6 +275,21 @@ const Transactions = () => {
             setMonthlyLimitAmount('');
             setLimitMode('list');
         }
+    };
+
+    const handleSaveTransactionFee = async () => {
+        const numericAmount = Number(feeAmount);
+        if (!feeAmount || Number.isNaN(numericAmount) || numericAmount < 0) {
+            return toast.error('Enter a valid fee amount');
+        }
+        const existingFee = transactionFees?.[0];
+        await transactionService.saveTransactionFee({
+            id: existingFee?.id,
+            currency: feeCurrency,
+            transactionType: feeTransactionType,
+            feeAmount: numericAmount,
+            feeType
+        }, dispatch);
     };
 
     return (
@@ -405,6 +452,107 @@ const Transactions = () => {
                                     />
                                 )}
                             </div>
+                        )}
+                    </div>
+                )}
+                {activeSubTab === 'transaction-fee' && (
+                    <div className='space-y-6 mt-5'>
+                        <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+                            <p className='text-sm font-semibold'>Set / Update Transaction Fee</p>
+                            <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Currency</p>
+                                    <SelectField
+                                        options={CURRENCIES.filter(c => c !== 'All')}
+                                        value={feeCurrency}
+                                        onChange={(e) => setFeeCurrency(e.target.value)}
+                                        placeholder='Currency'
+                                    />
+                                </div>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Transaction Type</p>
+                                    <SelectField
+                                        options={['funding', 'payout']}
+                                        value={feeTransactionType}
+                                        onChange={(e) => setFeeTransactionType(e.target.value)}
+                                        placeholder='Transaction type'
+                                    />
+                                </div>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Fee Type</p>
+                                    <SelectField
+                                        options={['percentage', 'flat']}
+                                        value={feeType}
+                                        onChange={(e) => setFeeType(e.target.value)}
+                                        placeholder='Fee type'
+                                    />
+                                </div>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Fee Amount</p>
+                                    <input
+                                        type='number'
+                                        min='0'
+                                        step='0.01'
+                                        value={feeAmount}
+                                        onChange={(e) => setFeeAmount(e.target.value)}
+                                        placeholder='e.g. 0.5'
+                                        className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full'
+                                    />
+                                </div>
+                            </div>
+                            {transactionFeesLoading && <Spinner />}
+                            {transactionFeesError && (
+                                <ErrorLayout
+                                    errMsg={transactionFeesError}
+                                    handleRefresh={() => transactionService.fetchTransactionFees({ currency: feeCurrency, transactionType: feeTransactionType }, dispatch)}
+                                />
+                            )}
+                            {!transactionFeesLoading && !transactionFeesError && transactionFees.length > 0 && (
+                                <div className='rounded-sm border border-primary/30 bg-primary/10 px-3 py-2 text-xs'>
+                                    Existing fee found for {feeCurrency} / {feeTransactionType}. Saving will update it.
+                                </div>
+                            )}
+                            {saveTransactionFeeError && <p className='text-[11px] text-red-500'>{saveTransactionFeeError}</p>}
+                            <div className='w-[180px]'>
+                                <Button
+                                    variant='primary'
+                                    disabled={isSavingTransactionFee}
+                                    onClick={handleSaveTransactionFee}
+                                    className='text-xs w-full'
+                                >
+                                    {isSavingTransactionFee
+                                        ? 'Saving...'
+                                        : transactionFees.length > 0
+                                            ? 'Update Fee'
+                                            : 'Create Fee'}
+                                </Button>
+                            </div>
+                        </div>
+                        {!transactionFeesLoading && !transactionFeesError && transactionFees.length > 0 && (
+                            <UserTable
+                                data={transactionFees.map((fee) => ({
+                                    id: fee.id,
+                                    currency: fee.currency,
+                                    transactionType: fee.transactionType,
+                                    feeAmount: Number(fee.feeAmount),
+                                    feeType: fee.feeType,
+                                    status: fee.status,
+                                    createdDate: fee.createdDate
+                                }))}
+                                columns={[
+                                    { header: 'Currency', accessor: 'currency' },
+                                    { header: 'Type', accessor: 'transactionType' },
+                                    { header: 'Fee Amount', accessor: 'feeAmount', render: (amt) => <span className='font-medium'>{formatAmount(amt)}</span> },
+                                    { header: 'Fee Type', accessor: 'feeType' },
+                                    { header: 'Status', accessor: 'status', render: (s) => <StatusBadge status={s} /> },
+                                    { header: 'Date', accessor: 'createdDate', render: (d) => <span>{dateFormatter(d)}</span> },
+                                ]}
+                                totalPages={1}
+                                currentPage={1}
+                                setCurrentPage={() => {}}
+                                rowsPerPage={transactionFees.length}
+                                setRowsPerPage={() => {}}
+                            />
                         )}
                     </div>
                 )}

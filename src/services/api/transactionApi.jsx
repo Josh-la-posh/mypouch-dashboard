@@ -1,5 +1,24 @@
 import { toast } from "react-toastify";
-import { transactionFailure, transactionStart, transactionSuccess, walletFailure, walletStart, walletSuccess, limitsFetchStart, limitsFetchSuccess, limitsFetchFailure, createLimitStart, createLimitSuccess, createLimitFailure } from "../../redux/slices/transactionSlice";
+import {
+  transactionFailure,
+  transactionStart,
+  transactionSuccess,
+  walletFailure,
+  walletStart,
+  walletSuccess,
+  limitsFetchStart,
+  limitsFetchSuccess,
+  limitsFetchFailure,
+  createLimitStart,
+  createLimitSuccess,
+  createLimitFailure,
+  transactionFeeFetchStart,
+  transactionFeeFetchSuccess,
+  transactionFeeFetchFailure,
+  transactionFeeSaveStart,
+  transactionFeeSaveSuccess,
+  transactionFeeSaveFailure
+} from "../../redux/slices/transactionSlice";
 import { axiosPrivate } from "./axios";
 
 class TransactionService {
@@ -124,6 +143,49 @@ class TransactionService {
             toast.error(msg);
         }
     }
+
+  async fetchTransactionFees({ currency = '', transactionType = '' } = {}, dispatch) {
+    try {
+      dispatch(transactionFeeFetchStart());
+      const params = new URLSearchParams();
+      if (currency) params.append('currency', currency);
+      if (transactionType) params.append('transactionType', transactionType);
+      const query = params.toString();
+      const response = await axiosPrivate.get(`/admin/transaction-fees${query ? `?${query}` : ''}`);
+      const fees = Array.isArray(response?.data) ? response.data : [];
+      dispatch(transactionFeeFetchSuccess(fees));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch transaction fees');
+      dispatch(transactionFeeFetchFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async saveTransactionFee({ id, currency, transactionType, feeAmount, feeType }, dispatch) {
+    try {
+      dispatch(transactionFeeSaveStart());
+      if (id) {
+        await axiosPrivate.put(`/admin/transaction-fees/${id}`, JSON.stringify({
+          feeAmount: Number(feeAmount),
+          feeType
+        }));
+      } else {
+        await axiosPrivate.post('/admin/transaction-fees', JSON.stringify({
+          currency,
+          transactionType,
+          feeAmount: Number(feeAmount),
+          feeType
+        }));
+      }
+      dispatch(transactionFeeSaveSuccess());
+      toast.success(id ? 'Transaction fee updated' : 'Transaction fee created');
+      await this.fetchTransactionFees({ currency, transactionType }, dispatch);
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to save transaction fee');
+      dispatch(transactionFeeSaveFailure(msg));
+      toast.error(msg);
+    }
+  }
 }
   
 export default TransactionService;
