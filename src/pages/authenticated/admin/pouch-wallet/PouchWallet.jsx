@@ -522,7 +522,7 @@ function PouchWallet() {
             {providerSubTab === 'payout-provider' && (
               <>
                 <div className='flex justify-between items-center'>
-                  <p className='text-sm text-primary dark:text-white font-semibold'>Funding Providers</p>
+                  <p className='text-sm text-primary dark:text-white font-semibold'>Payout Providers</p>
                   <div className="w-fit">
                     <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
                   </div>
@@ -636,8 +636,7 @@ function PouchWallet() {
               </div>
             )}
           </div>
-        )}
-      </CustomTab>
+        )}      </CustomTab>
 
       {/* Transaction Modal */}
       <CustomModal isOpen={isModalOpen} title="Transaction Details" onClose={closeModal}>
@@ -730,5 +729,6 @@ function PouchWallet() {
 }
 
 export default PouchWallet;
+
 
 

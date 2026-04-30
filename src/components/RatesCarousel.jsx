@@ -93,7 +93,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
       )}
 
       {/* Dots */}
-      <div className='flex items-center gap-2'>
+      {/* <div className='flex items-center gap-2'>
         {rates.map((_, i) => (
           <button
             key={i}
@@ -102,7 +102,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
             aria-label={`Go to slide ${i + 1}`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
