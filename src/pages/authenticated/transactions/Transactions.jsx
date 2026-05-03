@@ -183,6 +183,7 @@ const Transactions = () => {
         { label: 'Transactions', value: 'transactions' },
         { label: 'Transaction Limit', value: 'transaction-limit' },
         { label: 'Transaction Fee', value: 'transaction-fee' },
+        { label: 'Exchange Fee', value: 'exchange-fee' },
     ];
     const [activeSubTab, setActiveSubTab] = useState('transactions');
     const { limits, limitsLoading, limitsError, isCreatingLimit, createLimitError } = useSelector((state)=> state.transaction);
@@ -205,6 +206,16 @@ const Transactions = () => {
     const [feeTransactionType, setFeeTransactionType] = useState('funding');
     const [feeType, setFeeType] = useState('percentage');
     const [feeAmount, setFeeAmount] = useState('');
+    const {
+        exchangeFees,
+        exchangeFeesLoading,
+        exchangeFeesError,
+        isSavingExchangeFee,
+        saveExchangeFeeError
+    } = useSelector((state) => state.transaction);
+    const [exchangeCurrencyType, setExchangeCurrencyType] = useState('ngn');
+    const [exchangeFeeType, setExchangeFeeType] = useState('percentage');
+    const [exchangeFeeAmount, setExchangeFeeAmount] = useState('');
 
     // Progress bar assumptions: Using a fixed MAX reference value to show percentage of entered amount.
     // Assumption: 2,000,000 as illustrative cap (adjust when real cap data is available from backend).
@@ -250,6 +261,25 @@ const Transactions = () => {
         }
     }, [transactionFees]);
 
+    useEffect(() => {
+        if (activeSubTab === 'exchange-fee') {
+            transactionService.fetchExchangeFees(dispatch);
+        }
+    }, [activeSubTab, transactionService, dispatch]);
+
+    useEffect(() => {
+        const existingExchangeFee = exchangeFees.find(
+            (fee) => String(fee.currencyType).toLowerCase() === exchangeCurrencyType
+        );
+        if (existingExchangeFee) {
+            setExchangeFeeAmount(existingExchangeFee?.feeAmount ? String(existingExchangeFee.feeAmount) : '');
+            setExchangeFeeType(existingExchangeFee?.feeType || 'percentage');
+        } else {
+            setExchangeFeeAmount('');
+            setExchangeFeeType('percentage');
+        }
+    }, [exchangeFees, exchangeCurrencyType]);
+
     if (loading) return <Spinner />
 
     if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
@@ -289,6 +319,22 @@ const Transactions = () => {
             transactionType: feeTransactionType,
             feeAmount: numericAmount,
             feeType
+        }, dispatch);
+    };
+
+    const handleSaveExchangeFee = async () => {
+        const numericAmount = Number(exchangeFeeAmount);
+        if (!exchangeFeeAmount || Number.isNaN(numericAmount) || numericAmount < 0) {
+            return toast.error('Enter a valid exchange fee amount');
+        }
+        const existingExchangeFee = exchangeFees.find(
+            (fee) => String(fee.currencyType).toLowerCase() === exchangeCurrencyType
+        );
+        await transactionService.saveExchangeFee({
+            id: existingExchangeFee?.id,
+            currencyType: exchangeCurrencyType,
+            feeAmount: numericAmount,
+            feeType: exchangeFeeType
         }, dispatch);
     };
 
@@ -551,6 +597,96 @@ const Transactions = () => {
                                 currentPage={1}
                                 setCurrentPage={() => {}}
                                 rowsPerPage={transactionFees.length}
+                                setRowsPerPage={() => {}}
+                            />
+                        )}
+                    </div>
+                )}
+                {activeSubTab === 'exchange-fee' && (
+                    <div className='space-y-6 mt-5'>
+                        <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+                            <p className='text-sm font-semibold'>Set / Update Exchange Fee</p>
+                            <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Currency Type</p>
+                                    <SelectField
+                                        options={['ngn', 'fcy']}
+                                        value={exchangeCurrencyType}
+                                        onChange={(e) => setExchangeCurrencyType(e.target.value)}
+                                        placeholder='Currency type'
+                                    />
+                                </div>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Fee Type</p>
+                                    <SelectField
+                                        options={['percentage', 'flat']}
+                                        value={exchangeFeeType}
+                                        onChange={(e) => setExchangeFeeType(e.target.value)}
+                                        placeholder='Fee type'
+                                    />
+                                </div>
+                                <div>
+                                    <p className='text-[10px] font-semibold mb-1'>Fee Amount</p>
+                                    <input
+                                        type='number'
+                                        min='0'
+                                        step='0.01'
+                                        value={exchangeFeeAmount}
+                                        onChange={(e) => setExchangeFeeAmount(e.target.value)}
+                                        placeholder='e.g. 0.5'
+                                        className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full'
+                                    />
+                                </div>
+                            </div>
+                            {exchangeFeesLoading && <Spinner />}
+                            {exchangeFeesError && (
+                                <ErrorLayout
+                                    errMsg={exchangeFeesError}
+                                    handleRefresh={() => transactionService.fetchExchangeFees(dispatch)}
+                                />
+                            )}
+                            {!exchangeFeesLoading && !exchangeFeesError && exchangeFees.some((fee) => String(fee.currencyType).toLowerCase() === exchangeCurrencyType) && (
+                                <div className='rounded-sm border border-primary/30 bg-primary/10 px-3 py-2 text-xs'>
+                                    Existing exchange fee found for {exchangeCurrencyType.toUpperCase()}. Saving will update it.
+                                </div>
+                            )}
+                            {saveExchangeFeeError && <p className='text-[11px] text-red-500'>{saveExchangeFeeError}</p>}
+                            <div className='w-[180px]'>
+                                <Button
+                                    variant='primary'
+                                    disabled={isSavingExchangeFee}
+                                    onClick={handleSaveExchangeFee}
+                                    className='text-xs w-full'
+                                >
+                                    {isSavingExchangeFee
+                                        ? 'Saving...'
+                                        : exchangeFees.some((fee) => String(fee.currencyType).toLowerCase() === exchangeCurrencyType)
+                                            ? 'Update Fee'
+                                            : 'Create Fee'}
+                                </Button>
+                            </div>
+                        </div>
+                        {!exchangeFeesLoading && !exchangeFeesError && exchangeFees.length > 0 && (
+                            <UserTable
+                                data={exchangeFees.map((fee) => ({
+                                    id: fee.id,
+                                    currencyType: String(fee.currencyType).toUpperCase(),
+                                    feeAmount: Number(fee.feeAmount),
+                                    feeType: fee.feeType,
+                                    status: fee.status,
+                                    createdDate: fee.createdDate
+                                }))}
+                                columns={[
+                                    { header: 'Currency Type', accessor: 'currencyType' },
+                                    { header: 'Fee Amount', accessor: 'feeAmount', render: (amt) => <span className='font-medium'>{formatAmount(amt)}</span> },
+                                    { header: 'Fee Type', accessor: 'feeType' },
+                                    { header: 'Status', accessor: 'status', render: (s) => <StatusBadge status={s} /> },
+                                    { header: 'Date', accessor: 'createdDate', render: (d) => <span>{dateFormatter(d)}</span> },
+                                ]}
+                                totalPages={1}
+                                currentPage={1}
+                                setCurrentPage={() => {}}
+                                rowsPerPage={exchangeFees.length}
                                 setRowsPerPage={() => {}}
                             />
                         )}

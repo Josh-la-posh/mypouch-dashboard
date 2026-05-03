@@ -17,7 +17,13 @@ import {
   transactionFeeFetchFailure,
   transactionFeeSaveStart,
   transactionFeeSaveSuccess,
-  transactionFeeSaveFailure
+  transactionFeeSaveFailure,
+  exchangeFeeFetchStart,
+  exchangeFeeFetchSuccess,
+  exchangeFeeFetchFailure,
+  exchangeFeeSaveStart,
+  exchangeFeeSaveSuccess,
+  exchangeFeeSaveFailure
 } from "../../redux/slices/transactionSlice";
 import { axiosPrivate } from "./axios";
 
@@ -183,6 +189,45 @@ class TransactionService {
     } catch (err) {
       const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to save transaction fee');
       dispatch(transactionFeeSaveFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async fetchExchangeFees(dispatch) {
+    try {
+      dispatch(exchangeFeeFetchStart());
+      const response = await axiosPrivate.get('/admin/exchange-fees');
+      const fees = Array.isArray(response?.data) ? response.data : [];
+      dispatch(exchangeFeeFetchSuccess(fees));
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to fetch exchange fees');
+      dispatch(exchangeFeeFetchFailure(msg));
+      toast.error(msg);
+    }
+  }
+
+  async saveExchangeFee({ id, currencyType, feeAmount, feeType }, dispatch) {
+    try {
+      dispatch(exchangeFeeSaveStart());
+      if (id) {
+        await axiosPrivate.put(`/admin/exchange-fees/${id}`, JSON.stringify({
+          currencyType,
+          feeAmount: Number(feeAmount),
+          feeType
+        }));
+      } else {
+        await axiosPrivate.post('/admin/exchange-fees', JSON.stringify({
+          currencyType,
+          feeAmount: Number(feeAmount),
+          feeType
+        }));
+      }
+      dispatch(exchangeFeeSaveSuccess());
+      toast.success(id ? 'Exchange fee updated' : 'Exchange fee created');
+      await this.fetchExchangeFees(dispatch);
+    } catch (err) {
+      const msg = !err.response ? 'No Server Response' : (err.response.data?.message || 'Failed to save exchange fee');
+      dispatch(exchangeFeeSaveFailure(msg));
       toast.error(msg);
     }
   }

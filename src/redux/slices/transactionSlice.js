@@ -22,6 +22,12 @@ const initialState = {
   transactionFeesError: null,
   isSavingTransactionFee: false,
   saveTransactionFeeError: null,
+  // Exchange Fees
+  exchangeFees: [],
+  exchangeFeesLoading: false,
+  exchangeFeesError: null,
+  isSavingExchangeFee: false,
+  saveExchangeFeeError: null,
 };
 
 const transactionSlice = createSlice({
@@ -102,6 +108,29 @@ const transactionSlice = createSlice({
       state.isSavingTransactionFee = false;
       state.saveTransactionFeeError = action.payload;
     },
+    exchangeFeeFetchStart: (state) => {
+      state.exchangeFeesLoading = true;
+      state.exchangeFeesError = null;
+    },
+    exchangeFeeFetchSuccess: (state, action) => {
+      state.exchangeFeesLoading = false;
+      state.exchangeFees = action.payload || [];
+    },
+    exchangeFeeFetchFailure: (state, action) => {
+      state.exchangeFeesLoading = false;
+      state.exchangeFeesError = action.payload;
+    },
+    exchangeFeeSaveStart: (state) => {
+      state.isSavingExchangeFee = true;
+      state.saveExchangeFeeError = null;
+    },
+    exchangeFeeSaveSuccess: (state) => {
+      state.isSavingExchangeFee = false;
+    },
+    exchangeFeeSaveFailure: (state, action) => {
+      state.isSavingExchangeFee = false;
+      state.saveExchangeFeeError = action.payload;
+    },
   },
 });
 
@@ -123,7 +152,13 @@ export const {
   transactionFeeFetchFailure,
   transactionFeeSaveStart,
   transactionFeeSaveSuccess,
-  transactionFeeSaveFailure
+  transactionFeeSaveFailure,
+  exchangeFeeFetchStart,
+  exchangeFeeFetchSuccess,
+  exchangeFeeFetchFailure,
+  exchangeFeeSaveStart,
+  exchangeFeeSaveSuccess,
+  exchangeFeeSaveFailure
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;
