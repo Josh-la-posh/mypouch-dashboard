@@ -56,7 +56,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
   const current = rates[index];
 
   return (
-    <div className='space-y-3 w-full flex flex-col items-center'>
+    <div className='w-full flex justify-center'>
       {/* <div className='flex items-center justify-between w-full max-w-sm'>
         <div className='flex items-center gap-2'>
           <TextButton onClick={prev} disabled={total <= 1}><ChevronLeft size={16} /></TextButton>
@@ -71,7 +71,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
       </div> */}
 
       {current && (
-        <div className='flex flex-col gap-5 text-sm bg-primary dark:bg-slate-800 px-4 py-5 rounded-xl w-full max-w-xl shadow-sm'>
+        <div className='flex flex-col gap-5 text-sm bg-primary dark:bg-slate-800 px-4 py-2 rounded-xl w-full max-w-xl shadow-sm'>
           <div className='flex items-center justify-between'>
             <p className='text-white dark:text-slate-100 capitalize text-lg font-semibold'>{current.productAlias}</p>
             {/* <p className='text-[10px] flex items-center gap-1 text-white/80 dark:text-primary-dark/70'><Clock size={12}/> {timeStr}</p> */}
@@ -83,12 +83,10 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
             <p className='text-white dark:text-slate-100'>{current.pair}</p>
             <p className='text-white dark:text-slate-100 font-medium'>{current.value}</p>
           </div>
-          {current.fee !== null && (
-            <div className='flex items-center justify-between'>
-              <p className='text-white dark:text-slate-100'>Fee</p>
-              <p className='text-white dark:text-slate-100'>{current.fee} {current.feeCurrency}</p>
-            </div>
-          )}          
+          <div className='flex items-center justify-between'>
+            <p className='text-white dark:text-slate-100'>Fee</p>
+            <p className='text-white dark:text-slate-100'>{current.fee !== null ? current.fee : 0} {current.fee !== null ? current.feeCurrency : ''}</p>
+          </div>    
         </div>
       )}
 
