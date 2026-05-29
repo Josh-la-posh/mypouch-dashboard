@@ -70,16 +70,16 @@ const Dashboard = () => {
   if (error) return <ErrorLayout errMsg={error} handleRefresh={onRefresh} />
 
   return (
-    <div className="space-y-10">
-      <h1 className="text-md font-[500] dark:text-[#C2A6DD]">Welcome back {auth?.data?.firstName}</h1>
+    <div className="space-y-6 md:space-y-8">
+      <h1 className="text-base md:text-lg font-semibold text-slate-700 dark:text-slate-200">Welcome back, {auth?.data?.firstName}</h1>
       <SummaryCardsTabs />
       {/* Rates & Most Traded Section */}
-      <div className="grid md:grid-cols-5 gap-6">
+      <div className="grid xl:grid-cols-5 gap-4">
         {/* Daily Exchange Rate Panel */}
-        <div className="md:col-span-3 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-1 shadow-sm">
+        <div className="xl:col-span-3 dashboard-panel dark:bg-slate-900 dark:border-slate-700 p-4 md:p-5 space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <p className="text-[11px] font-semibold dark:text-[#C2A6DD]">Daily Exchange Rate</p>
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Daily Exchange Rate</p>
               <TextButton onClick={onRefreshRate} className="text-[11px]" aria-label="Refresh rates">
                 <RefreshCcw size='14px' />
               </TextButton>
@@ -90,11 +90,11 @@ const Dashboard = () => {
                 placeholder="Currency"
                 value={currency}
                 onChange={(e) => selectCurrency(e.target.value)}
-                selectClassName="bg-white dark:bg-[#20263D]"
+                selectClassName="bg-white dark:bg-slate-900"
               />
             </div>
           </div>
-          <div className="relative min-h-[160px] flex flex-col items-center justify-center">
+          <div className="relative min-h-[180px] flex flex-col items-center justify-center">
             {rateLoading && <Spinner />}
             {rateError && !rateLoading && (
               <ErrorLayout errMsg={rateError} handleRefresh={onRefreshRate} />
@@ -114,9 +114,9 @@ const Dashboard = () => {
         </div>
 
         {/* Most Traded Currency Panel */}
-        <div className="md:col-span-2 bg-white dark:bg-[#20263D] border border-gray-200 dark:border-gray-600 rounded-sm p-4 space-y-4 shadow-sm">
+        <div className="xl:col-span-2 dashboard-panel dark:bg-slate-900 dark:border-slate-700 p-4 md:p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-semibold dark:text-[#C2A6DD]">Most Traded Currency</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Most Traded Currency</p>
             <TextButton onClick={onRefresh} className="text-[11px]" aria-label="Refresh stats">
               <RefreshCcw size='14px' />
             </TextButton>
@@ -125,11 +125,11 @@ const Dashboard = () => {
             {transactions && transactions.length > 0 ? transactions.map((cur) => {
               const negative = cur?.change?.toString().startsWith('-');
               return (
-                <div key={cur.currency} className="group flex items-center w-full text-[11px] rounded-sm overflow-hidden">
+                <div key={cur.currency} className="group flex items-center w-full text-xs rounded-xl overflow-hidden">
                   {/* Bar background */}
-                  <div className={`flex items-center justify-between w-full px-4 py-2 bg-primary dark:bg-[#1C2034] transition-colors group-hover:bg-primary/90`}> 
-                    <p className="text-white dark:text-[#C2A6DD] font-medium tracking-wide">{cur?.currency}</p>
-                    <div className={`flex items-center gap-2 ${negative ? 'text-red-400' : 'text-green-300'}`}>
+                  <div className={`flex items-center justify-between w-full px-4 py-3 bg-primary dark:bg-slate-800 transition-colors group-hover:bg-primary/90`}> 
+                    <p className="text-white dark:text-slate-100 font-medium tracking-wide">{cur?.currency}</p>
+                    <div className={`flex items-center gap-2 ${negative ? 'text-red-300' : 'text-green-300'}`}>
                       <TrendingUp size='13px' className={`${negative ? 'rotate-180' : ''}`} />
                       <p className="font-semibold">{cur.change}%</p>
                     </div>
@@ -137,7 +137,7 @@ const Dashboard = () => {
                 </div>
               )
             }) : (
-              <p className="text-[11px] text-gray-500 dark:text-gray-400">No trading data available.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">No trading data available.</p>
             )}
           </div>
         </div>

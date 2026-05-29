@@ -180,7 +180,7 @@ const UserTransactionHistory = ({id}) => {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 text-slate-800 dark:text-slate-100">
       <CustomTab
         TABS={TABS}
         activeTab={activeTab}
@@ -191,14 +191,14 @@ const UserTransactionHistory = ({id}) => {
       >
         {activeTab === 'history' && (
           <div className="space-y-6">
-            <p className="text-black/75 dark:text-white/80 text-lg font-[600]">Transaction History</p>
+            <p className="text-slate-800 dark:text-slate-100 text-lg font-[600]">Transaction History</p>
             <div className="space-y-4 my-4">
               <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
                 <SelectField options={TRANSACTIONSTATUS} placeholder="Status" value={status} onChange={handleStatusChange} />
                 <SelectField options={TRANSACTIONTYPE} placeholder="Type" value={transactionType} onChange={handleTypeChange} />
                 <SelectField options={CURRENCIES} placeholder="Currency" value={currency} onChange={handleCurrencyChange} />
-                <input type="date" value={date} onChange={handleDateChange} className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent" />
-                <input type="text" placeholder="Search transaction id or description" value={search} onChange={handleSearchChange} className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2" />
+                <input type="date" value={date} onChange={handleDateChange} className="border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100" />
+                <input type="text" placeholder="Search transaction id or description" value={search} onChange={handleSearchChange} className="border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 col-span-2" />
                 <div className="col-span-2 flex gap-1">
                   <Button onClick={applyFilters} className='text-xs'>Apply</Button>
                   <Button variant='secondary' className='text-xs' onClick={() => { setStatus(''); setTransactionType(''); setCurrency(''); setSearch(''); setDate(''); setUserCurrentPage(1); loadUserTransaction(1, userPageSize); }}>Reset</Button>
@@ -214,11 +214,11 @@ const UserTransactionHistory = ({id}) => {
           <div className='space-y-8 mt-4'>
             <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
               <div>
-                <p className='text-[10px] font-semibold mb-1'>Currency</p>
+                <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Currency</p>
                 <SelectField options={CURRENCIES.filter(c=> c !== 'All')} value={limitCurrency} onChange={(e)=> setLimitCurrency(e.target.value)} placeholder='Currency' />
               </div>
               <div>
-                <p className='text-[10px] font-semibold mb-1'>Transaction Type</p>
+                <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Transaction Type</p>
                 <SelectField options={['Credit','Debit']} value={limitTransactionType} onChange={(e)=> setLimitTransactionType(e.target.value)} placeholder='Type' />
               </div>
             </div>
@@ -232,31 +232,31 @@ const UserTransactionHistory = ({id}) => {
                     const daily = userLimits.find(l => l.transactionType === type && l.period === 'daily');
                     const monthly = userLimits.find(l => l.transactionType === type && l.period === 'monthly');
                     const renderProgressBar = (progress) => (
-                      <div className='w-full h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden'>
+                      <div className='w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
                         <div className='h-full bg-primary transition-all duration-300' style={{ width: `${Math.min(100, progress || 0)}%` }}></div>
                       </div>
                     );
                     return (
-                      <div key={type} className='border border-gray-300 dark:border-gray-600 rounded-sm p-4 space-y-4'>
+                      <div key={type} className='border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl p-4 space-y-4'>
                         <p className='text-xs font-semibold'>{type} Limits</p>
                         <div className='space-y-2'>
-                          <div className='flex justify-between text-[11px] font-medium'>
+                          <div className='flex justify-between text-xs font-medium'>
                             <span>Daily Limit</span>
                             <span>{formatAmount(daily?.amount || 0)} {daily?.currency}</span>
                           </div>
                           {renderProgressBar(daily?.progress)}
-                          <div className='flex justify-between text-[10px] text-gray-600 dark:text-gray-400'>
+                          <div className='flex justify-between text-xs text-slate-500 dark:text-slate-400'>
                             <span>Spent: {formatAmount(daily?.spent || 0)}</span>
                             <span>Remaining: {daily?.remaining != null ? formatAmount(daily.remaining) : '—'}</span>
                           </div>
                         </div>
                         <div className='space-y-2'>
-                          <div className='flex justify-between text-[11px] font-medium'>
+                          <div className='flex justify-between text-xs font-medium'>
                             <span>Monthly Limit</span>
                             <span>{formatAmount(monthly?.amount || 0)} {monthly?.currency}</span>
                           </div>
                           {renderProgressBar(monthly?.progress)}
-                          <div className='flex justify-between text-[10px] text-gray-600 dark:text-gray-400'>
+                          <div className='flex justify-between text-xs text-slate-500 dark:text-slate-400'>
                             <span>Spent: {formatAmount(monthly?.spent || 0)}</span>
                             <span>Remaining: {monthly?.remaining != null ? formatAmount(monthly.remaining) : '—'}</span>
                           </div>
@@ -268,22 +268,22 @@ const UserTransactionHistory = ({id}) => {
                 </div>
               )}
               {!userLimitsLoading && !userLimitsError && userLimits.length === 0 && (
-                <p className='text-xs text-gray-600 dark:text-gray-400'>No limits set for this user & currency yet.</p>
+                <p className='text-xs text-slate-500 dark:text-slate-400'>No limits set for this user & currency yet.</p>
               )}
             </div>
-            <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+            <div className='space-y-6 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl p-4'>
               <p className='text-sm font-semibold'>Set / Update Limits</p>
               <div className='grid sm:grid-cols-2 gap-4'>
                 <div>
-                  <p className='text-[10px] font-semibold mb-1'>Daily Limit Amount</p>
-                  <input type='text' value={dailyLimitAmount} onChange={(e)=> setDailyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                  <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Daily Limit Amount</p>
+                  <input type='text' value={dailyLimitAmount} onChange={(e)=> setDailyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full' />
                 </div>
                 <div>
-                  <p className='text-[10px] font-semibold mb-1'>Monthly Limit Amount</p>
-                  <input type='text' value={monthlyLimitAmount} onChange={(e)=> setMonthlyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                  <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Monthly Limit Amount</p>
+                  <input type='text' value={monthlyLimitAmount} onChange={(e)=> setMonthlyLimitAmount(e.target.value)} placeholder='e.g. 5000' className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full' />
                 </div>
               </div>
-              {setUserLimitError && <p className='text-[11px] text-red-500'>{setUserLimitError}</p>}
+              {setUserLimitError && <p className='text-xs text-red-500'>{setUserLimitError}</p>}
               <div className='w-[180px]'>
                 <Button variant='primary' disabled={isSettingUserLimit} onClick={handleSetUserLimit} className='text-xs w-full'>
                   {isSettingUserLimit ? 'Saving...' : 'Confirm'}
@@ -302,21 +302,21 @@ const UserTransactionHistory = ({id}) => {
           </div>
           {selectedTransaction?.user && (
             <div className="space-y-6">
-              <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+              <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                 <p>Username</p>
                 <p>{selectedTransaction?.user?.userName}</p>
               </div>
-              <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+              <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                 <p>Email</p>
                 <p>{selectedTransaction?.user?.email}</p>
               </div>
             </div>
           )}
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Type</p>
             <p>{selectedTransaction.transactionType}</p>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Status</p>
             <div className="flex items-center gap-1">
               <div className={`
@@ -325,69 +325,69 @@ const UserTransactionHistory = ({id}) => {
               <p>{selectedTransaction.status}</p>
             </div>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Id</p>
             <p className="text-xs">{selectedTransaction.transactionId}</p>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Date</p>
             <p>{dateFormatter(selectedTransaction.createdDate)}</p>
           </div>
           { selectedTransaction.buyerCreditedWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Buyer Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerCreditedWallet}</p>
           </div>
           }
           { selectedTransaction.buyerDebitedWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Buyer Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerDebitedWallet}</p>
           </div>
           }
           { selectedTransaction.creditedCurrency &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Credited Currency</p>
               <p>{selectedTransaction.creditedCurrency}</p>
           </div>
           }
           { selectedTransaction.creditedWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.creditedWallet}</p>
           </div>
           }
           { selectedTransaction.debitedAmount &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Debited Amount</p>
               <p>{selectedTransaction.debitedCurrency}{formatAmount(selectedTransaction.debitedAmount)}</p>
           </div>
           }
           { selectedTransaction.debitWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.debitedWallet}</p>
           </div>
           }
           { selectedTransaction.rateDescription &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Rate</p>
               <p>{selectedTransaction.rateDescription}</p>
           </div>
           }
           { selectedTransaction.sellerCreditedWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Seller Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.sellerCreditedWallet}</p>
           </div>
           }
           { selectedTransaction.sellerDebitedWallet &&
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Seller Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.sellerDebitedWallet}</p>
           </div>
           }
-          <div className="text-center text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="text-center text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Description</p>
             <p>{selectedTransaction.description}</p>
           </div>

@@ -15,16 +15,16 @@ const Card = ({
 }) => {
 
     return(
-        <div className={`w-full rounded-md p-3 bg-[#CABEC7] ${className}`}>
-            <div className="flex gap-2">
-                <div className={`text-[5px] md:text-xs ${color} ${iconClassName}`}>
+        <div className={`w-full rounded-2xl p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md dark:hover:shadow-slate-950/40 transition-shadow ${className}`}>
+            <div className="flex gap-3 items-start">
+                <div className={`text-sm ${color} ${iconClassName}`}>
                     {icon}
                 </div>
                 <div className="">
-                    <h1 className={`text-[10px] sm:text-xs md:text-md font-[700] dark:text-primary-dark ${amountClassName}`}>{amount}</h1>
-                    <p className={`text-[5px] sm:text-[7px] md:text-xs font-[600] text-primary dark:text-primary-dark ${nameClassName}`}>{name}</p>
+                    <h1 className={`text-base md:text-lg font-bold text-slate-900 dark:text-slate-100 ${amountClassName}`}>{amount}</h1>
+                    <p className={`text-xs font-medium text-slate-500 dark:text-slate-400 ${nameClassName}`}>{name}</p>
                     {rate && 
-                        (<div className={`text-[9px] ${(rate[0] === '-' || rate == 0) ? 'text-danger' : 'text-primary-dark'} flex gap-1 items-center ${rateClassName}`}>
+                        (<div className={`text-xs ${(rate[0] === '-' || rate == 0) ? 'text-danger' : 'text-color-green'} flex gap-1 items-center mt-2 ${rateClassName}`}>
                             <TrendingUp size='12px'/>
                             {rate} %
                         </div>)

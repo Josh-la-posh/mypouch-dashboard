@@ -148,13 +148,13 @@ function AllAdminPage() {
               <div className={`grid ${auth?.data?.role?.name === 'SUPER ADMIN' ? 'grid-cols-5' : 'grid-cols-4'} items-center text-black/50 dark:text-white/60 px-3`}>
                 <div className="col-span-2">
                   <p className='font-[600]'>{admin?.firstName} {admin?.lastName}</p>
-                  <p className='text-[9px] md:text-[11px] font-[400]'>{admin?.email}</p>
+                  <p className='text-xs md:text-sm font-[400]'>{admin?.email}</p>
                 </div>
-                <div className="text-[9px] md:text-xs font-[600] text-center">
+                <div className="text-xs md:text-sm font-[600] text-center">
                   {admin?.role?.name}
                 </div>
                 <div className="flex items-center justify-center">
-                  <span className={`px-2 py-1 rounded-sm text-[9px] md:text-xs font-semibold uppercase ${
+                  <span className={`px-2 py-1 rounded-sm text-xs md:text-sm font-semibold uppercase ${
                     admin?.status.toLowerCase() === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300' :
                     admin?.status.toLowerCase() === 'inactive' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300' :
                     admin?.status.toLowerCase() === 'blocked' ? 'bg-red-100 text-red-700 dark:bg-red-700/30 dark:text-red-300' :

@@ -40,9 +40,9 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
   if (error) {
     return (
       <div className='space-y-4 flex flex-col items-center my-6'>
-        <p className='text-black/70 dark:text-white/60 text-xs'>Unable to load rates</p>
+        <p className='text-slate-600 dark:text-slate-300 text-xs'>Unable to load rates</p>
         <div className='flex gap-2'>
-          <Button variant='primary' className='text-[11px]' onClick={onRetry}>Retry</Button>
+          <Button variant='primary' className='text-xs' onClick={onRetry}>Retry</Button>
           <TextButton onClick={onRefresh}><RefreshCcw size={14} /></TextButton>
         </div>
       </div>
@@ -50,7 +50,7 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
   }
 
   if (!loading && total === 0) {
-    return <p className='text-[11px] italic opacity-70 text-center'>No rates available.</p>;
+    return <p className='text-xs italic text-slate-500 dark:text-slate-400 text-center'>No rates available.</p>;
   }
 
   const current = rates[index];
@@ -71,22 +71,22 @@ const RatesCarousel = ({ rates = [], loading, error, onRefresh, onRetry, interva
       </div> */}
 
       {current && (
-        <div className='flex flex-col gap-2 text-sm bg-primary dark:bg-white px-4 py-3 rounded-md w-full max-w-sm shadow-sm'>
+        <div className='flex flex-col gap-2 text-sm bg-primary dark:bg-slate-800 px-4 py-3 rounded-xl w-full max-w-sm shadow-sm'>
           <div className='flex items-center justify-between'>
-            <p className='text-white dark:text-primary-dark capitalize text-lg font-semibold'>{current.productAlias}</p>
+            <p className='text-white dark:text-slate-100 capitalize text-lg font-semibold'>{current.productAlias}</p>
             {/* <p className='text-[10px] flex items-center gap-1 text-white/80 dark:text-primary-dark/70'><Clock size={12}/> {timeStr}</p> */}
-            <div className='flex justify-end text-white/60 dark:text-primary-dark/60'>
+            <div className='flex justify-end text-white/60 dark:text-slate-300/70'>
                 {index + 1} / {total}
             </div>
           </div>
           <div className='flex items-center justify-between'>
-            <p className='text-white dark:text-primary-dark'>{current.pair}</p>
-            <p className='text-white dark:text-primary-dark font-medium'>{current.value}</p>
+            <p className='text-white dark:text-slate-100'>{current.pair}</p>
+            <p className='text-white dark:text-slate-100 font-medium'>{current.value}</p>
           </div>
           {current.fee !== null && (
             <div className='flex items-center justify-between'>
-              <p className='text-white dark:text-primary-dark'>Fee</p>
-              <p className='text-white dark:text-primary-dark'>{current.fee} {current.feeCurrency}</p>
+              <p className='text-white dark:text-slate-100'>Fee</p>
+              <p className='text-white dark:text-slate-100'>{current.fee} {current.feeCurrency}</p>
             </div>
           )}          
         </div>

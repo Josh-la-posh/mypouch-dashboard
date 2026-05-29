@@ -56,7 +56,7 @@ const Messages = () => {
     ];
 
     return (
-        <div className='w-full'>
+        <div className='w-full text-slate-800 dark:text-slate-100'>
             <CustomTab
                 TABS={TABS}
                 activeTab={activeTab}
@@ -65,22 +65,22 @@ const Messages = () => {
             >
                 {activeTab === 'message' && (
                     <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-4 dark:text-[#D1D5DB]">
+                        <div className="space-y-4">
                             {[1,2,3,4,5].map(i => (
-                                <div key={i} className="border py-4 px-8 space-y-1">
+                                <div key={i} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-4 px-8 space-y-1 rounded-lg">
                                     <p className="font-[600]">There is a suspicious attempt on this account</p>
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-2">
                                             <div className="h-2 w-2 bg-red-500 rounded-full"></div>
-                                            <p>10:00AM</p>
+                                            <p className="text-slate-500 dark:text-slate-400">10:00AM</p>
                                         </div>
                                         <TextButton className='px-3 py-1 border rounded-sm'>View</TextButton>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="text-primary dark:text-[#D1D5DB] space-y-6 px-2 md:px-10 pt-10">
-                            <User size='32px' />
+                        <div className="text-slate-700 dark:text-slate-200 space-y-6 px-2 md:px-10 pt-10">
+                            <User size='32px' className="text-primary dark:text-slate-300" />
                             <div>
                                 <p className="font-[600]">Bankole Isaac</p>
                                 <div className="flex flex-wrap items-center gap-6">
@@ -107,9 +107,9 @@ const Messages = () => {
                             onChange={(e) => setBroadcastTitle(e.target.value)}
                         />
                         <div className='flex flex-col gap-2'>
-                            <label className='text-sm font-[600] text-black/70 dark:text-white'>Body</label>
+                            <label className='text-sm font-[600] text-slate-700 dark:text-slate-200'>Body</label>
                             <textarea
-                                className='min-h-[160px] text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary'
+                                className='min-h-[160px] text-xs lg:text-sm text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary'
                                 placeholder='Type broadcast content'
                                 value={broadcastBody}
                                 onChange={(e) => setBroadcastBody(e.target.value)}
@@ -152,7 +152,7 @@ const Messages = () => {
                         </div>
 
                         {/* Create New FAQ */}
-                        <div className='space-y-4 border rounded-sm p-4 bg-primary/10'>
+                        <div className='space-y-4 border border-slate-300 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-900/40'>
                             <p className='text-sm font-semibold'>Create FAQ</p>
                             <InputField
                                 id='newFaqTitle'
@@ -162,9 +162,9 @@ const Messages = () => {
                                 onChange={(e) => setNewFaqTitle(e.target.value)}
                             />
                             <div className='flex flex-col gap-2'>
-                                <label className='text-sm font-[600] text-black/70 dark:text-white'>Content</label>
+                                <label className='text-sm font-[600] text-slate-700 dark:text-slate-200'>Content</label>
                                 <textarea
-                                    className='min-h-[120px] text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary'
+                                    className='min-h-[120px] text-xs lg:text-sm text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary'
                                     placeholder='Enter FAQ content'
                                     value={newFaqContent}
                                     onChange={(e) => setNewFaqContent(e.target.value)}
@@ -199,7 +199,7 @@ const Messages = () => {
                         <div className='space-y-4'>
                             {faqLoading && <p className='text-xs'>Loading FAQs...</p>}
                             {faqList.filter(item => item.title.toLowerCase().includes(faqSearch.toLowerCase())).map(item => (
-                                <div key={item.id} className='border rounded-sm px-4 py-3 bg-primary/10 space-y-2'>
+                                <div key={item.id} className='border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 bg-slate-50 dark:bg-slate-900/40 space-y-2'>
                                     {editingFaqId === item.id ? (
                                         <>
                                             <InputField
@@ -209,9 +209,9 @@ const Messages = () => {
                                                 onChange={(e) => setEditingTitle(e.target.value)}
                                             />
                                             <div className='flex flex-col gap-2'>
-                                                <label className='text-sm font-[600] text-black/70 dark:text-white'>Content</label>
+                                                <label className='text-sm font-[600] text-slate-700 dark:text-slate-200'>Content</label>
                                                 <textarea
-                                                    className='min-h-[100px] text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary'
+                                                    className='min-h-[100px] text-xs lg:text-sm text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary'
                                                     value={editingContent}
                                                     onChange={(e) => setEditingContent(e.target.value)}
                                                 />
@@ -248,9 +248,9 @@ const Messages = () => {
                                         <>
                                             <div className='flex items-center justify-between'>
                                                 <p className='text-sm font-semibold'>{item.title}</p>
-                                                <span className={`text-[10px] px-2 py-1 rounded-sm font-semibold ${item.isActive ? 'bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300' : 'bg-gray-200 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300'}`}>{item.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
+                                                <span className={`text-xs px-2 py-1 rounded-sm font-semibold ${item.isActive ? 'bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300' : 'bg-gray-200 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300'}`}>{item.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
                                             </div>
-                                            <p className='text-xs mt-1 text-black/70 dark:text-white/70 whitespace-pre-line'>{item.content}</p>
+                                            <p className='text-xs mt-1 text-slate-600 dark:text-slate-300 whitespace-pre-line'>{item.content}</p>
                                             <div className='flex gap-4 pt-2'>
                                                 <TextButton
                                                     className='px-3 py-1 border rounded-sm'
@@ -276,7 +276,7 @@ const Messages = () => {
                                 </div>
                             ))}
                             {faqList.filter(item => item.title.toLowerCase().includes(faqSearch.toLowerCase())).length === 0 && !faqLoading && (
-                                <p className='text-xs'>No matching FAQ found.</p>
+                                <p className='text-xs text-slate-500 dark:text-slate-400'>No matching FAQ found.</p>
                             )}
                         </div>
                     </div>

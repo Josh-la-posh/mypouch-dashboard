@@ -25,34 +25,34 @@ const Header = ({ toggleSidebar }) => {
   }
 
   return (
-    <header className="flex items-center text-black dark:text-white">
-      <div className='flex-1 md:flex-0 flex items-center justify-start md:justify-center gap-4 w-auto lg:w-48 px-4 lg:px-0'>
-        <div className='w-12 h-12 text-primary font-[700]'><img src="/pouchLogo.svg" alt="Logo" /></div>
-        <div className='text-lg font-semibold ml-3 hidden sm:block'>{appTitle ?? ''}</div>
+    <header className="h-[72px] sticky top-0 z-40 px-3 md:px-4 backdrop-blur bg-white/75 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800 flex items-center text-slate-900 dark:text-white">
+      <div className='flex-1 md:flex-0 flex items-center justify-start md:justify-center gap-3 w-auto lg:w-[250px]'>
+        <div className='w-11 h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5'><img src="/pouchLogo.svg" alt="Pouch logo" /></div>
+        <div className='text-base md:text-lg font-semibold hidden sm:block'>{appTitle ?? ''}</div>
       </div>
-      <div className="px-3 flex-2 md:flex-grow flex justify-between items-center">
-        <div className="text-xs hidden md:block">{currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}</div>
-        <div className="flex gap-6 border-x border-[#664c89] px-6 md:px-12">
-          <div className="relative">
-            <Mail size='15px' />
-            <div className="absolute top-[-5px] right-[-5px] h-3 w-3 text-[7px] text-white bg-red-700 rounded-full flex justify-center items-center">1</div>
+      <div className="px-1 sm:px-2 flex-2 md:flex-grow flex justify-between items-center">
+        <div className="text-xs text-slate-600 dark:text-slate-300 hidden md:block">{currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}</div>
+        <div className="flex gap-5 border-x border-slate-300 dark:border-slate-700 px-4 md:px-8">
+          <div className="relative text-slate-600 dark:text-slate-200">
+            <Mail size='16px' />
+            <div className="absolute top-[-6px] right-[-6px] h-4 min-w-4 px-0.5 text-[10px] leading-none text-white bg-red-600 rounded-full flex justify-center items-center">1</div>
           </div>
-          <div className="relative">
-            <Bell size='15px' />
-            <div className="absolute top-[-5px] right-[-5px] h-3 w-3 text-[7px] text-white bg-red-700 rounded-full flex justify-center items-center">1</div>
+          <div className="relative text-slate-600 dark:text-slate-200">
+            <Bell size='16px' />
+            <div className="absolute top-[-6px] right-[-6px] h-4 min-w-4 px-0.5 text-[10px] leading-none text-white bg-red-600 rounded-full flex justify-center items-center">1</div>
           </div>
         </div>
         <div className="">
           <div className="hidden lg:flex items-center gap-5">
             
-            <button onClick={handleLogout} className='flex items-center gap-2 text-sm'>
+            <button onClick={handleLogout} className='flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors'>
               <LogOut size='14px'/>
               <span>Logout</span>
             </button>
           </div>
           {/* Hamburger menu for mobile */}
           <button 
-            className="lg:hidden p-2" 
+            className="lg:hidden p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
           >

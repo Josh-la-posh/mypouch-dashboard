@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import useTitle from '../../../../services/hooks/useTitle';
 import useSettingsTitle from '../../../../services/hooks/useSettitngsTitle';
 import { useDispatch, useSelector } from 'react-redux';
@@ -230,7 +230,7 @@ function PouchWallet() {
     setNewProviderType('');
   }
 
-  const cardColor = 'bg-[#F1F8FF]';
+  const cardColor = 'bg-[#F1F8FF] dark:bg-slate-800';
 
   // Normalize manual funding provider options to avoid React attempting to render object directly
   const manualFundingProviderOptions = useMemo(() => {
@@ -275,7 +275,7 @@ function PouchWallet() {
   };
 
   return (
-    <div className='w-full'>
+    <div className='w-full text-slate-800 dark:text-slate-100'>
       <CustomTab
         TABS={TABS}
         activeTab={activeTab}
@@ -293,7 +293,7 @@ function PouchWallet() {
                 <div key={cur.id} className="w-full flex-1">
                   <Card
                     icon={cur?.currency}
-                    iconClassName='w-5 md:w-8 h-5 md:h-8 text-[7px] md:text-[9px] font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
+                    iconClassName='w-5 md:w-8 h-5 md:h-8 text-xs md:text-sm font-[700] rounded-full flex items-center justify-center bg-[#D0CDE1]/30'
                     className='w-full'
                     amount={formatAmount(cur?.balance)}
                     name='Total balance'
@@ -355,7 +355,7 @@ function PouchWallet() {
 
         {/* Add Wallet Tab */}
         {activeTab === 'add-wallet' && (
-          <div className="w-full flex justify-center pt-10 border-t border-app-bg dark:border-[#20263D]">
+          <div className="w-full flex justify-center pt-10 border-t border-slate-200 dark:border-slate-700">
             <div className="max-w-[350px] space-y-5">
               <p className='text-primary dark:text-white text-sm sm:text-lg text-center'>Add all available currencies with just a click on the button below</p>
               <div className="flex justify-center">
@@ -375,7 +375,7 @@ function PouchWallet() {
 
         {/* Fund Wallet Tab */}
         {activeTab === 'fund-wallet' && (
-          <div className="w-full space-y-8 pt-6 border-t border-app-bg dark:border-[#20263D]">
+          <div className="w-full space-y-8 pt-6 border-t border-slate-200 dark:border-slate-700">
             {!isGottenLink ? (
               <div className='space-y-6 max-w-[650px]'>
                 {/* Funding mode dropdown */}
@@ -394,16 +394,16 @@ function PouchWallet() {
                     {/* Direct funding type list */}
                     <div className='space-y-2'>
                       <p className='text-xs font-semibold text-primary dark:text-white'>Direct Funding</p>
-                      <div className='space-y-3 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                      <div className='space-y-3 bg-primary/10 dark:bg-slate-900/60 p-4 rounded-sm border border-primary/20 dark:border-slate-700'>
                         {['naira', 'foreign'].map((ftype) => (
                           <button
                             key={ftype}
                             type='button'
                             onClick={() => setDirectFundingType(ftype)}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${directFundingType === ftype ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'}`}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${directFundingType === ftype ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white border-slate-300 dark:border-slate-700 hover:border-primary'}`}
                           >
                             <span className='flex items-center gap-2'>
-                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>â‚¦</span>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-primary/80 text-white'>N</span>
                               {ftype === 'naira' ? 'Naira Funding' : 'Foreign Funding'}
                             </span>
                             {directFundingType === ftype && <Check size={16} className='text-white' />}
@@ -415,16 +415,16 @@ function PouchWallet() {
                     {/* Provider selection when Naira or Foreign chosen */}
                     <div className='space-y-2'>
                       <p className='text-xs font-semibold text-primary dark:text-white capitalize'>{directFundingType} providers</p>
-                      <div className='space-y-3 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                      <div className='space-y-3 bg-primary/10 dark:bg-slate-900/60 p-4 rounded-sm border border-primary/20 dark:border-slate-700'>
                         {(directFundingType === 'naira' ? ['Paystack', 'Flutterwave'] : ['Stripe (Coming Soon)']).map((prov) => (
                           <button
                             key={prov}
                             type='button'
                             onClick={() => prov.includes('Coming') ? null : setProvider(prov)}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${provider === prov ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#20263D] text-black dark:text-white border-gray-300 hover:border-primary'} ${prov.includes('Coming') ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-sm text-left text-sm font-semibold shadow-sm border transition-colors ${provider === prov ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white border-slate-300 dark:border-slate-700 hover:border-primary'} ${prov.includes('Coming') ? 'opacity-60 cursor-not-allowed' : ''}`}
                           >
                             <span className='flex items-center gap-2'>
-                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-primary/80 text-white'>â—Ž</span>
+                              <span className='w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-primary/80 text-white'>P</span>
                               {prov}
                             </span>
                             {provider === prov && !prov.includes('Coming') && <Check size={16} className='text-white' />}
@@ -462,9 +462,9 @@ function PouchWallet() {
                 )}
 
                 {fundMode === 'manual' && (
-                  <div className='space-y-6 bg-primary/10 p-4 rounded-sm border border-primary/20'>
+                  <div className='space-y-6 bg-primary/10 dark:bg-slate-900/60 p-4 rounded-sm border border-primary/20 dark:border-slate-700'>
                     <p className='text-sm text-primary dark:text-white font-semibold'>Manual Funding</p>
-                    <p className='text-[11px] text-black/70 dark:text-white/70'>Initiate a manual funding request. Operations team will verify and credit after proof review.</p>
+                    <p className='text-xs text-black/70 dark:text-white/70'>Initiate a manual funding request. Operations team will verify and credit after proof review.</p>
                     <div className='grid sm:grid-cols-2 gap-4'>
                       <SelectField
                         label='Provider'
@@ -510,7 +510,7 @@ function PouchWallet() {
 
         {/* Provider Tab */}
         {activeTab === 'provider' && (
-          <div className='pt-6 border-t border-app-bg dark:border-[#20263D] space-y-6 max-w-[900px]'>
+          <div className='pt-6 border-t border-slate-200 dark:border-slate-700 space-y-6 max-w-[900px]'>
             <div className='grid sm:grid-cols-2 gap-4'>
               <Button variant={providerSubTab === 'payout-provider' ? 'primary' : 'secondary'} className='text-xs' onClick={() => setProviderSubTab('payout-provider')}>
                 Payout Providers
@@ -524,25 +524,25 @@ function PouchWallet() {
                 <div className='flex justify-between items-center'>
                   <p className='text-sm text-primary dark:text-white font-semibold'>Payout Providers</p>
                   <div className="w-fit">
-                    <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
+                    <Button variant='secondary' className='text-xs' onClick={()=> adminService.fetchProviderRegionsAndGateways(dispatch)}>Refresh</Button>
                   </div>
                 </div>
                 {providersLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
                 {providersError && <ErrorLayout errMsg={providersError} handleRefresh={()=> adminService.fetchProviderRegionsAndGateways(dispatch)} />}
                 {!providersLoading && !providersError && providers.length === 0 && (
-                  <div className='space-y-4 border border-dashed border-primary/40 p-4 rounded-sm'>
-                    <p className='text-xs text-black/70 dark:text-white/70'>No providers set up yet. Create the first one below.</p>
+                  <div className='space-y-4 border border-dashed border-primary/40 dark:border-slate-700 p-4 rounded-sm bg-white dark:bg-slate-900'>
+                    <p className='text-xs text-slate-600 dark:text-slate-300'>No providers set up yet. Create the first one below.</p>
                     <div className='grid sm:grid-cols-2 gap-4'>
                       <div className='space-y-1'>
-                        <p className='text-[10px] font-semibold'>Payment Gateway</p>
-                        <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                        <p className='text-xs font-semibold'>Payment Gateway</p>
+                        <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-sm px-2 py-1 text-xs w-full'>
                           <option value=''>Select gateway</option>
                           {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
                         </select>
                       </div>
                       <div className='space-y-1'>
-                        <p className='text-[10px] font-semibold'>Type</p>
-                        <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                        <p className='text-xs font-semibold'>Type</p>
+                        <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-sm px-2 py-1 text-xs w-full'>
                           <option value=''>Select type</option>
                           {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
                         </select>
@@ -557,10 +557,10 @@ function PouchWallet() {
                   <div className='space-y-5'>
                     <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
                       {providers.map(p => (
-                        <div key={p.id || p.paymentGateway} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-[11px]'>
+                        <div key={p.id || p.paymentGateway} className='p-4 border border-gray-300 dark:border-gray-600 rounded-sm flex flex-col gap-2 text-xs'>
                           <div className='flex justify-between items-center'>
                             <span className='font-semibold'>{p.paymentGateway}</span>
-                            <span className='text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{(p.status || 'active').toLowerCase().includes('pending') ? 'Pending' : 'Active'}</span>
+                            <span className='text-xs px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300'>{(p.status || 'active').toLowerCase().includes('pending') ? 'Pending' : 'Active'}</span>
                           </div>
                           <div className='flex justify-between'>
                             <span className='text-gray-500'>Type:</span>
@@ -573,19 +573,19 @@ function PouchWallet() {
                         </div>
                       ))}
                     </div>
-                    <div className='border border-primary/30 rounded-sm p-4 space-y-3'>
+                    <div className='border border-primary/30 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-sm p-4 space-y-3'>
                       <p className='text-xs font-semibold'>Add Another Provider</p>
                       <div className='grid sm:grid-cols-2 gap-4'>
                         <div className='space-y-1'>
-                          <p className='text-[10px] font-semibold'>Payment Gateway</p>
-                          <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                          <p className='text-xs font-semibold'>Payment Gateway</p>
+                          <select value={newProviderGateway} onChange={e=>setNewProviderGateway(e.target.value)} className='border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-sm px-2 py-1 text-xs w-full'>
                             <option value=''>Select gateway</option>
                             {providerGateways.map(g=> <option key={g} value={g}>{g}</option>)}
                           </select>
                         </div>
                         <div className='space-y-1'>
-                          <p className='text-[10px] font-semibold'>Type</p>
-                          <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border rounded-sm px-2 py-1 text-[11px] w-full'>
+                          <p className='text-xs font-semibold'>Type</p>
+                          <select value={newProviderType} onChange={e=>setNewProviderType(e.target.value)} className='border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-sm px-2 py-1 text-xs w-full'>
                             <option value=''>Select type</option>
                             {providerRegions.map(r=> <option key={r} value={r}>{r}</option>)}
                           </select>
@@ -594,7 +594,7 @@ function PouchWallet() {
                       <Button onClick={handleCreateProvider} disabled={isCreatingProvider} variant='primary' className='text-xs'>
                         {isCreatingProvider ? 'Creating...' : 'Add Provider'}
                       </Button>
-                      {isCreatingProvider && <p className='text-[10px] text-gray-500'>Please wait...</p>}
+                      {isCreatingProvider && <p className='text-xs text-slate-500 dark:text-slate-400'>Please wait...</p>}
                     </div>
                   </div>
                 )}
@@ -605,13 +605,13 @@ function PouchWallet() {
                 <div className='flex justify-between items-center'>
                   <p className='text-sm text-primary dark:text-white font-semibold'>Card Payment</p>
                   <div className="w-fit">
-                    <Button variant='secondary' className='text-[10px]' onClick={()=> adminService.fetchCardPaymentSettings(dispatch)}>Refresh</Button>
+                    <Button variant='secondary' className='text-xs' onClick={()=> adminService.fetchCardPaymentSettings(dispatch)}>Refresh</Button>
                   </div>
                 </div>
                 {cardPaymentSettingsLoading && <div className='py-8 flex justify-center'><Spinner /></div>}
                 {cardPaymentSettingsError && <ErrorLayout errMsg={cardPaymentSettingsError} handleRefresh={()=> adminService.fetchCardPaymentSettings(dispatch)} />}
                 {!cardPaymentSettingsLoading && !cardPaymentSettingsError && cardPaymentSettings && (
-                  <div className='space-y-4 border border-gray-300 dark:border-gray-600 rounded-sm p-6 bg-primary/5'>
+                  <div className='space-y-4 border border-slate-300 dark:border-slate-700 rounded-sm p-6 bg-primary/5 dark:bg-slate-900/60'>
                     <div className='flex justify-between text-sm border border-primary/40 py-2 px-4 rounded-sm'>
                       <p className='font-semibold'>Card Payment</p>
                       <p className={cardPaymentSettings.allowCardPayment ? 'text-green-500 font-semibold' : 'text-red-500 font-semibold'}>
@@ -645,63 +645,63 @@ function PouchWallet() {
             <p className="text-sm">Amount</p>
             <p className="text-lg font-semibold">{selectedTransaction.transactionType === 'Debit' ? selectedTransaction.debitedCurrency : selectedTransaction.creditedCurrency} {formatAmount(selectedTransaction.amount)}</p>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Type</p>
             <p>{selectedTransaction.transactionType}</p>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Status</p>
             <div className="flex items-center gap-1">
               <div className={`w-2 h-2 rounded-full ${selectedTransaction.status === 'Successful' ? 'bg-green-600' : selectedTransaction.status === 'Pending' ? 'bg-yellow-600' : 'bg-black'}`}></div>
               <p>{selectedTransaction.status}</p>
             </div>
           </div>
-          <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Transaction Id</p>
             <p className="text-xs">{selectedTransaction.transactionId}</p>
           </div>
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Date</p>
               <p>{dateFormatter(selectedTransaction.createdDate)}</p>
             </div>
           {selectedTransaction.buyerCreditedWallet && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Buyer Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerCreditedWallet}</p>
             </div>
           )}
           {selectedTransaction.buyerDebitedWallet && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Buyer Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.buyerDebitedWallet}</p>
             </div>
           )}
           {selectedTransaction.creditedCurrency && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Credited Currency</p>
               <p>{selectedTransaction.creditedCurrency}</p>
             </div>
           )}
           {selectedTransaction.creditedWallet && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Credited Wallet</p>
               <p className="text-xs">{selectedTransaction.creditedWallet}</p>
             </div>
           )}
           {selectedTransaction.debitedAmount && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Debited Amount</p>
               <p>{selectedTransaction.debitedCurrency}{formatAmount(selectedTransaction.debitedAmount)}</p>
             </div>
           )}
           {selectedTransaction.debitWallet && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Debited Wallet</p>
               <p className="text-xs">{selectedTransaction.debitedWallet}</p>
             </div>
           )}
           {selectedTransaction.rateDescription && (
-            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
               <p>Rate</p>
               <p>{selectedTransaction.rateDescription}</p>
             </div>
@@ -718,7 +718,7 @@ function PouchWallet() {
               <p className="text-xs">{selectedTransaction.sellerDebitedWallet}</p>
             </div>
           )}
-          <div className="text-center text-sm border border-gray-300 py-2 px-4 rounded-sm">
+          <div className="text-center text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
             <p>Description</p>
             <p>{selectedTransaction.description}</p>
           </div>

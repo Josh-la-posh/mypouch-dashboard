@@ -46,7 +46,7 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className={`w-full pr-10 text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-700 placeholder:dark:text-white/40 ${inputClassName}`}
+          className={`w-full pr-10 text-xs lg:text-sm text-slate-700 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-xs md:placeholder:text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 ${inputClassName}`}
         />
         {isPassword && showToggle && (
           <button

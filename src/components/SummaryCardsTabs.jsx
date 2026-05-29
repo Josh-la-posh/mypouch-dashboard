@@ -99,7 +99,7 @@ const SummaryCardsTabs = () => {
           {loading && <Spinner />}
           {error && <ErrorLayout errMsg={error} handleRefresh={onRefreshUserStat} />}
           {!loading && !error && (
-            <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
+            <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-3'>
               <Card
                 icon={<Loader size='22px' />}
                 amount={formatAmount(totalUsers?.statuses?.active?.current)}
@@ -138,7 +138,7 @@ const SummaryCardsTabs = () => {
           {totalWalletBalanceLoading && <Spinner />}
           {totalWalletBalanceError && <ErrorLayout errMsg={totalWalletBalanceError} handleRefresh={onRefreshTotalWalletBalance} />}
           {!totalWalletBalanceLoading && !totalWalletBalanceError && totalWalletBalance?.totals?.length > 0 && (
-            <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
+            <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-3'>
               {totalWalletBalance.totals.map((item) => (
                 <Card
                   key={item.currency}
@@ -164,14 +164,14 @@ const SummaryCardsTabs = () => {
                 <select
                   value={userBalanceMetric}
                   onChange={(e) => setUserBalanceMetric(e.target.value)}
-                  className='text-xs border border-gray-300 rounded-sm px-2 py-1 bg-white dark:bg-transparent dark:text-white'
+                  className='text-xs border border-slate-300 rounded-lg px-3 py-2 bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white'
                 >
                   {balanceMetricOptions.map(opt => (
                     <option key={opt} value={opt}>{balanceMetricLabels[opt]}</option>
                   ))}
                 </select>
               </div>
-              <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
+              <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-3'>
                 {userBalance.totals.map(item => {
                   const metricValue = item[userBalanceMetric] ?? 0;
                   return (
@@ -201,14 +201,14 @@ const SummaryCardsTabs = () => {
                 <select
                   value={pouchBalanceMetric}
                   onChange={(e) => setPouchBalanceMetric(e.target.value)}
-                  className='text-xs border border-gray-300 rounded-sm px-2 py-1 bg-white dark:bg-transparent dark:text-white'
+                  className='text-xs border border-slate-300 rounded-lg px-3 py-2 bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white'
                 >
                   {pouchMetricOptions.map(opt => (
                     <option key={opt} value={opt}>{pouchMetricLabels[opt]}</option>
                   ))}
                 </select>
               </div>
-              <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-3 overflow-x-scroll scrollbar-none'>
+              <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-3'>
                 {pouchBalance.map(wallet => {
                   const rawValue = wallet[pouchBalanceMetric] ?? 0;
                   const numericValue = typeof rawValue === 'string' ? Number(rawValue) : rawValue;

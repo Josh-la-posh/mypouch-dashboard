@@ -8,6 +8,17 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          reactVendor: ['react', 'react-dom', 'react-router-dom'],
+          reduxVendor: ['react-redux', '@reduxjs/toolkit'],
+          uiVendor: ['lucide-react', 'react-toastify']
+        }
+      }
+    }
+  },
   css: {
     postcss: {
       plugins: [

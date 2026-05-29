@@ -61,8 +61,8 @@ const UserIdVerification = ({ id }) => {
   const statusSuccessful = /validated|success|approved/i.test(resultText || '') || resultCode === '1012';
   const statusColor = statusSuccessful ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
 
-  const labelClass = 'text-[10px] uppercase tracking-wide font-semibold opacity-70';
-  const valueClass = 'text-xs font-medium break-words';
+  const labelClass = 'text-xs uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400';
+  const valueClass = 'text-sm font-medium break-words text-slate-800 dark:text-slate-100';
   const renderCell = (label, value) => (
     <div className="space-y-1">
       <p className={labelClass}>{label}</p>
@@ -71,17 +71,17 @@ const UserIdVerification = ({ id }) => {
   );
 
   return (
-    <div className="space-y-6 pt-4">
+    <div className="space-y-6 pt-4 text-slate-800 dark:text-slate-100">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Identity Verification</h2>
-        <button onClick={onRefresh} className="text-[11px] underline">Refresh</button>
+        <button onClick={onRefresh} className="text-xs underline text-primary hover:text-primary-dark dark:hover:text-slate-200">Refresh</button>
       </div>
       <div className={`rounded-md px-4 py-3 text-xs font-semibold inline-block ${statusColor}`}>
         {resultText || 'Verification Status Unknown'}
       </div>
 
       {/* Identity */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
         {renderCell('Full Name', fullName)}
         {renderCell('ID Number', idNumber)}
         {renderCell('ID Type', idType)}
@@ -91,14 +91,14 @@ const UserIdVerification = ({ id }) => {
       </div>
 
       {/* Document */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
         {renderCell('Issuance Date', issuanceDate ? dateFormatter(issuanceDate) : null)}
         {renderCell('Expiration Date', expirationDate ? dateFormatter(expirationDate) : 'Not Provided')}
         {renderCell('Address', address)}
       </div>
 
       {/* Images */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
         <div className="space-y-2">
           <p className={labelClass}>ID Document Photo</p>
           {idPhotoImage ? (
@@ -106,12 +106,12 @@ const UserIdVerification = ({ id }) => {
               <img
                 src={idPhotoImage}
                 alt="ID"
-                className="rounded-md shadow-sm border w-full object-cover cursor-pointer"
+                className="rounded-md shadow-sm border border-slate-200 dark:border-slate-700 w-full object-cover cursor-pointer"
                 onClick={() => setShowPhoto(true)}
               />
-              <p className="text-[10px] mt-1 opacity-60">Click to enlarge</p>
+              <p className="text-xs mt-1 text-slate-500 dark:text-slate-400">Click to enlarge</p>
             </div>
-          ) : <p className="text-[11px] italic">No ID image</p>}
+          ) : <p className="text-xs italic text-slate-500 dark:text-slate-400">No ID image</p>}
         </div>
         <div className="space-y-2">
           <p className={labelClass}>Selfie Image</p>
@@ -120,24 +120,24 @@ const UserIdVerification = ({ id }) => {
               <img
                 src={idSelfieImage}
                 alt="Selfie"
-                className="rounded-md shadow-sm border w-full object-cover cursor-pointer"
+                className="rounded-md shadow-sm border border-slate-200 dark:border-slate-700 w-full object-cover cursor-pointer"
                 onClick={() => setShowSelfie(true)}
               />
-              <p className="text-[10px] mt-1 opacity-60">Click to enlarge</p>
+              <p className="text-xs mt-1 text-slate-500 dark:text-slate-400">Click to enlarge</p>
             </div>
-          ) : <p className="text-[11px] italic">No selfie image</p>}
+          ) : <p className="text-xs italic text-slate-500 dark:text-slate-400">No selfie image</p>}
         </div>
       </div>
 
       {/* Meta */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
         {renderCell('Result Code', resultCode)}
         {renderCell('Smile Job ID', smileJobID)}
         {renderCell('Job ID', jobId)}
       </div>
 
       {/* Timestamps */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
         {renderCell('Timestamp', timestamp ? dateAndTimeFormatter(timestamp) : null)}
         {renderCell('Created Date', createdDate ? dateAndTimeFormatter(createdDate) : null)}
         {renderCell('Last Modified', lastModifiedDate ? dateAndTimeFormatter(lastModifiedDate) : null)}

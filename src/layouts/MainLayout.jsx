@@ -12,27 +12,27 @@ const MainLayout = () => {
 
     return (
         <TitleProvider>
-            <div className="h-screen overflow-hidden scrollbar-none bg-app-bg dark:bg-[#20263D]">
+            <div className="h-screen overflow-hidden scrollbar-none bg-app-bg dark:bg-slate-950">
                 <Header className="border-b border-gray-200" toggleSidebar={toggleSidebar} />
-                <div className="h-[90%] flex relative">
+                <div className="h-[calc(100%-72px)] flex relative px-3 pb-3 md:px-4 md:pb-4">
                     {/* Overlay for mobile */}
                     {sidebarOpen && (
                         <div 
-                            className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
+                            className="fixed inset-0 bg-black/45 backdrop-blur-[1px] z-20 lg:hidden" 
                             onClick={closeSidebar}
                         />
                     )}
                     {/* Sidebar */}
                     <div className={`
                         fixed lg:relative z-30 lg:z-auto
-                        h-full w-48 
+                        h-[calc(100%-90px)] lg:h-full w-[260px] lg:w-[250px]
                         transform transition-transform duration-300 ease-in-out
                         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                     `}>
                         <Sidebar closeSidebar={closeSidebar} />
                     </div>
-                    <div className='grow bg-white dark:bg-[#2C2C3E] transition-all duration-300 rounded-lg p-4 overflow-y-scroll scrollbar-none'>
-                        <main className='h-full w-full overflow-y-scroll scrollbar-none '>
+                    <div className='grow lg:ml-3 bg-white/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 transition-all duration-300 rounded-2xl p-3 md:p-5 overflow-y-scroll scrollbar-none shadow-sm'>
+                        <main className='h-full w-full overflow-y-scroll scrollbar-none'>
                             <Outlet />
                         </main>
                     </div>

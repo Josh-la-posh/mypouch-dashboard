@@ -20,20 +20,20 @@ useEffect(() => {
 }, []);
 
   return (
-    <div className="min-h-screen">
-      <div className="">
-        <h2 className="mb-5 dark:text-white font-[600] text-md md:text-lg">Security</h2>
+    <div className="min-h-[60vh]">
+      <div className="dashboard-panel dark:bg-slate-900 dark:border-slate-700 p-4 md:p-6">
+        <h2 className="mb-5 text-slate-800 dark:text-slate-100 font-[600] text-md md:text-lg">Security</h2>
         <div className="space-y-2">
           <Link
             to='/settings/security/change-password'
-            className='flex justify-between items-center text-sm font-[600] text-black/60 dark:text-white/70 px-4 py-2 border-b border-gray-300 hover:bg-primary hover:text-white'
+            className='flex justify-between items-center text-sm font-[600] text-slate-700 dark:text-slate-200 px-4 py-2 border-b border-slate-200 dark:border-slate-700 hover:bg-primary hover:text-white rounded-lg'
           >
             Change Password
             <ArrowRightIcon size='17px' />
           </Link>
-          <div className="space-y-2 border-b border-gray-300">
+          <div className="space-y-2 border-b border-slate-200 dark:border-slate-700">
             <button
-              className='w-full flex justify-between items-center text-sm font-[600] text-black/60 dark:text-white/70 hover:bg-black/10 px-4 py-2'
+              className='w-full flex justify-between items-center text-sm font-[600] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 px-4 py-2 rounded-lg'
               onClick={() => setIsLogDisplayed(!isLogDisplayed)}
             >
               Audit Logs
@@ -44,14 +44,14 @@ useEffect(() => {
             <div>
               <Link
                 to='/settings/security/login-logs'
-                className='flex justify-between items-center text-sm font-[600] text-black/60 dark:text-white/70 px-4 py-2 hover:bg-primary hover:text-white'
+                className='flex justify-between items-center text-sm font-[600] text-slate-700 dark:text-slate-200 px-4 py-2 hover:bg-primary hover:text-white rounded-lg'
               >
                 Login Logs
                 <ArrowRightIcon size='17px' />
               </Link>
               <Link
                 to='/settings/security/activity-logs'
-                className='flex justify-between items-center text-sm font-[600] text-black/60 dark:text-white/70 px-4 py-2 hover:bg-primary hover:text-white'
+                className='flex justify-between items-center text-sm font-[600] text-slate-700 dark:text-slate-200 px-4 py-2 hover:bg-primary hover:text-white rounded-lg'
               >
                 Activity Logs
                 <ArrowRightIcon size='17px' />

@@ -3,16 +3,16 @@ const CustomModal = ({ isOpen, title, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-3" onClick={onClose}>
       <div
-        className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 h-[95%] overflow-y-auto"
+        className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl max-w-md w-full p-6 h-[95%] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-md text-primary">{title}</h2>
+          <h2 className="text-md text-primary font-semibold">{title}</h2>
           <button
-            className="text-gray-500 text-2xl hover:text-gray-700"
+            className="text-slate-500 dark:text-slate-300 text-2xl hover:text-slate-700 dark:hover:text-white"
             onClick={onClose}
           >
             &times;
@@ -20,7 +20,7 @@ const CustomModal = ({ isOpen, title, onClose, children }) => {
         </div>
 
         {/* Modal Body */}
-        <div className="text-primary">
+        <div className="text-slate-700 dark:text-slate-200">
           {children}
         </div>
       </div>

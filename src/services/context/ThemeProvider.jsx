@@ -3,7 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const getInitialTheme = () => {
+    const stored = localStorage.getItem("theme");
+    if (stored === "light" || stored === "dark") return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  };
+  const [theme, setTheme] = useState(getInitialTheme);
 
   // Apply theme class to <html> tag
   useEffect(() => {
@@ -12,6 +17,7 @@ export const ThemeProvider = ({ children }) => {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    document.documentElement.style.colorScheme = theme;
     localStorage.setItem("theme", theme);
   }, [theme]);
 

@@ -339,7 +339,7 @@ const Transactions = () => {
     };
 
     return (
-        <div className="space-y-16">
+        <div className="space-y-16 text-slate-800 dark:text-slate-100">
             <SummaryCardsTabs />
             <CustomTab
                 TABS={limitTabs}
@@ -375,14 +375,14 @@ const Transactions = () => {
                                         type="date"
                                         value={date}
                                         onChange={handleDateChange}
-                                        className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent"
+                                        className="border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100"
                                 />
                                 <input
                                         type="text"
                                         placeholder="Search transaction id or description"
                                         value={search}
                                         onChange={handleSearchChange}
-                                        className="border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent col-span-2"
+                                        className="border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 col-span-2"
                                 />
                                 <div className="col-span-2 flex gap-1">
                                         <Button onClick={applyFilters} className='text-xs'>Apply</Button>
@@ -412,19 +412,19 @@ const Transactions = () => {
                             <Button variant={limitMode === 'list' ? 'primary' : 'secondary'} className='text-xs' onClick={()=> setLimitMode('list')}>Transaction Limit List</Button>
                         </div>
                         {limitMode === 'setup' && (
-                            <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+                            <div className='space-y-6 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl p-4'>
                                 <div className='grid sm:grid-cols-3 gap-4'>
                                     <div>
-                                        <p className='text-[10px] font-semibold mb-1'>Transaction Type</p>
+                                        <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Transaction Type</p>
                                         <SelectField options={['Credit','Debit']} value={limitTransactionType} onChange={(e)=> setLimitTransactionType(e.target.value)} placeholder='Type' />
                                     </div>
                                     <div>
-                                        <p className='text-[10px] font-semibold mb-1'>Currency Type</p>
+                                        <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Currency Type</p>
                                         <SelectField options={CURRENCIES.filter(c=> c !== 'All')} value={limitCurrency} onChange={(e)=> setLimitCurrency(e.target.value)} placeholder='Currency' />
                                     </div>
                                     <div>
-                                        <p className='text-[10px] font-semibold mb-1'>Date</p>
-                                        <input type='date' value={limitDate} onChange={(e)=> setLimitDate(e.target.value)} className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                                        <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Date</p>
+                                        <input type='date' value={limitDate} onChange={(e)=> setLimitDate(e.target.value)} className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full' />
                                     </div>
                                 </div>
                                 <div className='flex gap-4 justify-center'>
@@ -441,7 +441,7 @@ const Transactions = () => {
                                     <div className="w-full flex justify-center">
                                         <div className='bg-gray-400 w-[200px] md:w-[350px] lg:w-[500px] flex items-center gap-3 py-3 px-5 lg:px-10 rounded-full'>
                                             <span className='text-primary text-sm font-bold'>{progressPercent}%</span>
-                                            <div className='flex-1 h-6 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden'>
+                                            <div className='flex-1 h-6 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
                                                 <div
                                                     className='h-full bg-primary transition-all duration-300'
                                                     style={{ width: `${progressPercent}%` }}
@@ -452,15 +452,15 @@ const Transactions = () => {
                                 </div>
                                 <div className='grid sm:grid-cols-2 gap-4'>
                                     <div>
-                                        <p className='text-[10px] font-semibold mb-1'>Daily Limit Amount</p>
-                                        <input type='text' value={dailyLimitAmount} onChange={(e)=> setDailyLimitAmount(e.target.value)} placeholder='e.g. 5000000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                                        <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Daily Limit Amount</p>
+                                        <input type='text' value={dailyLimitAmount} onChange={(e)=> setDailyLimitAmount(e.target.value)} placeholder='e.g. 5000000' className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full' />
                                     </div>
                                     <div>
-                                        <p className='text-[10px] font-semibold mb-1'>Monthly Limit Amount</p>
-                                        <input type='text' value={monthlyLimitAmount} onChange={(e)=> setMonthlyLimitAmount(e.target.value)} placeholder='e.g. 25000000' className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full' />
+                                        <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Monthly Limit Amount</p>
+                                        <input type='text' value={monthlyLimitAmount} onChange={(e)=> setMonthlyLimitAmount(e.target.value)} placeholder='e.g. 25000000' className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full' />
                                     </div>
                                 </div>
-                                {createLimitError && <p className='text-[11px] text-red-500'>{createLimitError}</p>}
+                                {createLimitError && <p className='text-xs text-red-500'>{createLimitError}</p>}
                                 <div className='w-[180px]'>
                                     <Button variant='primary' disabled={isCreatingLimit} onClick={handleCreateLimit} className='text-xs w-full'>
                                         {isCreatingLimit ? 'Creating...' : 'Confirm'}
@@ -503,11 +503,11 @@ const Transactions = () => {
                 )}
                 {activeSubTab === 'transaction-fee' && (
                     <div className='space-y-6 mt-5'>
-                        <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+                        <div className='space-y-6 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl p-4'>
                             <p className='text-sm font-semibold'>Set / Update Transaction Fee</p>
                             <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Currency</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Currency</p>
                                     <SelectField
                                         options={CURRENCIES.filter(c => c !== 'All')}
                                         value={feeCurrency}
@@ -516,7 +516,7 @@ const Transactions = () => {
                                     />
                                 </div>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Transaction Type</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Transaction Type</p>
                                     <SelectField
                                         options={['funding', 'payout']}
                                         value={feeTransactionType}
@@ -525,7 +525,7 @@ const Transactions = () => {
                                     />
                                 </div>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Fee Type</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Fee Type</p>
                                     <SelectField
                                         options={['percentage', 'flat']}
                                         value={feeType}
@@ -534,7 +534,7 @@ const Transactions = () => {
                                     />
                                 </div>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Fee Amount</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Fee Amount</p>
                                     <input
                                         type='number'
                                         min='0'
@@ -542,7 +542,7 @@ const Transactions = () => {
                                         value={feeAmount}
                                         onChange={(e) => setFeeAmount(e.target.value)}
                                         placeholder='e.g. 0.5'
-                                        className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full'
+                                        className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full'
                                     />
                                 </div>
                             </div>
@@ -558,7 +558,7 @@ const Transactions = () => {
                                     Existing fee found for {feeCurrency} / {feeTransactionType}. Saving will update it.
                                 </div>
                             )}
-                            {saveTransactionFeeError && <p className='text-[11px] text-red-500'>{saveTransactionFeeError}</p>}
+                            {saveTransactionFeeError && <p className='text-xs text-red-500'>{saveTransactionFeeError}</p>}
                             <div className='w-[180px]'>
                                 <Button
                                     variant='primary'
@@ -604,11 +604,11 @@ const Transactions = () => {
                 )}
                 {activeSubTab === 'exchange-fee' && (
                     <div className='space-y-6 mt-5'>
-                        <div className='space-y-6 border border-gray-300 dark:border-gray-600 rounded-sm p-4'>
+                        <div className='space-y-6 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl p-4'>
                             <p className='text-sm font-semibold'>Set / Update Exchange Fee</p>
                             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Currency Type</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Currency Type</p>
                                     <SelectField
                                         options={['ngn', 'fcy']}
                                         value={exchangeCurrencyType}
@@ -617,7 +617,7 @@ const Transactions = () => {
                                     />
                                 </div>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Fee Type</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Fee Type</p>
                                     <SelectField
                                         options={['percentage', 'flat']}
                                         value={exchangeFeeType}
@@ -626,7 +626,7 @@ const Transactions = () => {
                                     />
                                 </div>
                                 <div>
-                                    <p className='text-[10px] font-semibold mb-1'>Fee Amount</p>
+                                    <p className='text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300'>Fee Amount</p>
                                     <input
                                         type='number'
                                         min='0'
@@ -634,7 +634,7 @@ const Transactions = () => {
                                         value={exchangeFeeAmount}
                                         onChange={(e) => setExchangeFeeAmount(e.target.value)}
                                         placeholder='e.g. 0.5'
-                                        className='border text-xs px-3 py-2 rounded-sm outline-none dark:bg-transparent w-full'
+                                        className='border border-slate-300 dark:border-slate-700 text-xs px-3 py-2 rounded-lg outline-none bg-white dark:bg-slate-900 dark:text-slate-100 w-full'
                                     />
                                 </div>
                             </div>
@@ -650,7 +650,7 @@ const Transactions = () => {
                                     Existing exchange fee found for {exchangeCurrencyType.toUpperCase()}. Saving will update it.
                                 </div>
                             )}
-                            {saveExchangeFeeError && <p className='text-[11px] text-red-500'>{saveExchangeFeeError}</p>}
+                            {saveExchangeFeeError && <p className='text-xs text-red-500'>{saveExchangeFeeError}</p>}
                             <div className='w-[180px]'>
                                 <Button
                                     variant='primary'
@@ -702,21 +702,21 @@ const Transactions = () => {
                     </div>
                     {selectedTransaction?.user && (
                         <div className="space-y-6">
-                            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                                 <p>Username</p>
                                 <p>{selectedTransaction?.user?.userName}</p>
                             </div>
-                            <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                            <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                                 <p>Email</p>
                                 <p>{selectedTransaction?.user?.email}</p>
                             </div>
                         </div>
                     )}
-                    <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                         <p>Transaction Type</p>
                         <p>{selectedTransaction.transactionType}</p>
                     </div>
-                    <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                         <p>Transaction Status</p>
                         <div className="flex items-center gap-1">
                             <div 
@@ -725,69 +725,69 @@ const Transactions = () => {
                             <p>{selectedTransaction.status}</p>
                         </div>
                     </div>
-                    <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                         <p>Transaction Id</p>
                         <p className="text-xs">{selectedTransaction.transactionId}</p>
                     </div>
-                    <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                         <p>Date</p>
                         <p>{dateFormatter(selectedTransaction.createdDate)}</p>
                     </div>
                     { selectedTransaction.buyerCreditedWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Buyer Credited Wallet</p>
                             <p className="text-xs">{selectedTransaction.buyerCreditedWallet}</p>
                         </div>
                     }
                     { selectedTransaction.buyerDebitedWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Buyer Debited Wallet</p>
                             <p className="text-xs">{selectedTransaction.buyerDebitedWallet}</p>
                         </div>
                     }
                     { selectedTransaction.creditedCurrency &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Credited Currency</p>
                             <p>{selectedTransaction.creditedCurrency}</p>
                         </div>
                     }
                     { selectedTransaction.creditedWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Credited Wallet</p>
                             <p className="text-xs">{selectedTransaction.creditedWallet}</p>
                         </div>
                     }
                     { selectedTransaction.debitedAmount &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Debited Amount</p>
                             <p>{selectedTransaction.debitedCurrency} {formatAmount(selectedTransaction.debitedAmount)}</p>
                         </div>
                     }
                     { selectedTransaction.debitWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Debited Wallet</p>
                             <p className="text-xs">{selectedTransaction.debitedWallet}</p>
                         </div>
                     }
                     { selectedTransaction.rateDescription &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Rate</p>
                             <p>{selectedTransaction.rateDescription}</p>
                         </div>
                     }
                     { selectedTransaction.sellerCreditedWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Seller Credited Wallet</p>
                             <p className="text-xs">{selectedTransaction.sellerCreditedWallet}</p>
                         </div>
                     }
                     { selectedTransaction.sellerDebitedWallet &&
-                        <div className="flex justify-between text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                        <div className="flex justify-between text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                             <p>Seller Debited Wallet</p>
                             <p className="text-xs">{selectedTransaction.sellerDebitedWallet}</p>
                         </div>
                     }
-                    <div className="text-center text-sm border border-gray-300 py-2 px-4 rounded-sm">
+                    <div className="text-center text-sm border border-slate-300 dark:border-slate-700 py-2 px-4 rounded-sm">
                         <p>Description</p>
                         <p>{selectedTransaction.description}</p>
                     </div>

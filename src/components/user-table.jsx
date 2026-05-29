@@ -50,34 +50,34 @@ import PropTypes from 'prop-types';
     return (
         <>
             <div className="overflow-x-auto">
-                <table className="divide-y-6 divide-white dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
-                    <thead className="bg-gray-300 dark:bg-[#20263D]">
+                <table className="divide-y divide-slate-200 dark:divide-slate-700 min-w-full border-collapse rounded-lg">
+                    <thead className="bg-slate-100 dark:bg-slate-800">
                         <tr>
-                            <th className="px-4 py-3 text-left text-[7px] md:text-[9px] lg:text-xs font-medium text-gray-500 tracking-wider">S.No</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 tracking-wider">S.No</th>
                             {columns.map((column, colIndex) => (
                                 <th
                                     key={colIndex}
-                                    className="px-4 py-3 text-left text-[7px] md:text-[9px] lg:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider"
                                 >
                                     {column.header}
                                 </th>
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y-4 divide-gray-300 dark:divider-[#20263D] border border-gray-300 dark:border-[#20263D]">
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-700 border border-slate-200 dark:border-slate-700">
                     {
                         data?.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-gray-500 dark:text-white">
+                                <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-slate-500 dark:text-slate-300">
                                     No data available
                                 </td>
                             </tr>
                         ) : (
                             data.map((row, rowIndex) => (
-                                <tr key={rowIndex} className="hover:bg-gray-200 dark:hover:bg-gray-600">
-                                    <td className="px-4 py-3 whitespace-nowrap text-[7px] md:text-xs lg:text-sm text-gray-500 dark:text-white">{rowIndex + 1}</td>
+                                <tr key={rowIndex} className="hover:bg-slate-100 dark:hover:bg-slate-800/70">
+                                    <td className="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-slate-600 dark:text-slate-200">{rowIndex + 1}</td>
                                     {columns.map((column, colIndex) => (
-                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-[7px] md:text-xs lg:text-sm text-gray-500 dark:text-white">
+                                        <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-slate-600 dark:text-slate-200">
                                             {column.render
                                                 ? column.render(row[column.accessor], row)
                                                 : typeof row[column.accessor] === 'string' && row[column.accessor].length > 17
@@ -95,12 +95,12 @@ import PropTypes from 'prop-types';
 
             {drpp !== '' && (
                 <div className="flex flex-col sm:flex-row sm:justify-between md:items-center mt-4 ml-3 gap-4">
-                    <div className="text-[12px] lg:text-[13px] text-gray-500">
+                    <div className="text-[12px] lg:text-[13px] text-slate-500 dark:text-slate-300">
                         <span className="mr-2">Items per page:</span>
                         <select
                             value={rowsPerPage}
                             onChange={handleRowsPerPageChange}
-                            className="bg-white border border-gray-300 rounded-lg p-2 text-gray-700"
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-700 dark:text-slate-200"
                         >
                             {[5, 10, 20].map((option) => (
                                 <option key={option} value={option}>
@@ -114,7 +114,7 @@ import PropTypes from 'prop-types';
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ${currentPage === 1 ? 'text-gray-300' : 'hover:border-primary hover:text-primary'}`}
+                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-slate-500 dark:text-slate-300 rounded-lg ${currentPage === 1 ? 'text-slate-300 dark:text-slate-600' : 'hover:text-primary'}`}
                         >
                             &lt;
                         </button>
@@ -122,14 +122,14 @@ import PropTypes from 'prop-types';
                         {
                             pageNumbers.map((page, index) =>
                                 page === "..." ? (
-                                    <span key={index} className="px-3 py-2 text-gray-500">
+                                    <span key={index} className="px-3 py-2 text-slate-500 dark:text-slate-400">
                                         ...
                                     </span>
                                 ) : (
                                     <button
                                         key={index}
                                         onClick={() => handlePageChange(page)}
-                                        className={`cursor-pointer text-xs md:text-xs px-2 py-1 lg:px-3 lg:py-2 ml-2 rounded-[5px] ${currentPage === page ? 'border border-priColor text-black dark:text-white' : 'bg-white dark:bg-transparent text-gray-600'} hover:bg-priColor hover:text-primary`}
+                                        className={`cursor-pointer text-xs md:text-xs px-2 py-1 lg:px-3 lg:py-2 ml-2 rounded-[5px] ${currentPage === page ? 'border border-primary text-primary dark:text-white dark:bg-slate-800' : 'bg-white dark:bg-transparent text-slate-600 dark:text-slate-300'} hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary`}
                                     >
                                         {page}
                                     </button>
@@ -139,7 +139,7 @@ import PropTypes from 'prop-types';
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-gray-500 rounded-lg ml-2 ${currentPage === totalPages ? 'text-gray-300' : 'hover:border-primary hover:text-primary'}`}
+                            className={`cursor-pointer px-2 py-1 lg:px-3 lg:py-2 text-xs md:text-sm text-slate-500 dark:text-slate-300 rounded-lg ml-2 ${currentPage === totalPages ? 'text-slate-300 dark:text-slate-600' : 'hover:text-primary'}`}
                         >
                             &gt;
                         </button>

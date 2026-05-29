@@ -1,11 +1,11 @@
 import { LayoutDashboard, LucideToggleLeft, LogOut, Mail, Orbit, Settings, ToggleRightIcon, User, Users } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
 import TextButton from './ui/textButton';
 import { useTheme } from '../services/context/ThemeProvider';
 
 const Sidebar = ({ closeSidebar }) => {
-    const { appTitle } = useTitle();
+    useTitle();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
@@ -64,41 +64,41 @@ const Sidebar = ({ closeSidebar }) => {
     };
 
     return (
-        <div className="h-full bg-app-bg dark:bg-[#20263D] text-primary dark:text-white py-8 px-6 text-xs sm:text-sm lg:text-[16px]">
+        <div className="h-full bg-gradient-to-b from-slate-100 to-blue-50 dark:from-slate-900 dark:to-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white py-6 px-4 text-sm rounded-2xl shadow-sm">
             <div className="h-full flex flex-col justify-between">
-                <nav className='my-2'>
+                <nav className='my-2 space-y-1.5'>
                     {
                         sidebarItems.map((item) => (
-                            <Link 
+                            <NavLink 
                                 key={item.id} 
                                 to={item.url} 
-                                className={`block px-2 py-3 rounded-sm ${appTitle === item.title ? 'text-white bg-primary' : ''}`}
+                                className={({ isActive }) => `block px-3 py-2.5 rounded-xl transition-all ${isActive ? 'text-white bg-primary shadow-md shadow-blue-200/80' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                                 onClick={handleNavClick}
                             >
                                 <div className='flex items-center gap-3'>
-                                    <button
+                                    <span
                                         data-tooltip-id={`tooltip-${item.id}`}
-                                        type='button'
                                         className='relative'
                                     >
                                         {item.icon}
-                                    </button>
+                                    </span>
                                     
-                                    <div className='text-xs mg:text-sm font-[500]'>{item.title}</div>
+                                    <div className='text-sm font-medium tracking-wide'>{item.title}</div>
                                 </div>
-                            </Link>
+                            </NavLink>
                         ))
                     }
                 </nav>
-                <div className="">
+                <div className="space-y-4 border-t border-slate-200 dark:border-slate-700 pt-4">
 
                     <div className="flex justify-between items-center">
-                        <p className='text-[9px]'>Dark Mode</p>
+                        <p className='text-xs text-slate-500 dark:text-slate-300'>Dark Mode</p>
                         <TextButton
                             onClick={toggleTheme}
+                            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                         >
                             {theme === 'light'
-                                ? <LucideToggleLeft className='text-gray-500'/>
+                                ? <LucideToggleLeft className='text-slate-500'/>
                                 : <ToggleRightIcon  className='text-primary'/>
                             }
 
@@ -107,10 +107,10 @@ const Sidebar = ({ closeSidebar }) => {
                     {/* Logout button for mobile */}
                     <button 
                         onClick={handleLogout} 
-                        className='lg:hidden flex items-center gap-3 px-2 py-3 mt-4 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm'
+                        className='lg:hidden w-full flex items-center gap-3 px-3 py-2.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl'
                     >
                         <LogOut size='15' />
-                        <span className='text-xs font-[500]'>Logout</span>
+                        <span className='text-sm font-medium'>Logout</span>
                     </button>
                 </div>
             </div>

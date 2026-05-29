@@ -1,17 +1,17 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
-  --color-primary: #664C89;
-  --color-primary-light: #DAD0FC;
-  --color-primary-dark: #320747;
-  --color-background-light: #DAD0FC;
-  --color-background-dark: #1F2937;
-  --color-lightText: #664C89;
-  --color-darkText: #303030;
-  --color-greyText: #D9D9D9;
-  --color-danger: #F81717;
-  --color-color-green: #0FEB90;
-  --color-app-bg: #F1F8FF;
+  --color-primary: #1f6feb;
+  --color-primary-light: #d7e7ff;
+  --color-primary-dark: #0f4cad;
+  --color-background-light: #edf3fb;
+  --color-background-dark: #0f172a;
+  --color-lightText: #0f172a;
+  --color-darkText: #1e293b;
+  --color-greyText: #64748b;
+  --color-danger: #d92d20;
+  --color-color-green: #16a34a;
+  --color-app-bg: #edf3fb;
 }
 
 @layer utilities {
@@ -31,7 +31,35 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+  font-family: "Segoe UI", "IBM Plex Sans", "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: #0f172a;
+  background:
+    radial-gradient(1200px 500px at 100% -10%, #cfe2ff 0%, transparent 60%),
+    radial-gradient(900px 420px at -5% 0%, #dce9ff 0%, transparent 55%),
+    #edf3fb;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.dashboard-surface {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border: 1px solid #dbe7fa;
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(15, 76, 173, 0.08);
+}
+
+.dashboard-panel {
+  background: #ffffff;
+  border: 1px solid #d8e3f3;
+  border-radius: 14px;
+}
+
+.dark .dashboard-panel {
+  background: #0f172a;
+  border: 1px solid #334155;
+}

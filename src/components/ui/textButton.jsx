@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 const TextButton = ({ children, onClick, variant = "primary", className, disabled=false }) => {
-    const baseClass = "font-[700] text-md";
+    const baseClass = "font-[700] text-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed";
     const variantClass =
       variant === "primary"
         ? "text-primary hover:text-primary-dark dark:hover:text-white text-xs md:text-md cursor-pointer"
@@ -10,7 +10,7 @@ const TextButton = ({ children, onClick, variant = "primary", className, disable
         : "bg-green-500 hover:bg-gray-600";
   
     return (
-      <button className={`${baseClass} ${variantClass} ${className}`} onClick={onClick} disabled={disabled}>
+      <button type="button" className={`${baseClass} ${variantClass} ${className}`} onClick={onClick} disabled={disabled}>
         {children}
       </button>
     );

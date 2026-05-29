@@ -139,7 +139,7 @@ const UserProfile = ({id}) => {
                     <form onSubmit={handleSubmit} className="space-y-6 max-w-[450px] md:max-w-full grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* <div className="flex flex-col gap-2">
                             <p className="text-sm font-[600] text-black/70 dark:text-white">Full Name</p>
-                            <div className="w-full pr-10 text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-700 placeholder:dark:text-white/40">
+                            <div className="w-full pr-10 text-xs lg:text-sm text-black/60 dark:text-white/70 bg-primary/14 border border-gray-300 rounded-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-700 dark:placeholder:text-white/40">
                                 {userDetail?.firstName} {userDetail?.lastName}
                             </div>
                         </div> */}
@@ -215,21 +215,33 @@ const UserProfile = ({id}) => {
                                     <button
                                         disabled={isPerformingAction || userDetail?.status === 'active'}
                                         onClick={() => openConfirm('unblock')}
-                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${userDetail?.status === 'active' ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white hover:bg-primary-light/40'}`}
+                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${
+                                          userDetail?.status === 'active'
+                                            ? 'bg-gray-200 text-gray-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed'
+                                            : 'bg-white text-slate-700 border-slate-300 hover:bg-primary-light/40 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-800'
+                                        }`}
                                     >
                                         Activate Account
                                     </button>
                                     <button
                                         disabled={isPerformingAction || userDetail?.status === 'blocked'}
                                         onClick={() => openConfirm('block')}
-                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${userDetail?.status === 'blocked' ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white hover:bg-primary-light/40'}`}
+                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${
+                                          userDetail?.status === 'blocked'
+                                            ? 'bg-gray-200 text-gray-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed'
+                                            : 'bg-white text-slate-700 border-slate-300 hover:bg-primary-light/40 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-800'
+                                        }`}
                                     >
                                         Block Account
                                     </button>
                                     <button
                                         disabled={isPerformingAction || userDetail?.status === 'deleted'}
                                         onClick={() => openConfirm('delete')}
-                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${userDetail?.status === 'deleted' ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white hover:bg-primary-light/40'}`}
+                                        className={`border w-full text-xs font-semibold px-4 py-3 rounded-sm text-left transition-colors ${
+                                          userDetail?.status === 'deleted'
+                                            ? 'bg-gray-200 text-gray-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed'
+                                            : 'bg-white text-slate-700 border-slate-300 hover:bg-primary-light/40 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-800'
+                                        }`}
                                     >
                                         Deactivate Account
                                     </button>
